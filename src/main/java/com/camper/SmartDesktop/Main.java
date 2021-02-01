@@ -22,11 +22,11 @@ public class Main extends Application
     public void start(Stage stage) throws IOException
     {
         var root = new Pane();
-        //System.out.println(System.getProperty("user.dir"));
         //Parent root = FXMLLoader.load(getClass().getResource("E:\\Programming\\IdeaProjects\\SmartDesktop\\src\\main\\java\\com\\camper\\SmartDesktop\\main.fxml"));
         var scene = new Scene(root,300,275);
         stage.setScene(scene);
         stage.setTitle("MouseTest");
         stage.show();
+        System.out.println("Добавляю коммит на GitHub");
     }
 }
