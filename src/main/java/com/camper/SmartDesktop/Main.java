@@ -10,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class Main extends Application
 {
@@ -21,12 +22,12 @@ public class Main extends Application
     @Override
     public void start(Stage stage) throws IOException
     {
-        var root = new Pane();
-        //Parent root = FXMLLoader.load(getClass().getResource("E:\\Programming\\IdeaProjects\\SmartDesktop\\src\\main\\java\\com\\camper\\SmartDesktop\\main.fxml"));
+        var loader = Main.class.getClassLoader();
+        Parent root = FXMLLoader.load(Objects.requireNonNull(loader.getResource("com/camper/SmartDesktop/StartScreen.fxml")));
+        System.out.println(System.getProperty("user.dir"));
         var scene = new Scene(root,300,275);
         stage.setScene(scene);
-        stage.setTitle("MouseTest");
+        stage.setTitle("SmartDesktop");
         stage.show();
-        System.out.println("Добавляю коммит на GitHub");
     }
 }
