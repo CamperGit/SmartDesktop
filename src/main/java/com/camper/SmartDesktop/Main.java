@@ -22,8 +22,8 @@ public class Main extends Application
     {
         var loader = Main.class.getClassLoader();
         Parent root = FXMLLoader.load(Objects.requireNonNull(loader.getResource("FXMLs/StartScreen.fxml")));
-        Toolkit kit = Toolkit.getDefaultToolkit();
-        Dimension screenSize = kit.getScreenSize();
+        var kit = Toolkit.getDefaultToolkit();
+        var screenSize = kit.getScreenSize();
         var scene = new Scene(root,screenSize.width,screenSize.height-66);
         stage.setScene(scene);
         stage.setTitle("SmartDesktop");
