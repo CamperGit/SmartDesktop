@@ -39,11 +39,13 @@ public class Main extends Application implements Initializable
     @FXML private MediaView videoViewer;
     @FXML private Button imageFileChooserButton;
     @FXML private Button videoFileChooserButton;
+    private static final ClassLoader LOADER = Main.class.getClassLoader();
+    private static MediaPlayer mediaPlayer;
     public static final int DEFAULT_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
     public static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
     public static Stage Stage;
     public static final String DIRPATH = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
-    private static final ClassLoader LOADER = Main.class.getClassLoader();
+
 
 
     @Override
@@ -68,27 +70,72 @@ public class Main extends Application implements Initializable
         if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Images\\image.jpg"))) { extensionOnReloading=".jpg";}
         else if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Images\\image.png"))) { extensionOnReloading=".png";}
         else if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Images\\image.gif"))) {extensionOnReloading=".gif";}
-
         if (extensionOnReloading!=null)
         {
             imageViewer.setImage(new Image("file:/"+DIRPATH + "\\Resources\\Images\\image"+extensionOnReloading,DEFAULT_WIDTH,DEFAULT_HEIGHT,false,false));
         }
 
 
-
-        String VUrl = "file:/E:/Programming/IdeaProjects/SmartDesktop/src/main/resources/test.mp4";
-        var media = new Media(VUrl);
-        var mediaPlayer = new MediaPlayer(media);
-        /*videoViewer.setFitHeight(DEFAULT_HEIGHT);
         videoViewer.setFitWidth(DEFAULT_WIDTH);
-        videoViewer.setMediaPlayer(mediaPlayer);
-        mediaPlayer.setAutoPlay(true);
-        mediaPlayer.setOnEndOfMedia(()->
+        videoViewer.setFitHeight(DEFAULT_HEIGHT);
+        String VUrl = null;
+        if(Files.exists(Paths.get(DIRPATH+"\\Resources\\Videos\\video.mp4")))
+        { VUrl ="file:/"+DIRPATH.replace("\\","/") + "/Resources/Videos/video.mp4";}
+        if (VUrl != null)
+        {
+            var mediaFromLoadLaunch = new Media(VUrl);
+            mediaPlayer = new MediaPlayer(mediaFromLoadLaunch);
+            videoViewer.setMediaPlayer(mediaPlayer);
+            mediaPlayer.setAutoPlay(true);
+            mediaPlayer.setCycleCount(Integer.MAX_VALUE);
+        }
+
+
+        videoFileChooserButton.setOnAction(event ->
+        {
+            var fileChooser = new FileChooser();
+            var imageFilters = new FileChooser.ExtensionFilter("Video filters", "*.mp4");
+            fileChooser.getExtensionFilters().add(imageFilters);
+            var result = fileChooser.showOpenDialog(Stage);
+            if (result!=null)
+            {
+                try
                 {
-                    mediaPlayer.stop();
+                    if (mediaPlayer != null && mediaPlayer.isAutoPlay())
+                    {
+                        mediaPlayer.stop();
+                        mediaPlayer.dispose();
+                    }
+                    if (Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Videos"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Videos")))
+                    {
+                        var folderWithVideo = new File(DIRPATH + "\\Resources\\Videos");
+                        File[] contents = folderWithVideo.listFiles();
+                        if (contents != null)
+                        { for (File f : contents) { boolean deleted = f.delete(); } }
+                        String s = result.getPath();
+                        String s2 = result.getAbsolutePath();
+                        String s3= DIRPATH+"\\Resources\\Videos\\video.mp4";
+                        Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH+"\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
+                    }
+                    else
+                    {
+                        Files.createDirectory(Paths.get(DIRPATH+"\\Resources\\Videos"));
+                        Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH+"\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
+                    }
+                    var mediaFromFirstLaunch = new Media("file:/" + result.getAbsolutePath().replace("\\","/"));
+                    mediaPlayer = new MediaPlayer(mediaFromFirstLaunch);
                     videoViewer.setMediaPlayer(mediaPlayer);
-                    mediaPlayer.play();
-                });*/
+                    mediaPlayer.setAutoPlay(true);
+                    mediaPlayer.setCycleCount(Integer.MAX_VALUE);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
         /*mediaPlayer.setOnReady(()->
         {
             int mediaWidth = media.getWidth();
@@ -103,7 +150,7 @@ public class Main extends Application implements Initializable
         imageFileChooserButton.setOnAction(event ->
         {
             var fileChooser = new FileChooser();
-            var imageFilters = new FileChooser.ExtensionFilter("image filters", "*.jpg","*.png","*.gif");
+            var imageFilters = new FileChooser.ExtensionFilter("Image filters", "*.jpg","*.png","*.gif");
             fileChooser.getExtensionFilters().add(imageFilters);
             var result = fileChooser.showOpenDialog(Stage);
             String extensionOnFirstLaunch;
@@ -125,9 +172,7 @@ public class Main extends Application implements Initializable
                         var folderWithImages = new File(DIRPATH + "\\Resources\\Images");
                         File[] contents = folderWithImages.listFiles();
                         if (contents != null)
-                        {
-                            for (File f : contents) { f.delete(); }
-                        }
+                        { for (File f : contents) { f.delete(); } }
                         Files.copy(Paths.get(result.getAbsolutePath()), Paths.get(DIRPATH+"\\Resources\\Images\\image"+extensionOnFirstLaunch), StandardCopyOption.REPLACE_EXISTING);
                     }
                     else
@@ -135,10 +180,21 @@ public class Main extends Application implements Initializable
                         Files.createDirectory(Paths.get(DIRPATH+"\\Resources\\Images"));
                         Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH+"\\Resources\\Images\\image"+extensionOnFirstLaunch), StandardCopyOption.REPLACE_EXISTING);
                     }
-                    if (mediaPlayer.isAutoPlay())
+                    if (mediaPlayer != null && mediaPlayer.isAutoPlay())
                     {
                         mediaPlayer.dispose();
                     }
+                    /**
+                     * Привыборе фотки, очищаем папку с видео, чтобы при последующем запуске у нас открывалась именно фотка
+                     */
+                    if (Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Videos"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Videos")))
+                    {
+                        var folderWithVideo = new File(DIRPATH + "\\Resources\\Videos");
+                        File[] contents = folderWithVideo.listFiles();
+                        if (contents != null)
+                        { for (File f : contents) { f.delete(); } }
+                    }
+
                     var image = new Image("file:/" + result.getAbsolutePath(),DEFAULT_WIDTH,DEFAULT_HEIGHT,false,false);
                     imageViewer.setImage(image);
                 }
