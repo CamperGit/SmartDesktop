@@ -1,7 +1,6 @@
 package com.camper.SmartDesktop;
 
 
-
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,16 +13,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.crypto.Data;
+import javax.naming.Context;
+import javax.print.attribute.AttributeSet;
 import java.awt.*;
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
@@ -37,16 +39,20 @@ public class Main extends Application implements Initializable
     @FXML private MediaView videoViewer;
     @FXML private Button imageFileChooserButton;
     @FXML private Button videoFileChooserButton;
-    private static final int DEFAULT_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
-    private static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
+    public static final int DEFAULT_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
+    public static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
+    public static Stage Stage;
+    public static final String DIRPATH = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
     private static final ClassLoader LOADER = Main.class.getClassLoader();
-    private static Stage Stage;
+
 
     @Override
     public void start(Stage stage) throws IOException
     {
         Parent root = FXMLLoader.load(Objects.requireNonNull(LOADER.getResource("FXMLs/StartScreenRu.fxml")));
         var scene = new Scene(root,DEFAULT_WIDTH,DEFAULT_HEIGHT-66);
+        if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources"))&&Files.exists(Paths.get(DIRPATH+"\\Resources"))))
+        { Files.createDirectory(Paths.get(DIRPATH+"\\Resources")); }
         Stage = stage;
         stage.setScene(scene);
         stage.setTitle("SmartDesktop");
@@ -56,10 +62,24 @@ public class Main extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        imageViewer.setFitWidth(DEFAULT_WIDTH);
+        imageViewer.setFitHeight(DEFAULT_HEIGHT);
+        String extensionOnReloading=null;
+        if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Images\\image.jpg"))) { extensionOnReloading=".jpg";}
+        else if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Images\\image.png"))) { extensionOnReloading=".png";}
+        else if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Images\\image.gif"))) {extensionOnReloading=".gif";}
+
+        if (extensionOnReloading!=null)
+        {
+            imageViewer.setImage(new Image("file:/"+DIRPATH + "\\Resources\\Images\\image"+extensionOnReloading,DEFAULT_WIDTH,DEFAULT_HEIGHT,false,false));
+        }
+
+
+
         String VUrl = "file:/E:/Programming/IdeaProjects/SmartDesktop/src/main/resources/test.mp4";
         var media = new Media(VUrl);
         var mediaPlayer = new MediaPlayer(media);
-        videoViewer.setFitHeight(DEFAULT_HEIGHT);
+        /*videoViewer.setFitHeight(DEFAULT_HEIGHT);
         videoViewer.setFitWidth(DEFAULT_WIDTH);
         videoViewer.setMediaPlayer(mediaPlayer);
         mediaPlayer.setAutoPlay(true);
@@ -68,7 +88,17 @@ public class Main extends Application implements Initializable
                     mediaPlayer.stop();
                     videoViewer.setMediaPlayer(mediaPlayer);
                     mediaPlayer.play();
-                });
+                });*/
+        /*mediaPlayer.setOnReady(()->
+        {
+            int mediaWidth = media.getWidth();
+            int mediaHeight = media.getHeight();
+            if (mediaWidth !=DEFAULT_WIDTH && mediaHeight!=DEFAULT_HEIGHT)
+            {
+                videoViewer.setX(DEFAULT_WIDTH/2-mediaWidth/2);
+                videoViewer.setY(DEFAULT_HEIGHT/2-mediaHeight/2);
+            }
+        });*/
 
         imageFileChooserButton.setOnAction(event ->
         {
@@ -76,47 +106,48 @@ public class Main extends Application implements Initializable
             var imageFilters = new FileChooser.ExtensionFilter("image filters", "*.jpg","*.png","*.gif");
             fileChooser.getExtensionFilters().add(imageFilters);
             var result = fileChooser.showOpenDialog(Stage);
-            try
+            String extensionOnFirstLaunch;
+            if (result!=null)
             {
-                if(result.getName().contains(".jpg"))
+                if (result.getName().endsWith(".jpg")) { extensionOnFirstLaunch=".jpg";}
+                else if (result.getName().endsWith(".png")) { extensionOnFirstLaunch=".png";}
+                else { extensionOnFirstLaunch=".gif";}
+                try
                 {
-                    //Files.copy(Paths.get("file:/"+result.getPath()), Paths.get("VideosAndImages/image.jpg"));
+                    if (Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Images"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Images")))
+                    {
+                        /**
+                         * Чтобы иметь только один файл фона и не хранить несколько изображений в разном расширении, что
+                         * будет мешать в выборе фона рабочего стола, ведь выбираться он будет по первому вхождению
+                         * нужного расширения при первом запуске(смотри выше). Чтобы этого избежать, удаляется изображение,
+                         * которое лежит в папке
+                         */
+                        var folderWithImages = new File(DIRPATH + "\\Resources\\Images");
+                        File[] contents = folderWithImages.listFiles();
+                        if (contents != null)
+                        {
+                            for (File f : contents) { f.delete(); }
+                        }
+                        Files.copy(Paths.get(result.getAbsolutePath()), Paths.get(DIRPATH+"\\Resources\\Images\\image"+extensionOnFirstLaunch), StandardCopyOption.REPLACE_EXISTING);
+                    }
+                    else
+                    {
+                        Files.createDirectory(Paths.get(DIRPATH+"\\Resources\\Images"));
+                        Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH+"\\Resources\\Images\\image"+extensionOnFirstLaunch), StandardCopyOption.REPLACE_EXISTING);
+                    }
                     if (mediaPlayer.isAutoPlay())
                     {
                         mediaPlayer.dispose();
                     }
-                    //var image = new Image("file:/" + result.getAbsolutePath());
-                    Files.copy(Paths.get(result.getAbsolutePath()),Paths.get("resources/VideosAndImages/image.jpg"), StandardCopyOption.REPLACE_EXISTING);
-                    imageViewer.setImage(new Image("file:/"+"./../../../image.jpg"));
+                    var image = new Image("file:/" + result.getAbsolutePath(),DEFAULT_WIDTH,DEFAULT_HEIGHT,false,false);
+                    imageViewer.setImage(image);
                 }
-
-
-
-
-
-                if(result.getName().contains(".png"))
+                catch (IOException e)
                 {
-                    Files.copy(new DataInputStream(new FileInputStream(result)), Paths.get("VideosAndImages/image.png"));
-                    if (mediaPlayer.isAutoPlay())
-                    {
-                        mediaPlayer.stop();
-                    }
-                    imageViewer.setImage(new Image(getClass().getResourceAsStream("VideosAndImages/image.png")));
+                    e.printStackTrace();
                 }
-                if(result.getName().contains(".gif"))
-                {
-                    Files.copy(new DataInputStream(new FileInputStream(result)), Paths.get("VideosAndImages/image.gif"));
-                    if (mediaPlayer.isAutoPlay())
-                    {
-                        mediaPlayer.stop();
-                    }
-                    imageViewer.setImage(new Image(getClass().getResourceAsStream("VideosAndImages/image.gif")));
-                }
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
             }
         });
     }
 }
+
