@@ -106,6 +106,13 @@ public class Main extends Application implements Initializable
                         mediaPlayer.stop();
                         mediaPlayer.dispose();
                     }
+                    if (Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Images"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Images")))
+                    {
+                        var folderWithImages = new File(DIRPATH + "\\Resources\\Images");
+                        File[] contents = folderWithImages.listFiles();
+                        if (contents != null)
+                        { for (File f : contents) { f.delete(); } }
+                    }
                     if (Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Videos"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Videos")))
                     {
                         var folderWithVideo = new File(DIRPATH + "\\Resources\\Videos");
