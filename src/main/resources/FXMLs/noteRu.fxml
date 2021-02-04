@@ -6,10 +6,9 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="272.0" prefWidth="372.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Note">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="280.0" prefWidth="380.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Note">
    <children>
-      <TextArea fx:id="noteTextArea" layoutY="40.0" prefHeight="238.0" prefWidth="372.0" />
-      <ToolBar prefHeight="40.0" prefWidth="372.0">
+      <ToolBar fx:id="noteToolBar" prefHeight="40.0" prefWidth="380.0">
         <items>
           <Button fx:id="noteTestButton" mnemonicParsing="false" text="test" />
             <Separator orientation="VERTICAL" prefHeight="0.0" prefWidth="0.0" />
@@ -17,5 +16,6 @@
             <Button mnemonicParsing="false" text="Button" />
         </items>
       </ToolBar>
+      <TextArea fx:id="noteTextArea" layoutY="40.0" prefHeight="242.0" prefWidth="380.0" />
    </children>
 </AnchorPane>

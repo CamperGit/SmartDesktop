@@ -122,7 +122,7 @@ public class Main extends Application implements Initializable
                         var folderWithVideo = new File(DIRPATH + "\\Resources\\Videos");
                         File[] contents = folderWithVideo.listFiles();
                         if (contents != null)
-                        { for (File f : contents) { boolean deleted = f.delete(); } }
+                        { for (File f : contents) { f.delete(); } }
                         Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH+"\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
                     }
                     else
