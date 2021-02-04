@@ -10,22 +10,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.naming.Context;
-import javax.print.attribute.AttributeSet;
 import java.awt.*;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
@@ -39,19 +35,25 @@ public class Main extends Application implements Initializable
     @FXML private MediaView videoViewer;
     @FXML private Button imageFileChooserButton;
     @FXML private Button videoFileChooserButton;
-    private static final ClassLoader LOADER = Main.class.getClassLoader();
+    @FXML private Button note;
     private static MediaPlayer mediaPlayer;
     public static final int DEFAULT_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
     public static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
+    public static final ClassLoader mainCL = Main.class.getClassLoader();
+    public static Pane root;
     public static Stage Stage;
     public static final String DIRPATH = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
 
-
+    public static void addChild(Parent node)
+    {
+        root.getChildren().add(node);
+    }
 
     @Override
     public void start(Stage stage) throws IOException
     {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(LOADER.getResource("FXMLs/StartScreenRu.fxml")));
+        //var mainCL = Main.class.getClassLoader();
+        root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreenRu.fxml")));
         var scene = new Scene(root,DEFAULT_WIDTH,DEFAULT_HEIGHT-66);
         if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources"))&&Files.exists(Paths.get(DIRPATH+"\\Resources"))))
         { Files.createDirectory(Paths.get(DIRPATH+"\\Resources")); }
@@ -59,6 +61,8 @@ public class Main extends Application implements Initializable
         stage.setScene(scene);
         stage.setTitle("SmartDesktop");
         stage.show();
+
+
     }
 
     @Override
@@ -119,9 +123,6 @@ public class Main extends Application implements Initializable
                         File[] contents = folderWithVideo.listFiles();
                         if (contents != null)
                         { for (File f : contents) { boolean deleted = f.delete(); } }
-                        String s = result.getPath();
-                        String s2 = result.getAbsolutePath();
-                        String s3= DIRPATH+"\\Resources\\Videos\\video.mp4";
                         Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH+"\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
                     }
                     else
@@ -141,18 +142,6 @@ public class Main extends Application implements Initializable
                 }
             }
         });
-
-
-        /*mediaPlayer.setOnReady(()->
-        {
-            int mediaWidth = media.getWidth();
-            int mediaHeight = media.getHeight();
-            if (mediaWidth !=DEFAULT_WIDTH && mediaHeight!=DEFAULT_HEIGHT)
-            {
-                videoViewer.setX(DEFAULT_WIDTH/2-mediaWidth/2);
-                videoViewer.setY(DEFAULT_HEIGHT/2-mediaHeight/2);
-            }
-        });*/
 
         imageFileChooserButton.setOnAction(event ->
         {
@@ -194,6 +183,7 @@ public class Main extends Application implements Initializable
                     /**
                      * Привыборе фотки, очищаем папку с видео, чтобы при последующем запуске у нас открывалась именно фотка
                      */
+
                     if (Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Videos"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Videos")))
                     {
                         var folderWithVideo = new File(DIRPATH + "\\Resources\\Videos");
@@ -211,6 +201,19 @@ public class Main extends Application implements Initializable
                 }
             }
         });
+
+        note.setOnAction((event)->
+        {
+            try
+            {
+                new Note().start(Stage);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
+
     }
 }
 
