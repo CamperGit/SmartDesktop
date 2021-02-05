@@ -31,6 +31,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
@@ -53,7 +54,7 @@ public class Main extends Application implements Initializable
     @FXML private Button note;
     private static MediaPlayer mediaPlayer;
     private static Pane root;
-    private static Stage Stage;
+    public static Stage Stage;
     public static final int DEFAULT_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
     public static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
     public static final ClassLoader mainCL = Main.class.getClassLoader();
@@ -80,16 +81,31 @@ public class Main extends Application implements Initializable
         t.setOutputProperty(OutputKeys.METHOD,"xml");
         t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
-        int id = 1;
+        /*int id = 1;
         while(Files.exists(Path.of(DIRPATH + "\\Resources\\Saves\\save" + id + ".xml")))
         {
             id++;
         }
-        t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\save" +id+".xml"))));
+        t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\save" +id+".xml"))));*/
+        t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\save.xml"))));
+    }
+
+    public static void loadAll() throws Exception
+    {
+        var factory = DocumentBuilderFactory.newInstance();
+        final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+        final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+        factory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
+        var builder = factory.newDocumentBuilder();
+        var doc = builder.parse(DIRPATH + "\\Resources\\Saves\\save.xml");
+        var xPathFactory = XPathFactory.newInstance();
+        var xPath = xPathFactory.newXPath();
+
+        Note.loadNotesFromXML(doc,xPath);
     }
 
     @Override
-    public void start(Stage stage) throws IOException
+    public void start(Stage stage) throws Exception
     {
         stage.setOnCloseRequest((event)->
         {
@@ -101,52 +117,6 @@ public class Main extends Application implements Initializable
             {
                 e.printStackTrace();
             }
-            /*try
-            {
-                SavingElements.saveAll();
-            } catch (ParserConfigurationException e)
-            {
-                e.printStackTrace();
-            } catch (TransformerException e)
-            {
-                e.printStackTrace();
-            } catch (SAXException e)
-            {
-                e.printStackTrace();
-            } catch (XPathExpressionException e)
-            {
-                e.printStackTrace();
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            }*/
-            //saveAll()
-            /*var list = root.getChildren();
-            for(Node node : list)
-            {
-                if (node instanceof AnchorPane)
-                {
-                    var listLvl2 = ((AnchorPane) node).getChildren();
-                    for(Node nodeLvl2 : listLvl2)
-                    {
-                        if (nodeLvl2 instanceof TextArea)
-                        {
-                            String text = ((TextArea) nodeLvl2).getText();
-                            if (Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Saves")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves")))
-                            {
-                                try(var out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\test.txt"), StandardCharsets.UTF_8),true);)
-                                {
-                                    out.println(text);
-                                }
-                                catch (FileNotFoundException e)
-                                {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                }
-            }*/
         });
         root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreenRu.fxml")));
         var scene = new Scene(root,DEFAULT_WIDTH,DEFAULT_HEIGHT-66);
@@ -155,6 +125,9 @@ public class Main extends Application implements Initializable
         if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Saves"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Saves"))))
         { Files.createDirectory(Paths.get(DIRPATH+"\\Resources\\Saves")); }
         Stage = stage;
+
+        loadAll();
+
         stage.setScene(scene);
         stage.setTitle("SmartDesktop");
         stage.show();
