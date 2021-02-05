@@ -4,6 +4,7 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
+
 group 'com.camper'
 version '1.0-SNAPSHOT'
 

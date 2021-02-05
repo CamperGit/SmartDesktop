@@ -5,27 +5,42 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathExpressionException;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.List;
 
 public class Main extends Application implements Initializable
 {
@@ -37,32 +52,112 @@ public class Main extends Application implements Initializable
     @FXML private Button videoFileChooserButton;
     @FXML private Button note;
     private static MediaPlayer mediaPlayer;
+    private static Pane root;
+    private static Stage Stage;
     public static final int DEFAULT_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
     public static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
     public static final ClassLoader mainCL = Main.class.getClassLoader();
-    public static Pane root;
-    public static Stage Stage;
     public static final String DIRPATH = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
 
-    public static void addChild(Parent node)
+    public static void addChild(Parent node) { root.getChildren().add(node); }
+
+    public static void saveAll() throws ParserConfigurationException, TransformerException, IOException
     {
-        root.getChildren().add(node);
+        var factory = DocumentBuilderFactory.newInstance();
+        final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+        final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+        factory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
+        var builder = factory.newDocumentBuilder();
+        var doc = builder.newDocument();
+
+        var rootDocument = doc.createElement("save");
+        doc.appendChild(rootDocument);
+
+        Note.addNotesToXML(doc);
+
+        var t = TransformerFactory.newInstance().newTransformer();
+        t.setOutputProperty(OutputKeys.INDENT,"yes"); //Отступ
+        t.setOutputProperty(OutputKeys.METHOD,"xml");
+        t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+        int id = 1;
+        while(Files.exists(Path.of(DIRPATH + "\\Resources\\Saves\\save" + id + ".xml")))
+        {
+            id++;
+        }
+        t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\save" +id+".xml"))));
     }
 
     @Override
     public void start(Stage stage) throws IOException
     {
-        //var mainCL = Main.class.getClassLoader();
+        stage.setOnCloseRequest((event)->
+        {
+            try
+            {
+                saveAll();
+            }
+            catch (ParserConfigurationException | TransformerException | IOException e)
+            {
+                e.printStackTrace();
+            }
+            /*try
+            {
+                SavingElements.saveAll();
+            } catch (ParserConfigurationException e)
+            {
+                e.printStackTrace();
+            } catch (TransformerException e)
+            {
+                e.printStackTrace();
+            } catch (SAXException e)
+            {
+                e.printStackTrace();
+            } catch (XPathExpressionException e)
+            {
+                e.printStackTrace();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }*/
+            //saveAll()
+            /*var list = root.getChildren();
+            for(Node node : list)
+            {
+                if (node instanceof AnchorPane)
+                {
+                    var listLvl2 = ((AnchorPane) node).getChildren();
+                    for(Node nodeLvl2 : listLvl2)
+                    {
+                        if (nodeLvl2 instanceof TextArea)
+                        {
+                            String text = ((TextArea) nodeLvl2).getText();
+                            if (Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Saves")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves")))
+                            {
+                                try(var out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\test.txt"), StandardCharsets.UTF_8),true);)
+                                {
+                                    out.println(text);
+                                }
+                                catch (FileNotFoundException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+            }*/
+        });
         root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreenRu.fxml")));
         var scene = new Scene(root,DEFAULT_WIDTH,DEFAULT_HEIGHT-66);
         if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources"))&&Files.exists(Paths.get(DIRPATH+"\\Resources"))))
         { Files.createDirectory(Paths.get(DIRPATH+"\\Resources")); }
+        if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Saves"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Saves"))))
+        { Files.createDirectory(Paths.get(DIRPATH+"\\Resources\\Saves")); }
         Stage = stage;
         stage.setScene(scene);
         stage.setTitle("SmartDesktop");
         stage.show();
-
-
     }
 
     @Override
@@ -213,6 +308,12 @@ public class Main extends Application implements Initializable
                 e.printStackTrace();
             }
         });
+
+        /*var list = selected.getChildren();
+        for (Node node: list)
+        {
+
+        }*/
 
     }
 }
