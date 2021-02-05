@@ -47,7 +47,7 @@ public class Main extends Application implements Initializable
     @FXML private Button note;
     private static MediaPlayer mediaPlayer;
     private static Pane root;
-    public static Properties lastSaveName = new Properties();
+    public static Properties saveInfo = new Properties();
     public static Stage Stage;
     public static final int DEFAULT_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
     public static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -61,14 +61,9 @@ public class Main extends Application implements Initializable
     {
         stage.setOnCloseRequest((event)->
         {
-            try
-            {
-                saveAll(event);
-            }
+            try { saveAll(event); }
             catch (ParserConfigurationException | TransformerException | IOException e)
-            {
-                e.printStackTrace();
-            }
+            { e.printStackTrace(); }
         });
 
 
@@ -80,11 +75,11 @@ public class Main extends Application implements Initializable
 
         if (!Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\saveInfo.properties")))
         {
-            lastSaveName.setProperty("lastSaveName","");
-            lastSaveName.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+            saveInfo.setProperty("lastSaveName","");
+            saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
         }
         try(FileInputStream io = new FileInputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"))
-        { lastSaveName.load(io); }
+        { saveInfo.load(io); }
 
         root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreenRu.fxml")));
         var scene = new Scene(root,DEFAULT_WIDTH,DEFAULT_HEIGHT-66);
@@ -101,6 +96,18 @@ public class Main extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        loadSavesToSavesList(savesChoiceBox);
+        addNewPresetButton.setOnAction((event)->
+        {
+            try { savesChoiceBox.getItems().add(addNewSaveFile()); }
+            catch (IOException | TransformerException | ParserConfigurationException e)
+            { e.printStackTrace(); }
+        });
+        /*savesChoiceBox.setOnMouseClicked(event ->
+        {
+            savesChoiceBox.getValue();
+        });*/
+
         imageViewer.setFitWidth(DEFAULT_WIDTH);
         imageViewer.setFitHeight(DEFAULT_HEIGHT);
         String extensionOnReloading=null;
@@ -111,8 +118,6 @@ public class Main extends Application implements Initializable
         {
             imageViewer.setImage(new Image("file:/"+DIRPATH + "\\Resources\\Images\\image"+extensionOnReloading,DEFAULT_WIDTH,DEFAULT_HEIGHT,false,false));
         }
-
-        loadSavesToSavesList(savesChoiceBox);
 
         videoViewer.setFitWidth(DEFAULT_WIDTH);
         videoViewer.setFitHeight(DEFAULT_HEIGHT);
@@ -238,14 +243,9 @@ public class Main extends Application implements Initializable
 
         note.setOnAction((event)->
         {
-            try
-            {
-                new Note().start(Stage);
-            }
+            try { new Note().start(Stage); }
             catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            { e.printStackTrace(); }
         });
     }
 }

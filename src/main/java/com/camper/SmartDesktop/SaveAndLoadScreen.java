@@ -5,23 +5,19 @@ import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathFactory;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.Properties;
 
 import static com.camper.SmartDesktop.Main.*;
@@ -31,16 +27,13 @@ public class SaveAndLoadScreen
     public static void saveAll(WindowEvent event) throws ParserConfigurationException, TransformerException, IOException
     {
         var factory = DocumentBuilderFactory.newInstance();
-        final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-        final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
-        factory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
         var builder = factory.newDocumentBuilder();
         var doc = builder.newDocument();
 
         var rootDocument = doc.createElement("save");
         doc.appendChild(rootDocument);
 
-        Note.addNotesToXML(doc);
+        Note.addNotesToXML(doc, false);
 
         var t = TransformerFactory.newInstance().newTransformer();
         t.setOutputProperty(OutputKeys.INDENT,"yes"); //Отступ
@@ -49,22 +42,20 @@ public class SaveAndLoadScreen
 
         String filename = "";
 
-
-
         var alert = new Alert(Alert.AlertType.NONE, "Сохранить изменения?", new ButtonType("Сохранить", ButtonBar.ButtonData.YES),new ButtonType("Не сохранять", ButtonBar.ButtonData.NO),new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE));
         var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
         if (alertResult.getButtonData() == ButtonBar.ButtonData.YES)
         {
-            if (lastSaveName.getProperty("lastSaveName").equals(""))
+            if (saveInfo.getProperty("lastSaveName").equals(""))
             { filename="save1.xml";}
-            else { filename = lastSaveName.getProperty("lastSaveName");
+            else { filename = saveInfo.getProperty("lastSaveName");
             }
         }
         if (alertResult.getButtonData() == ButtonBar.ButtonData.NO) { return; }
         if (alertResult.getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE) { event.consume(); return;}
 
-        lastSaveName.setProperty("lastSaveName",filename);
-        lastSaveName.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+        saveInfo.setProperty("lastSaveName",filename);
+        saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
 
         t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));
     }
@@ -76,21 +67,18 @@ public class SaveAndLoadScreen
         File[] contents = folderWithSaves.listFiles();
         if (contents!=null && contents.length!=0 )
         {
-            int numberOfSaves=0;
+            int countOfSaves=0;
             for (File file : contents)
             {
                 if (file.getAbsolutePath().endsWith(".xml"))
                 {
-                    numberOfSaves++;
+                    countOfSaves++;
                     break;
                 }
             }
-            if (numberOfSaves!=0)
+            if (countOfSaves!=0)
             {
                 var factory = DocumentBuilderFactory.newInstance();
-                final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-                final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
-                factory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
                 var builder = factory.newDocumentBuilder();
                 var xPathFactory = XPathFactory.newInstance();
                 var xPath = xPathFactory.newXPath();
@@ -98,9 +86,10 @@ public class SaveAndLoadScreen
                 String filename="";
                 if (saveNameFromChoiceBox==null)
                 {
-                    if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\"+lastSaveName.getProperty("lastSaveName"))))
+                    if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\"+saveInfo.getProperty("lastSaveName"))))
                     {
-                        filename = lastSaveName.getProperty("lastSaveName");
+                        filename = saveInfo.getProperty("lastSaveName");
+                        saveInfo.setProperty("currencySaveName",filename);
                     }
                 }
                 else
@@ -108,6 +97,7 @@ public class SaveAndLoadScreen
                     if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\"+saveNameFromChoiceBox)))
                     {
                         filename = saveNameFromChoiceBox;
+                        saveInfo.setProperty("currencySaveName",filename);
                     }
                 }
 
@@ -115,8 +105,8 @@ public class SaveAndLoadScreen
                 {
                     var doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + filename);
                     Note.loadNotesFromXML(doc,xPath);
-                    lastSaveName.setProperty("lastSaveName",filename);
-                    lastSaveName.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+                    saveInfo.setProperty("lastSaveName",filename);
+                    saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
                 }
             }
         }
@@ -136,7 +126,37 @@ public class SaveAndLoadScreen
                 }
             }
         }
-        String s = lastSaveName.getProperty("lastSaveName");
-        saves.setValue(lastSaveName.getProperty("lastSaveName"));
+        saves.setValue(saveInfo.getProperty("currencySaveName"));
+    }
+
+    private static void createEmptyXML(String filename) throws ParserConfigurationException, TransformerException, IOException
+    {
+        var factory = DocumentBuilderFactory.newInstance();
+        var builder = factory.newDocumentBuilder();
+        var doc = builder.newDocument();
+
+        var rootDocument = doc.createElement("save");
+        doc.appendChild(rootDocument);
+
+        Note.addNotesToXML(doc, true);
+
+        var t = TransformerFactory.newInstance().newTransformer();
+        t.setOutputProperty(OutputKeys.INDENT,"yes"); //Отступ
+        t.setOutputProperty(OutputKeys.METHOD,"xml");
+        t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));
+    }
+
+    public static String addNewSaveFile() throws IOException, TransformerException, ParserConfigurationException
+    {
+        String filename;
+        for (int id=1;;)
+        {
+            filename = "save"+id+".xml";
+            if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Saves\\"+filename), LinkOption.NOFOLLOW_LINKS))
+            { id++; }
+            else {createEmptyXML(filename); break;}
+        }
+        return filename;
     }
 }

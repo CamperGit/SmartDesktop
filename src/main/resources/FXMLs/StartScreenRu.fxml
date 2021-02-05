@@ -88,6 +88,6 @@
         </tabs>
       </TabPane>
       <ChoiceBox fx:id="savesChoiceBox" layoutX="1590.0" prefHeight="25.0" prefWidth="194.0" />
-      <Button fx:id="addNewPresetButton" layoutX="1565.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="+" textAlignment="CENTER" />
+      <Button fx:id="addNewPresetButton" layoutX="1566.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="+" textAlignment="CENTER" />
    </children>
 </AnchorPane>

@@ -73,44 +73,46 @@ public class Note extends Application implements Initializable
 
     private AnchorPane getRoot() { return root; }
 
-    public static void addNotesToXML(Document doc)
+    public static void addNotesToXML(Document doc, boolean createEmptyXML)
     {
         var rootElement = doc.getFirstChild();
 
         var notesElement = doc.createElement("notes");
         rootElement.appendChild(notesElement);
-        int id=1;
-        for (AnchorPane note : notes)
+        if (!createEmptyXML)
         {
-            var noteElement = doc.createElement("note" + id);
-            notesElement.appendChild(noteElement);
-
-            var layoutElement = doc.createElement("layout");
-            noteElement.appendChild(layoutElement);
-
-            var layoutX = doc.createElement("layoutX" );
-            layoutElement.appendChild(layoutX);
-            var layoutXValue = doc.createTextNode(String.valueOf((int)(note.getLayoutX())));
-            layoutX.appendChild(layoutXValue);
-
-            var layoutY = doc.createElement("layoutY" );
-            layoutElement.appendChild(layoutY);
-            var layoutYValue = doc.createTextNode(String.valueOf((int)(note.getLayoutY())));
-            layoutY.appendChild(layoutYValue);
-
-            var textElement = doc.createElement("text");
-            noteElement.appendChild(textElement);
-            for (Node node : note.getChildren())
+            int id=1;
+            for (AnchorPane note : notes)
             {
-                if(node instanceof TextArea)
-                {
-                    String text = ((TextArea) node).getText();
-                    var textElementValue = doc.createTextNode(text);
-                    textElement.appendChild(textElementValue);
-                }
-            }
+                var noteElement = doc.createElement("note" + id);
+                notesElement.appendChild(noteElement);
 
-            id++;
+                var layoutElement = doc.createElement("layout");
+                noteElement.appendChild(layoutElement);
+
+                var layoutX = doc.createElement("layoutX" );
+                layoutElement.appendChild(layoutX);
+                var layoutXValue = doc.createTextNode(String.valueOf((int)(note.getLayoutX())));
+                layoutX.appendChild(layoutXValue);
+
+                var layoutY = doc.createElement("layoutY" );
+                layoutElement.appendChild(layoutY);
+                var layoutYValue = doc.createTextNode(String.valueOf((int)(note.getLayoutY())));
+                layoutY.appendChild(layoutYValue);
+
+                var textElement = doc.createElement("text");
+                noteElement.appendChild(textElement);
+                for (Node node : note.getChildren())
+                {
+                    if(node instanceof TextArea)
+                    {
+                        String text = ((TextArea) node).getText();
+                        var textElementValue = doc.createTextNode(text);
+                        textElement.appendChild(textElementValue);
+                    }
+                }
+                id++;
+            }
         }
     }
 
