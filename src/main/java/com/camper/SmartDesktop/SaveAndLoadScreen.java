@@ -3,6 +3,7 @@ package com.camper.SmartDesktop;
 import com.sun.scenario.Settings;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import javafx.stage.WindowEvent;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,7 +28,7 @@ import static com.camper.SmartDesktop.Main.*;
 
 public class SaveAndLoadScreen
 {
-    public static void saveAll() throws ParserConfigurationException, TransformerException, IOException
+    public static void saveAll(WindowEvent event) throws ParserConfigurationException, TransformerException, IOException
     {
         var factory = DocumentBuilderFactory.newInstance();
         final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
@@ -42,39 +43,28 @@ public class SaveAndLoadScreen
         Note.addNotesToXML(doc);
 
         var t = TransformerFactory.newInstance().newTransformer();
-        t.setOutputProperty(OutputKeys.INDENT,"yes"); //РћС‚СЃС‚СѓРї
+        t.setOutputProperty(OutputKeys.INDENT,"yes"); //Отступ
         t.setOutputProperty(OutputKeys.METHOD,"xml");
         t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
-
         String filename = "";
-        String mess = "Р”Р°";
-        String encodedMess = URLEncoder.encode(mess, "UTF-8");
 
-        var alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to save?", new ButtonType(encodedMess, ButtonBar.ButtonData.YES),ButtonType.NO,ButtonType.CANCEL);
-        ButtonType alertResult = alert.showAndWait().get();
-        if (alertResult.getButtonData() == ButtonBar.ButtonData.YES);
+
+
+        var alert = new Alert(Alert.AlertType.NONE, "Сохранить изменения?", new ButtonType("Сохранить", ButtonBar.ButtonData.YES),new ButtonType("Не сохранять", ButtonBar.ButtonData.NO),new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE));
+        var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
+        if (alertResult.getButtonData() == ButtonBar.ButtonData.YES)
         {
-            filename = lastSaveName.getProperty("lastSaveName");
+            if (lastSaveName.getProperty("lastSaveName").equals(""))
+            { filename="save1.xml";}
+            else { filename = lastSaveName.getProperty("lastSaveName");
+            }
         }
-
-
-        /*var dialog = new FileChooser();
-        dialog.setInitialDirectory(new File(DIRPATH+"\\Resources\\Saves\\"));
-        dialog.setInitialFileName("save.xml");
-        var result = dialog.showSaveDialog(Stage);
-        String filename = "";
-        if (result == null)
-        {
-            filename= lastSaveName.getProperty("lastSaveName");
-        }
-        else
-        {
-            filename = result.getName();
-        }*/
+        if (alertResult.getButtonData() == ButtonBar.ButtonData.NO) { return; }
+        if (alertResult.getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE) { event.consume(); return;}
 
         lastSaveName.setProperty("lastSaveName",filename);
-        lastSaveName.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\latestSave.properties"),"Info of latest save");
+        lastSaveName.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
 
         t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));
     }
@@ -82,8 +72,6 @@ public class SaveAndLoadScreen
     public static void loadAll(String saveNameFromChoiceBox) throws Exception
     {
         var folderWithSaves = new File(DIRPATH + "\\Resources\\Saves");
-
-
 
         File[] contents = folderWithSaves.listFiles();
         if (contents!=null && contents.length!=0 )
@@ -127,12 +115,28 @@ public class SaveAndLoadScreen
                 {
                     var doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + filename);
                     Note.loadNotesFromXML(doc,xPath);
+                    lastSaveName.setProperty("lastSaveName",filename);
+                    lastSaveName.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
                 }
-
-
-                lastSaveName.setProperty("lastSaveName",filename);
-                lastSaveName.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\latestSave.properties"),"Info of latest save");
             }
         }
+    }
+
+    public static void loadSavesToSavesList(ChoiceBox<String> saves)
+    {
+        var folderWithSaves = new File(DIRPATH + "\\Resources\\Saves");
+        File[] contents = folderWithSaves.listFiles();
+        if (contents!=null && contents.length!=0 )
+        {
+            for (File file : contents)
+            {
+                if (file.getAbsolutePath().endsWith(".xml"))
+                {
+                    saves.getItems().add(file.getName());
+                }
+            }
+        }
+        String s = lastSaveName.getProperty("lastSaveName");
+        saves.setValue(lastSaveName.getProperty("lastSaveName"));
     }
 }

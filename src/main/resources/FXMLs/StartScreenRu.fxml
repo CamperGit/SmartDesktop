@@ -20,7 +20,7 @@
        <!--<fx:include source="noteRu.fxml"/>-->
       <ImageView fx:id="imageViewer" fitHeight="1080.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" />
       <MediaView fx:id="videoViewer" fitHeight="1080.0" fitWidth="1920.0" layoutY="-14.0" />
-      <MenuBar prefHeight="25.0" prefWidth="1590.0">
+      <MenuBar prefHeight="25.0" prefWidth="1566.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -88,5 +88,6 @@
         </tabs>
       </TabPane>
       <ChoiceBox fx:id="savesChoiceBox" layoutX="1590.0" prefHeight="25.0" prefWidth="194.0" />
+      <Button fx:id="addNewPresetButton" layoutX="1565.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="+" textAlignment="CENTER" />
    </children>
 </AnchorPane>

@@ -31,8 +31,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import static com.camper.SmartDesktop.SaveAndLoadScreen.loadAll;
-import static com.camper.SmartDesktop.SaveAndLoadScreen.saveAll;
+import static com.camper.SmartDesktop.SaveAndLoadScreen.*;
 
 public class Main extends Application implements Initializable
 {
@@ -42,6 +41,7 @@ public class Main extends Application implements Initializable
     @FXML private ChoiceBox<String> savesChoiceBox;
     @FXML private ImageView imageViewer;
     @FXML private MediaView videoViewer;
+    @FXML private Button addNewPresetButton;
     @FXML private Button imageFileChooserButton;
     @FXML private Button videoFileChooserButton;
     @FXML private Button note;
@@ -63,15 +63,14 @@ public class Main extends Application implements Initializable
         {
             try
             {
-                saveAll();
+                saveAll(event);
             }
             catch (ParserConfigurationException | TransformerException | IOException e)
             {
                 e.printStackTrace();
             }
         });
-        root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreenRu.fxml")));
-        var scene = new Scene(root,DEFAULT_WIDTH,DEFAULT_HEIGHT-66);
+
 
         if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources"))&&Files.exists(Paths.get(DIRPATH+"\\Resources"))))
         { Files.createDirectory(Paths.get(DIRPATH+"\\Resources")); }
@@ -79,13 +78,16 @@ public class Main extends Application implements Initializable
         if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Saves"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Saves"))))
         { Files.createDirectory(Paths.get(DIRPATH+"\\Resources\\Saves")); }
 
-        if (!Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\latestSave.properties")))
+        if (!Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\saveInfo.properties")))
         {
             lastSaveName.setProperty("lastSaveName","");
-            lastSaveName.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\latestSave.properties"),"Info of latest save");
+            lastSaveName.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
         }
-        try(FileInputStream io = new FileInputStream(DIRPATH+"\\Resources\\Saves\\latestSave.properties"))
+        try(FileInputStream io = new FileInputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"))
         { lastSaveName.load(io); }
+
+        root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreenRu.fxml")));
+        var scene = new Scene(root,DEFAULT_WIDTH,DEFAULT_HEIGHT-66);
 
         Stage = stage;
 
@@ -110,6 +112,7 @@ public class Main extends Application implements Initializable
             imageViewer.setImage(new Image("file:/"+DIRPATH + "\\Resources\\Images\\image"+extensionOnReloading,DEFAULT_WIDTH,DEFAULT_HEIGHT,false,false));
         }
 
+        loadSavesToSavesList(savesChoiceBox);
 
         videoViewer.setFitWidth(DEFAULT_WIDTH);
         videoViewer.setFitHeight(DEFAULT_HEIGHT);
