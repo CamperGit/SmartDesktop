@@ -73,6 +73,8 @@ public class Note extends Application implements Initializable
 
     private AnchorPane getRoot() { return root; }
 
+    public static void clearSaveList() { notes.clear(); }
+
     public static void addNotesToXML(Document doc, boolean createEmptyXML)
     {
         var rootElement = doc.getFirstChild();

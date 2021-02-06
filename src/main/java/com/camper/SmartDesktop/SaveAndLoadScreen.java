@@ -24,6 +24,15 @@ import static com.camper.SmartDesktop.Main.*;
 
 public class SaveAndLoadScreen
 {
+    /**
+     * @param event is a close window event and is needed to display a dialog box to ask the user whether he wants to save
+     *              the file or not. If the value is null, no dialog box needs to be called and saving will happen forcibly,
+     *              without user confirmation
+     *
+     *              Представляет собой событие закрытия окна и нужен чтобы выдать диалоговое окно для того, чтобы спросить
+     *              у пользователя желает ли он сохранить файл или нет. Если значение равно null, то никакое диалоговое окно вызывать не
+     *              нужно и сохранения произойдёт принудительно, без подтверждения от пользователя
+     */
     public static void saveAll(WindowEvent event) throws ParserConfigurationException, TransformerException, IOException
     {
         var factory = DocumentBuilderFactory.newInstance();
@@ -41,18 +50,19 @@ public class SaveAndLoadScreen
         t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
         String filename = "";
-
-        var alert = new Alert(Alert.AlertType.NONE, "Сохранить изменения?", new ButtonType("Сохранить", ButtonBar.ButtonData.YES),new ButtonType("Не сохранять", ButtonBar.ButtonData.NO),new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE));
-        var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
-        if (alertResult.getButtonData() == ButtonBar.ButtonData.YES)
+        if (event==null)
         {
-            if (saveInfo.getProperty("lastSaveName").equals(""))
-            { filename="save1.xml";}
-            else { filename = saveInfo.getProperty("lastSaveName");
-            }
+            filename=currencySaveName;
         }
-        if (alertResult.getButtonData() == ButtonBar.ButtonData.NO) { return; }
-        if (alertResult.getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE) { event.consume(); return;}
+        else
+        {
+            var alert = new Alert(Alert.AlertType.NONE, "Сохранить изменения?", new ButtonType("Сохранить", ButtonBar.ButtonData.YES),new ButtonType("Не сохранять", ButtonBar.ButtonData.NO),new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE));
+            var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
+            if (alertResult.getButtonData() == ButtonBar.ButtonData.YES) { filename = currencySaveName; }
+            if (alertResult.getButtonData() == ButtonBar.ButtonData.NO) { return; }
+            if (alertResult.getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE) { event.consume(); return;}
+        }
+
 
         saveInfo.setProperty("lastSaveName",filename);
         saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
@@ -60,8 +70,9 @@ public class SaveAndLoadScreen
         t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));
     }
 
-    public static void loadAll(String saveNameFromChoiceBox) throws Exception
+    public static String loadSave(String saveNameFromChoiceBox) throws Exception
     {
+        String filename="";
         var folderWithSaves = new File(DIRPATH + "\\Resources\\Saves");
 
         File[] contents = folderWithSaves.listFiles();
@@ -83,13 +94,11 @@ public class SaveAndLoadScreen
                 var xPathFactory = XPathFactory.newInstance();
                 var xPath = xPathFactory.newXPath();
 
-                String filename="";
                 if (saveNameFromChoiceBox==null)
                 {
                     if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\"+saveInfo.getProperty("lastSaveName"))))
                     {
                         filename = saveInfo.getProperty("lastSaveName");
-                        saveInfo.setProperty("currencySaveName",filename);
                     }
                 }
                 else
@@ -97,7 +106,6 @@ public class SaveAndLoadScreen
                     if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\"+saveNameFromChoiceBox)))
                     {
                         filename = saveNameFromChoiceBox;
-                        saveInfo.setProperty("currencySaveName",filename);
                     }
                 }
 
@@ -105,15 +113,25 @@ public class SaveAndLoadScreen
                 {
                     var doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + filename);
                     Note.loadNotesFromXML(doc,xPath);
-                    saveInfo.setProperty("lastSaveName",filename);
-                    saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
                 }
+
             }
+            else
+            {
+                filename="save1.xml";
+                createEmptyXML(filename);
+                saveInfo.setProperty("lastSaveName",filename);
+                saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+            }
+            currencySaveName = filename;
+            return filename;
         }
+        return "";
     }
 
     public static void loadSavesToSavesList(ChoiceBox<String> saves)
     {
+        saves.getItems().clear();
         var folderWithSaves = new File(DIRPATH + "\\Resources\\Saves");
         File[] contents = folderWithSaves.listFiles();
         if (contents!=null && contents.length!=0 )
@@ -126,7 +144,7 @@ public class SaveAndLoadScreen
                 }
             }
         }
-        saves.setValue(saveInfo.getProperty("currencySaveName"));
+        saves.setValue(saveInfo.getProperty("lastSaveName"));
     }
 
     private static void createEmptyXML(String filename) throws ParserConfigurationException, TransformerException, IOException

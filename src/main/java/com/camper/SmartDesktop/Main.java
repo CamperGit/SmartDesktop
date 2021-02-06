@@ -21,10 +21,12 @@ import javafx.stage.Stage;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
@@ -47,6 +49,8 @@ public class Main extends Application implements Initializable
     @FXML private Button note;
     private static MediaPlayer mediaPlayer;
     private static Pane root;
+    private static int numberOfImmutableElements;
+    public static String currencySaveName;
     public static Properties saveInfo = new Properties();
     public static Stage Stage;
     public static final int DEFAULT_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -55,6 +59,14 @@ public class Main extends Application implements Initializable
     public static final String DIRPATH = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
 
     public static void addChild(Parent node) { root.getChildren().add(node); }
+
+    private static void deleteAllNewElements()
+    {
+        var list = root.getChildren();
+        list.remove(numberOfImmutableElements,list.size());
+        Note.clearSaveList();
+    }
+
 
     @Override
     public void start(Stage stage) throws Exception
@@ -85,8 +97,9 @@ public class Main extends Application implements Initializable
         var scene = new Scene(root,DEFAULT_WIDTH,DEFAULT_HEIGHT-66);
 
         Stage = stage;
+        numberOfImmutableElements = root.getChildren().size();
 
-        loadAll(null);
+        currencySaveName = loadSave(null);
 
         stage.setScene(scene);
         stage.setTitle("SmartDesktop");
@@ -99,14 +112,29 @@ public class Main extends Application implements Initializable
         loadSavesToSavesList(savesChoiceBox);
         addNewPresetButton.setOnAction((event)->
         {
-            try { savesChoiceBox.getItems().add(addNewSaveFile()); }
-            catch (IOException | TransformerException | ParserConfigurationException e)
+            try
+            {
+                String nameNewSave = addNewSaveFile();
+                savesChoiceBox.getItems().add(nameNewSave);
+                savesChoiceBox.setValue(nameNewSave);
+                saveAll(null);
+                deleteAllNewElements();
+                loadSave(nameNewSave);
+                loadSavesToSavesList(savesChoiceBox);
+            } catch (Exception e)
             { e.printStackTrace(); }
         });
-        /*savesChoiceBox.setOnMouseClicked(event ->
+        savesChoiceBox.setOnAction(event->
         {
-            savesChoiceBox.getValue();
-        });*/
+            try
+            {
+                saveAll(null);
+                deleteAllNewElements();
+                loadSave(savesChoiceBox.getValue());
+                //loadSavesToSavesList(savesChoiceBox);
+            } catch (Exception e)
+            { e.printStackTrace(); }
+        });
 
         imageViewer.setFitWidth(DEFAULT_WIDTH);
         imageViewer.setFitHeight(DEFAULT_HEIGHT);
