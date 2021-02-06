@@ -1,6 +1,7 @@
 package com.camper.SmartDesktop;
 
 import com.sun.scenario.Settings;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
@@ -53,18 +54,29 @@ public class SaveAndLoadScreen
         if (event==null)
         {
             filename=currencySaveName;
+            saveInfo.setProperty("idOfSelectedTab", saveInfo.getProperty("idOfSelectedTab"));
         }
         else
         {
             var alert = new Alert(Alert.AlertType.NONE, "Сохранить изменения?", new ButtonType("Сохранить", ButtonBar.ButtonData.YES),new ButtonType("Не сохранять", ButtonBar.ButtonData.NO),new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE));
             var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
-            if (alertResult.getButtonData() == ButtonBar.ButtonData.YES) { filename = currencySaveName; }
+            if (alertResult.getButtonData() == ButtonBar.ButtonData.YES)
+            {
+                filename = currencySaveName;
+                saveInfo.setProperty("idOfSelectedTab", String.valueOf(idOfSelectedTab));
+            }
             if (alertResult.getButtonData() == ButtonBar.ButtonData.NO) { return; }
             if (alertResult.getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE) { event.consume(); return;}
+
         }
 
+        var rootElement = doc.getFirstChild();
+        var lastTabElement = doc.createElement("lastTab");
+        lastTabElement.setAttribute("tab", String.valueOf(idOfSelectedTab));
+        rootElement.appendChild(lastTabElement);
 
         saveInfo.setProperty("lastSaveName",filename);
+
         saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
 
         t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));
@@ -113,14 +125,15 @@ public class SaveAndLoadScreen
                 {
                     var doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + filename);
                     Note.loadNotesFromXML(doc,xPath);
+                    idOfSelectedTab = Integer.parseInt(xPath.evaluate("save/lastTab/@tab",doc));
                 }
-
             }
             else
             {
                 filename="save1.xml";
                 createEmptyXML(filename);
                 saveInfo.setProperty("lastSaveName",filename);
+                saveInfo.setProperty("idOfSelectedTab", "1");
                 saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
             }
             currencySaveName = filename;
@@ -158,6 +171,11 @@ public class SaveAndLoadScreen
 
         Note.addNotesToXML(doc, true);
 
+        var rootElement = doc.getFirstChild();
+        var lastTabElement = doc.createElement("lastTab");
+        lastTabElement.setAttribute("tab", "1");
+        rootElement.appendChild(lastTabElement);
+
         var t = TransformerFactory.newInstance().newTransformer();
         t.setOutputProperty(OutputKeys.INDENT,"yes"); //Отступ
         t.setOutputProperty(OutputKeys.METHOD,"xml");
@@ -171,10 +189,25 @@ public class SaveAndLoadScreen
         for (int id=1;;)
         {
             filename = "save"+id+".xml";
-            if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Saves\\"+filename), LinkOption.NOFOLLOW_LINKS))
+            if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Saves\\"+filename)))
             { id++; }
             else {createEmptyXML(filename); break;}
         }
         return filename;
+    }
+
+    public static void updateElementsVisibility(int numberOfTab)
+    {
+        var tabToDisableVisible = tabs.get(idOfSelectedTab);
+        for (Node node : tabToDisableVisible)
+        {
+            node.setVisible(false);
+        }
+        var tabToEnableVisible = tabs.get(numberOfTab);
+        for (Node node : tabToEnableVisible)
+        {
+            node.setVisible(true);
+        }
+        idOfSelectedTab=numberOfTab;
     }
 }

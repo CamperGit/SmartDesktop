@@ -5,12 +5,16 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -21,26 +25,27 @@ import javafx.stage.Stage;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.List;
 
 import static com.camper.SmartDesktop.SaveAndLoadScreen.*;
 
 public class Main extends Application implements Initializable
 {
-
     public static void main(String[] args) { launch(args); }
 
     @FXML private ChoiceBox<String> savesChoiceBox;
+    @FXML private TabPane mainTabPane;
+    @FXML private Tab tab1;
+    @FXML private Tab tab2;
+    @FXML private Tab tab3;
+    @FXML private Tab tab4;
+    @FXML private Tab tab5;
     @FXML private ImageView imageViewer;
     @FXML private MediaView videoViewer;
     @FXML private Button addNewPresetButton;
@@ -48,8 +53,10 @@ public class Main extends Application implements Initializable
     @FXML private Button videoFileChooserButton;
     @FXML private Button note;
     private static MediaPlayer mediaPlayer;
-    private static Pane root;
     private static int numberOfImmutableElements;
+    public static int idOfSelectedTab;
+    public static Map<Integer, List<Node>> tabs = new HashMap<>();
+    public static Pane root;
     public static String currencySaveName;
     public static Properties saveInfo = new Properties();
     public static Stage Stage;
@@ -67,6 +74,17 @@ public class Main extends Application implements Initializable
         Note.clearSaveList();
     }
 
+    private static void clearTab(TabPane tabPane) throws IOException
+    {
+        for (int i = 1;i<(tabs.size()+1);i++)
+        {
+            tabs.get(i).clear();
+        }
+        saveInfo.setProperty("lastSaveName",saveInfo.getProperty("lastSaveName"));
+        saveInfo.setProperty("idOfSelectedTab", "1");
+        saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+    }
+
 
     @Override
     public void start(Stage stage) throws Exception
@@ -78,7 +96,6 @@ public class Main extends Application implements Initializable
             { e.printStackTrace(); }
         });
 
-
         if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources"))&&Files.exists(Paths.get(DIRPATH+"\\Resources"))))
         { Files.createDirectory(Paths.get(DIRPATH+"\\Resources")); }
 
@@ -88,10 +105,23 @@ public class Main extends Application implements Initializable
         if (!Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\saveInfo.properties")))
         {
             saveInfo.setProperty("lastSaveName","");
+            saveInfo.setProperty("idOfSelectedTab", "1");
             saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
         }
         try(FileInputStream io = new FileInputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"))
         { saveInfo.load(io); }
+
+        idOfSelectedTab=Integer.parseInt(saveInfo.getProperty("idOfSelectedTab"));
+        var elementsOfTab1 = new ArrayList<Node>();
+        var elementsOfTab2 = new ArrayList<Node>();
+        var elementsOfTab3 = new ArrayList<Node>();
+        var elementsOfTab4 = new ArrayList<Node>();
+        var elementsOfTab5 = new ArrayList<Node>();
+        tabs.put(1,elementsOfTab1);
+        tabs.put(2,elementsOfTab2);
+        tabs.put(3,elementsOfTab3);
+        tabs.put(4,elementsOfTab4);
+        tabs.put(5,elementsOfTab5);
 
         root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreenRu.fxml")));
         var scene = new Scene(root,DEFAULT_WIDTH,DEFAULT_HEIGHT-66);
@@ -109,6 +139,8 @@ public class Main extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        var selectionModel = mainTabPane.getSelectionModel();
+        selectionModel.select(idOfSelectedTab-1);
         loadSavesToSavesList(savesChoiceBox);
         addNewPresetButton.setOnAction((event)->
         {
@@ -119,7 +151,12 @@ public class Main extends Application implements Initializable
                 savesChoiceBox.setValue(nameNewSave);
                 saveAll(null);
                 deleteAllNewElements();
+                clearTab(mainTabPane);
                 loadSave(nameNewSave);
+
+                selectionModel.select(idOfSelectedTab-1);
+
+                var selectionModel2 = mainTabPane.getSelectionModel();
                 loadSavesToSavesList(savesChoiceBox);
             } catch (Exception e)
             { e.printStackTrace(); }
@@ -130,11 +167,22 @@ public class Main extends Application implements Initializable
             {
                 saveAll(null);
                 deleteAllNewElements();
+                clearTab(mainTabPane);
                 loadSave(savesChoiceBox.getValue());
-                //loadSavesToSavesList(savesChoiceBox);
+
+                var selectionModel2 = mainTabPane.getSelectionModel();
+                selectionModel2.select(idOfSelectedTab-1);
+
             } catch (Exception e)
             { e.printStackTrace(); }
         });
+        /*var selectionModel = mainTabPane.getSelectionModel();
+        selectionModel.select(idOfSelectedTab-1);*/
+        tab1.setOnSelectionChanged((event)-> { if(tab1.isSelected()) {updateElementsVisibility(1);} });
+        tab2.setOnSelectionChanged((event)-> { if(tab2.isSelected()) {updateElementsVisibility(2);} });
+        tab3.setOnSelectionChanged((event)-> { if(tab3.isSelected()) {updateElementsVisibility(3);} });
+        tab4.setOnSelectionChanged((event)-> { if(tab4.isSelected()) {updateElementsVisibility(4);} });
+        tab5.setOnSelectionChanged((event)-> { if(tab5.isSelected()) {updateElementsVisibility(5);} });
 
         imageViewer.setFitWidth(DEFAULT_WIDTH);
         imageViewer.setFitHeight(DEFAULT_HEIGHT);
@@ -271,7 +319,7 @@ public class Main extends Application implements Initializable
 
         note.setOnAction((event)->
         {
-            try { new Note().start(Stage); }
+            try { new Note().start(Stage); /*saveAll(null);*/ }
             catch (Exception e)
             { e.printStackTrace(); }
         });

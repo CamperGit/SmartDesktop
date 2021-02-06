@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import static com.camper.SmartDesktop.Main.addChild;
-import static com.camper.SmartDesktop.Main.mainCL;
+import static com.camper.SmartDesktop.Main.*;
 
 public class Note extends Application implements Initializable
 {
@@ -32,9 +31,16 @@ public class Note extends Application implements Initializable
     @FXML private TextArea noteTextArea;
     @FXML private Button noteTestButton;
     @FXML private Button noteCloseButton;
+    private boolean load=false;
     private AnchorPane root;
     private static AnchorPane selected;
     private static List<AnchorPane> notes = new ArrayList<>();
+
+    public Note() {}
+    private Note(boolean load)
+    {
+        this.load=load;
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -44,6 +50,15 @@ public class Note extends Application implements Initializable
         root.setLayoutY(30);
         notes.add(root);
         addChild(root);
+        /*var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
+        elementsOfSelectedTab.add(root);*/
+        if (!load)
+        {
+            root.setAccessibleHelp(String.valueOf(idOfSelectedTab));
+            var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
+            elementsOfSelectedTab.add(root);
+        }
+        //idOfSelectedTab= Integer.parseInt(saveInfo.getProperty("idOfSelectedTab"));
     }
 
     @Override
@@ -62,6 +77,7 @@ public class Note extends Application implements Initializable
             selected = (AnchorPane) (((Button) event.getSource()).getParent());
             notes.remove(selected);
             selected.setVisible(false);
+            Main.root.getChildren().remove(selected);
         });
 
         noteToolBar.setOnMouseDragged(event ->
@@ -86,8 +102,15 @@ public class Note extends Application implements Initializable
             int id=1;
             for (AnchorPane note : notes)
             {
+
                 var noteElement = doc.createElement("note" + id);
+                noteElement.setAttribute("tab",note.getAccessibleHelp());
                 notesElement.appendChild(noteElement);
+
+                var visibilityElement = doc.createElement("visibility");
+                noteElement.appendChild(visibilityElement);
+                var visibilityValue = doc.createTextNode(String.valueOf(note.isVisible()));
+                visibilityElement.appendChild(visibilityValue);
 
                 var layoutElement = doc.createElement("layout");
                 noteElement.appendChild(layoutElement);
@@ -123,16 +146,24 @@ public class Note extends Application implements Initializable
         int numberOfNotes = xPath.evaluateExpression("count(/save/notes/*)",doc,Integer.class);
         for (int id = 1; id < numberOfNotes+1; id++)
         {
-            var loadingNote = new Note();
+            var loadingNote = new Note(true);
             loadingNote.start(Main.Stage);
-            AnchorPane root = loadingNote.getRoot();
+            AnchorPane rootOfLoadingNote = loadingNote.getRoot();
 
             double layoutX = Double.parseDouble (xPath.evaluate("/save/notes/note"+id+"/layout/layoutX/text()",doc));
             double layoutY = Double.parseDouble (xPath.evaluate("/save/notes/note"+id+"/layout/layoutY/text()",doc));
-            root.setLayoutX(layoutX);
-            root.setLayoutY(layoutY);
+            rootOfLoadingNote .setLayoutX(layoutX);
+            rootOfLoadingNote .setLayoutY(layoutY);
 
-            for (Node node : root.getChildren())
+            int numberOfTab = Integer.parseInt (xPath.evaluate("/save/notes/note"+id+"/@tab",doc));
+            rootOfLoadingNote.setAccessibleHelp(String.valueOf(numberOfTab));
+            var tab = tabs.get(numberOfTab);
+            tab.add(rootOfLoadingNote);
+            boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/notes/note"+id+"/visibility/text()",doc));
+            rootOfLoadingNote.setVisible(visibility);
+
+
+            for (Node node : rootOfLoadingNote.getChildren())
             {
                 if(node instanceof TextArea)
                 {
@@ -141,5 +172,6 @@ public class Note extends Application implements Initializable
                 }
             }
         }
+
     }
 }

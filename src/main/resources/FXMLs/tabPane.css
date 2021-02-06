@@ -1,0 +1,10 @@
+.tab {
+
+    -fx-pref-width: 150;
+    -fx-pref-height: 28;
+    -fx-text-alignment: center;
+}
+
+.tab-pane{
+    -fx-padding: 0 -1 -1 -1
+}
