@@ -8,13 +8,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -33,7 +30,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.List;
 
-import static com.camper.SmartDesktop.SaveAndLoadScreen.*;
+import static com.camper.SmartDesktop.Loading.*;
+import static com.camper.SmartDesktop.Saving.addNewSaveFile;
+import static com.camper.SmartDesktop.Saving.saveAll;
 
 public class Main extends Application implements Initializable
 {
@@ -54,7 +53,7 @@ public class Main extends Application implements Initializable
     @FXML private Button note;
     private static MediaPlayer mediaPlayer;
     private static int numberOfImmutableElements;
-    public static int idOfSelectedTab;
+    public static int idOfSelectedTab=1;
     public static Map<Integer, List<Node>> tabs = new HashMap<>();
     public static Pane root;
     public static String currencySaveName;
@@ -81,7 +80,6 @@ public class Main extends Application implements Initializable
             tabs.get(i).clear();
         }
         saveInfo.setProperty("lastSaveName",saveInfo.getProperty("lastSaveName"));
-        saveInfo.setProperty("idOfSelectedTab", "1");
         saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
     }
 
@@ -105,13 +103,11 @@ public class Main extends Application implements Initializable
         if (!Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\saveInfo.properties")))
         {
             saveInfo.setProperty("lastSaveName","");
-            saveInfo.setProperty("idOfSelectedTab", "1");
             saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
         }
         try(FileInputStream io = new FileInputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"))
         { saveInfo.load(io); }
 
-        idOfSelectedTab=Integer.parseInt(saveInfo.getProperty("idOfSelectedTab"));
         var elementsOfTab1 = new ArrayList<Node>();
         var elementsOfTab2 = new ArrayList<Node>();
         var elementsOfTab3 = new ArrayList<Node>();
@@ -130,6 +126,16 @@ public class Main extends Application implements Initializable
         numberOfImmutableElements = root.getChildren().size();
 
         currencySaveName = loadSave(null);
+        //После загрузки находит таб с пресетами и устанавливает ему пресет равный числу в сохранённом файле
+        for (Node node : root.getChildren())
+        {
+            if (node instanceof TabPane && node.getAccessibleHelp().equals("Presaves tab pane"))
+            {
+                var selectionModel = ((TabPane)node).getSelectionModel();
+                selectionModel.select(idOfSelectedTab-1);
+                break;
+            }
+        }
 
         stage.setScene(scene);
         stage.setTitle("SmartDesktop");
@@ -139,8 +145,7 @@ public class Main extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        var selectionModel = mainTabPane.getSelectionModel();
-        selectionModel.select(idOfSelectedTab-1);
+        var selectionModel=mainTabPane.getSelectionModel();
         loadSavesToSavesList(savesChoiceBox);
         addNewPresetButton.setOnAction((event)->
         {
@@ -156,7 +161,6 @@ public class Main extends Application implements Initializable
 
                 selectionModel.select(idOfSelectedTab-1);
 
-                var selectionModel2 = mainTabPane.getSelectionModel();
                 loadSavesToSavesList(savesChoiceBox);
             } catch (Exception e)
             { e.printStackTrace(); }
@@ -170,14 +174,11 @@ public class Main extends Application implements Initializable
                 clearTab(mainTabPane);
                 loadSave(savesChoiceBox.getValue());
 
-                var selectionModel2 = mainTabPane.getSelectionModel();
-                selectionModel2.select(idOfSelectedTab-1);
+                selectionModel.select(idOfSelectedTab-1);
 
             } catch (Exception e)
             { e.printStackTrace(); }
         });
-        /*var selectionModel = mainTabPane.getSelectionModel();
-        selectionModel.select(idOfSelectedTab-1);*/
         tab1.setOnSelectionChanged((event)-> { if(tab1.isSelected()) {updateElementsVisibility(1);} });
         tab2.setOnSelectionChanged((event)-> { if(tab2.isSelected()) {updateElementsVisibility(2);} });
         tab3.setOnSelectionChanged((event)-> { if(tab3.isSelected()) {updateElementsVisibility(3);} });

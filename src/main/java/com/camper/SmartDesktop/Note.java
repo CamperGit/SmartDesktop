@@ -50,15 +50,13 @@ public class Note extends Application implements Initializable
         root.setLayoutY(30);
         notes.add(root);
         addChild(root);
-        /*var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
-        elementsOfSelectedTab.add(root);*/
         if (!load)
         {
-            root.setAccessibleHelp(String.valueOf(idOfSelectedTab));
+            //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
+            root.setAccessibleText(String.valueOf(idOfSelectedTab));
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(root);
         }
-        //idOfSelectedTab= Integer.parseInt(saveInfo.getProperty("idOfSelectedTab"));
     }
 
     @Override
@@ -104,7 +102,9 @@ public class Note extends Application implements Initializable
             {
 
                 var noteElement = doc.createElement("note" + id);
-                noteElement.setAttribute("tab",note.getAccessibleHelp());
+                //Получить значение таба, при котором был создан элемент
+                noteElement.setAttribute("tab",note.getAccessibleText());
+
                 notesElement.appendChild(noteElement);
 
                 var visibilityElement = doc.createElement("visibility");
@@ -152,11 +152,13 @@ public class Note extends Application implements Initializable
 
             double layoutX = Double.parseDouble (xPath.evaluate("/save/notes/note"+id+"/layout/layoutX/text()",doc));
             double layoutY = Double.parseDouble (xPath.evaluate("/save/notes/note"+id+"/layout/layoutY/text()",doc));
-            rootOfLoadingNote .setLayoutX(layoutX);
-            rootOfLoadingNote .setLayoutY(layoutY);
+            rootOfLoadingNote.setLayoutX(layoutX);
+            rootOfLoadingNote.setLayoutY(layoutY);
 
             int numberOfTab = Integer.parseInt (xPath.evaluate("/save/notes/note"+id+"/@tab",doc));
-            rootOfLoadingNote.setAccessibleHelp(String.valueOf(numberOfTab));
+            //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
+            rootOfLoadingNote.setAccessibleText(String.valueOf(numberOfTab));
+
             var tab = tabs.get(numberOfTab);
             tab.add(rootOfLoadingNote);
             boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/notes/note"+id+"/visibility/text()",doc));
