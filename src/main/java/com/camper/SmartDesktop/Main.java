@@ -2,6 +2,7 @@ package com.camper.SmartDesktop;
 
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,6 +28,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
 
@@ -74,7 +76,7 @@ public class Main extends Application implements Initializable
         Note.clearSaveList();
     }
 
-    private static void clearTab() throws IOException
+    private static void clearTab()
     {
         for (int i = 1;i<(tabs.size()+1);i++) { tabs.get(i).clear(); }
     }

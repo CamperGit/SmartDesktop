@@ -27,6 +27,12 @@ import static com.camper.SmartDesktop.Saving.createEmptyXML;
 
 public class Loading
 {
+    /**
+     *
+     * @param saves - choicebox with saves
+     * @return loading save name
+     * @throws Exception
+     */
     public static String loadSave(ChoiceBox<String> saves) throws Exception
     {
         String saveNameFromChoiceBox=null;
@@ -84,8 +90,6 @@ public class Loading
                     saves.getItems().remove(saveNameFromChoiceBox);
 
                     doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + saveInfo.getProperty("lastSaveName"));
-                    //saveInfo.setProperty("lastSaveName",saveInfo.getProperty("lastSaveName"));
-                    //saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
                 }
                 //Проверка проходит, если у нас при перивычной загрузке отсутствует файл последнего сохранения.
                 //Тогда мы создаём новое пустое сохранение и загружаем его.
@@ -93,8 +97,6 @@ public class Loading
                 {
                     var alert = new Alert(Alert.AlertType.WARNING, "Выбранное сохранение было удалено или переименовано. Загрузка прервана", ButtonType.OK);
                     alert.showAndWait();
-
-                    //saves.getItems().remove(saveInfo.getProperty("lastSaveName"));
 
                     filename=addNewSaveFile();
 

@@ -81,7 +81,7 @@ public class Note extends Application implements Initializable
         noteToolBar.setOnMouseDragged(event ->
         {
             selected = (AnchorPane) (((ToolBar) event.getSource()).getParent());
-            NodeDragger.doDragging(selected,event);
+            NodeDragger.addDraggingProperty(selected,event);
         });
     }
 

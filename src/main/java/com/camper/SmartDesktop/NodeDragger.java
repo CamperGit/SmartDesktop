@@ -9,7 +9,7 @@ public class NodeDragger
     private static double xUndo=80;
     private static double yUndo=30;
 
-    public static void doDragging(Node selected, MouseEvent event)
+    public static void addDraggingProperty(Node selected, MouseEvent event)
     {
         //Сделать проверку, чтобы не наезжало на панель инструментов!!!
         if (xUndo==80 && yUndo==30)
