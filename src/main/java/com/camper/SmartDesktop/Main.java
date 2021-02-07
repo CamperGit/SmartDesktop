@@ -51,6 +51,7 @@ public class Main extends Application implements Initializable
     @FXML private Button imageFileChooserButton;
     @FXML private Button videoFileChooserButton;
     @FXML private Button note;
+    @FXML private Button autorizeButton;
     private static MediaPlayer mediaPlayer;
     private static int numberOfImmutableElements;
     public static int idOfSelectedTab=1;
@@ -140,6 +141,11 @@ public class Main extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        autorizeButton.setLayoutX(DEFAULT_WIDTH-120);
+        savesChoiceBox.setLayoutX(DEFAULT_WIDTH-320);
+        addNewPresetButton.setLayoutX(DEFAULT_WIDTH-345);
+
+
         var selectionModel=mainTabPane.getSelectionModel();
         loadSavesToSavesList(savesChoiceBox);
         //Устанавливаем значение пресета в загрузочном списке
