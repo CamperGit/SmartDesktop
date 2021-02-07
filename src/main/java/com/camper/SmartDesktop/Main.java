@@ -97,7 +97,7 @@ public class Main extends Application implements Initializable
 
         if (!Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\saveInfo.properties")))
         {
-            saveInfo.setProperty("lastSaveName","");
+            saveInfo.setProperty("lastSaveName","save1.xml");
             saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
         }
         try(FileInputStream io = new FileInputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"))

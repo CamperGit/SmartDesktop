@@ -94,7 +94,7 @@ public class Loading
                     var alert = new Alert(Alert.AlertType.WARNING, "Выбранное сохранение было удалено или переименовано. Загрузка прервана", ButtonType.OK);
                     alert.showAndWait();
 
-                    saves.getItems().remove(saveInfo.getProperty("lastSaveName"));
+                    //saves.getItems().remove(saveInfo.getProperty("lastSaveName"));
 
                     filename=addNewSaveFile();
 
