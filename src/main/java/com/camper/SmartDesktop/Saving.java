@@ -99,6 +99,7 @@ public class Saving
         t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));
     }
 
+    //Создание нового пресета
     public static String addNewSaveFile() throws IOException, TransformerException, ParserConfigurationException
     {
         String filename;

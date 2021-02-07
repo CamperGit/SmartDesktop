@@ -1,7 +1,10 @@
 package com.camper.SmartDesktop;
 
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
+import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,12 +22,15 @@ import java.nio.file.Paths;
 
 import static com.camper.SmartDesktop.Main.*;
 import static com.camper.SmartDesktop.Main.saveInfo;
+import static com.camper.SmartDesktop.Saving.addNewSaveFile;
 import static com.camper.SmartDesktop.Saving.createEmptyXML;
 
 public class Loading
 {
-    public static String loadSave(String saveNameFromChoiceBox) throws Exception
+    public static String loadSave(ChoiceBox<String> saves) throws Exception
     {
+        String saveNameFromChoiceBox=null;
+        if (saves!=null) { saveNameFromChoiceBox = saves.getValue(); }
         String filename="";
         var folderWithSaves = new File(DIRPATH + "\\Resources\\Saves");
 
@@ -62,13 +68,46 @@ public class Loading
                     }
                 }
 
+                Document doc;
                 if (!filename.equals(""))
                 {
-                    var doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + filename);
-                    Note.loadNotesFromXML(doc,xPath);
-                    idOfSelectedTab = Integer.parseInt(xPath.evaluate("save/lastTab/@tab",doc));
+                    doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + filename);
                 }
+                //Проверка проходит, если у нас при попытке загрузки из сейвлиста оказывается, что выбранного сохранения нет.
+                //Тогда мы загружаем старое сохранение, которое точно будет, потому что мы его только что создали
+                else if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\"+saveInfo.getProperty("lastSaveName"))))
+                {
+                    var alert = new Alert(Alert.AlertType.WARNING, "Выбранное сохранение было удалено или переименовано. Загрузка прервана", ButtonType.OK);
+                    alert.showAndWait();
+
+                    filename=saveInfo.getProperty("lastSaveName");
+                    saves.getItems().remove(saveNameFromChoiceBox);
+
+                    doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + saveInfo.getProperty("lastSaveName"));
+                    //saveInfo.setProperty("lastSaveName",saveInfo.getProperty("lastSaveName"));
+                    //saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+                }
+                //Проверка проходит, если у нас при перивычной загрузке отсутствует файл последнего сохранения.
+                //Тогда мы создаём новое пустое сохранение и загружаем его.
+                else
+                {
+                    var alert = new Alert(Alert.AlertType.WARNING, "Выбранное сохранение было удалено или переименовано. Загрузка прервана", ButtonType.OK);
+                    alert.showAndWait();
+
+                    saves.getItems().remove(saveInfo.getProperty("lastSaveName"));
+
+                    filename=addNewSaveFile();
+
+                    doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + filename);
+                    saveInfo.setProperty("lastSaveName",filename);
+                    saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+                }
+
+                Note.loadNotesFromXML(doc,xPath);
+
+                idOfSelectedTab = Integer.parseInt(xPath.evaluate("save/lastTab/@tab",doc));
             }
+            //Создание пустого файла сохранения при самом первом запуске или в папке есть файл properties, но нет сейвов вообще
             else
             {
                 filename="save1.xml";
@@ -97,7 +136,6 @@ public class Loading
                 }
             }
         }
-        saves.setValue(saveInfo.getProperty("lastSaveName"));
     }
 
     public static void updateElementsVisibility(int numberOfTab)

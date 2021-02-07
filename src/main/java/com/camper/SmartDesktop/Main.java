@@ -73,14 +73,9 @@ public class Main extends Application implements Initializable
         Note.clearSaveList();
     }
 
-    private static void clearTab(TabPane tabPane) throws IOException
+    private static void clearTab() throws IOException
     {
-        for (int i = 1;i<(tabs.size()+1);i++)
-        {
-            tabs.get(i).clear();
-        }
-        saveInfo.setProperty("lastSaveName",saveInfo.getProperty("lastSaveName"));
-        saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+        for (int i = 1;i<(tabs.size()+1);i++) { tabs.get(i).clear(); }
     }
 
 
@@ -147,21 +142,17 @@ public class Main extends Application implements Initializable
     {
         var selectionModel=mainTabPane.getSelectionModel();
         loadSavesToSavesList(savesChoiceBox);
+        //Устанавливаем значение пресета в загрузочном списке
+        savesChoiceBox.setValue(saveInfo.getProperty("lastSaveName"));
         addNewPresetButton.setOnAction((event)->
         {
             try
             {
+                loadSavesToSavesList(savesChoiceBox);
                 String nameNewSave = addNewSaveFile();
                 savesChoiceBox.getItems().add(nameNewSave);
+                //Даже при устанавлении значения в выплывающем списке программно срабатывает обработчик событий для него.
                 savesChoiceBox.setValue(nameNewSave);
-                saveAll(null);
-                deleteAllNewElements();
-                clearTab(mainTabPane);
-                loadSave(nameNewSave);
-
-                selectionModel.select(idOfSelectedTab-1);
-
-                loadSavesToSavesList(savesChoiceBox);
             } catch (Exception e)
             { e.printStackTrace(); }
         });
@@ -169,13 +160,13 @@ public class Main extends Application implements Initializable
         {
             try
             {
+                //Вызывается и при создании нового пресета и при загрузке уже существующего
                 saveAll(null);
                 deleteAllNewElements();
-                clearTab(mainTabPane);
-                loadSave(savesChoiceBox.getValue());
+                clearTab();
+                loadSave(savesChoiceBox);
 
                 selectionModel.select(idOfSelectedTab-1);
-
             } catch (Exception e)
             { e.printStackTrace(); }
         });
