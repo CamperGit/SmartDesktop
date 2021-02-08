@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="280.0" prefWidth="380.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Note">
@@ -17,6 +18,9 @@
         </items>
       </ToolBar>
       <TextArea fx:id="noteTextArea" layoutY="40.0" prefHeight="242.0" prefWidth="380.0" />
-      <Button fx:id="noteCloseButton" layoutX="340.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" />
+      <Button fx:id="noteCloseButton" layoutX="340.0" maxHeight="40.0" maxWidth="40.0" minHeight="40.0" minWidth="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0">
+         <graphic>
+            <ImageView fx:id="closeButtonImage" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+         </graphic></Button>
    </children>
 </AnchorPane>

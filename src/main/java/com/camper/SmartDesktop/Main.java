@@ -3,6 +3,7 @@ package com.camper.SmartDesktop;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,8 +12,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -38,6 +41,7 @@ import static com.camper.SmartDesktop.Saving.saveAll;
 
 public class Main extends Application implements Initializable
 {
+
     public static void main(String[] args) { launch(args); }
 
     @FXML private ChoiceBox<String> savesChoiceBox;
@@ -53,7 +57,13 @@ public class Main extends Application implements Initializable
     @FXML private Button imageFileChooserButton;
     @FXML private Button videoFileChooserButton;
     @FXML private Button note;
+    @FXML private Button calendar;
     @FXML private Button autorizeButton;
+    @FXML private ImageView noteIV;
+    @FXML private ImageView imagePlayerIV;
+    @FXML private ImageView mediaPlayerIV;
+    @FXML private ImageView calendarIV;
+
     private static MediaPlayer mediaPlayer;
     private static int numberOfImmutableElements;
     public static int idOfSelectedTab=1;
@@ -81,6 +91,37 @@ public class Main extends Application implements Initializable
         for (int i = 1;i<(tabs.size()+1);i++) { tabs.get(i).clear(); }
     }
 
+    private static void testTimer() throws InterruptedException
+    {
+        Task<Integer> task = new Task<>()
+        {
+            @Override
+            protected Integer call() throws Exception
+            {
+                LocalTime now = LocalTime.now();
+                LocalTime waitingTime = now.plusSeconds(5);
+                while (now.isBefore(waitingTime))
+                {
+                    now=LocalTime.now();
+                    try
+                    {
+                        Thread.sleep(100);
+
+                    } catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+                Platform.runLater(()->
+                {
+                    var alert = new Alert(Alert.AlertType.WARNING, "Выбранное сохранение было удалено или переименовано. Загрузка прервана", ButtonType.OK);
+                    alert.showAndWait();
+                });
+                return 1;
+            }
+        };
+        new Thread(task).start();
+    }
 
     @Override
     public void start(Stage stage) throws Exception
@@ -143,10 +184,32 @@ public class Main extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        //Ожидание конкретного времени
+        /*timerTestButton.setOnAction((event)->
+        {
+            try
+            {
+                testTimer();
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        });*/
+        var noteIcon = new Image("Images/note35.png");
+        var imagePlayerIcon = new Image("Images/imageViewer35.png");
+        var mediaPlayerIcon = new Image("Images/videoPlayer35.png");
+        var calendarIcon = new Image("Images/calendar35.png");
+
+        noteIV.setImage(noteIcon);
+        imagePlayerIV.setImage(imagePlayerIcon);
+        mediaPlayerIV.setImage(mediaPlayerIcon);
+        calendarIV.setImage(calendarIcon);
+
+
         autorizeButton.setLayoutX(DEFAULT_WIDTH-120);
         savesChoiceBox.setLayoutX(DEFAULT_WIDTH-320);
         addNewPresetButton.setLayoutX(DEFAULT_WIDTH-345);
-
 
         var selectionModel=mainTabPane.getSelectionModel();
         loadSavesToSavesList(savesChoiceBox);
@@ -323,6 +386,13 @@ public class Main extends Application implements Initializable
             catch (Exception e)
             { e.printStackTrace(); }
         });
+
+        calendar.setOnAction((event ->
+        {
+            try { new Calendar().start(Stage); /*saveAll(null);*/ }
+            catch (Exception e)
+            { e.printStackTrace(); }
+        }));
     }
 }
 

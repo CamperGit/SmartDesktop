@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.AnchorPane;
@@ -27,6 +28,7 @@ import static com.camper.SmartDesktop.Main.*;
 
 public class Note extends Application implements Initializable
 {
+    @FXML private ImageView closeButtonImage;
     @FXML private ToolBar noteToolBar;
     @FXML private TextArea noteTextArea;
     @FXML private Button noteTestButton;
@@ -62,6 +64,8 @@ public class Note extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        var image = new Image("Images/closeButton40.png",40,40,false,false);
+        closeButtonImage.setImage(image);
 
         noteTestButton.setOnAction(event ->
         {
@@ -69,7 +73,7 @@ public class Note extends Application implements Initializable
         });
 
 
-        noteCloseButton.graphicProperty().setValue(new ImageView("Images/closeButton.png"));
+        //noteCloseButton.graphicProperty().setValue(new ImageView("Images/closeButton28.png"));
         noteCloseButton.setOnAction(event ->
         {
             selected = (AnchorPane) (((Button) event.getSource()).getParent());
