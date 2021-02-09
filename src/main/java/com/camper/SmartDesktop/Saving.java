@@ -1,5 +1,7 @@
 package com.camper.SmartDesktop;
 
+import com.camper.SmartDesktop.Info.Calendar;
+import com.camper.SmartDesktop.Info.Note;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -41,6 +43,7 @@ public class Saving
         doc.appendChild(rootDocument);
 
         Note.addNotesToXML(doc, false);
+        Calendar.addCalendarToXML(doc,false);
 
         var t = TransformerFactory.newInstance().newTransformer();
         t.setOutputProperty(OutputKeys.INDENT,"yes"); //Отступ
@@ -86,6 +89,8 @@ public class Saving
         doc.appendChild(rootDocument);
 
         Note.addNotesToXML(doc, true);
+        Calendar.addCalendarToXML(doc,true);
+
 
         var rootElement = doc.getFirstChild();
         var lastTabElement = doc.createElement("lastTab");

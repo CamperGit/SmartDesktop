@@ -1,5 +1,7 @@
-package com.camper.SmartDesktop;
+package com.camper.SmartDesktop.Info;
 
+import com.camper.SmartDesktop.Main;
+import com.camper.SmartDesktop.NodeDragger;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,13 +12,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
 
-import javax.tools.Tool;
 import javax.xml.xpath.XPath;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,6 +42,10 @@ public class Note extends Application implements Initializable
     {
         this.load=load;
     }
+
+    private AnchorPane getRoot() { return root; }
+
+    public static void clearSaveList() { notes.clear(); }
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -89,10 +92,6 @@ public class Note extends Application implements Initializable
         });
     }
 
-    private AnchorPane getRoot() { return root; }
-
-    public static void clearSaveList() { notes.clear(); }
-
     public static void addNotesToXML(Document doc, boolean createEmptyXML)
     {
         var rootElement = doc.getFirstChild();
@@ -101,11 +100,11 @@ public class Note extends Application implements Initializable
         rootElement.appendChild(notesElement);
         if (!createEmptyXML)
         {
-            int id=1;
+            int noteNumber=1;
             for (AnchorPane note : notes)
             {
 
-                var noteElement = doc.createElement("note" + id);
+                var noteElement = doc.createElement("note" + noteNumber);
                 //Получить значение таба, при котором был создан элемент
                 noteElement.setAttribute("tab",note.getAccessibleText());
 
@@ -140,7 +139,7 @@ public class Note extends Application implements Initializable
                         textElement.appendChild(textElementValue);
                     }
                 }
-                id++;
+                noteNumber++;
             }
         }
     }
@@ -148,36 +147,34 @@ public class Note extends Application implements Initializable
     public static void loadNotesFromXML(Document doc, XPath xPath) throws Exception
     {
         int numberOfNotes = xPath.evaluateExpression("count(/save/notes/*)",doc,Integer.class);
-        for (int id = 1; id < numberOfNotes+1; id++)
+        for (int noteNumber = 1; noteNumber < numberOfNotes+1; noteNumber++)
         {
             var loadingNote = new Note(true);
             loadingNote.start(Main.Stage);
             AnchorPane rootOfLoadingNote = loadingNote.getRoot();
 
-            double layoutX = Double.parseDouble (xPath.evaluate("/save/notes/note"+id+"/layout/layoutX/text()",doc));
-            double layoutY = Double.parseDouble (xPath.evaluate("/save/notes/note"+id+"/layout/layoutY/text()",doc));
-            rootOfLoadingNote.setLayoutX(layoutX);
-            rootOfLoadingNote.setLayoutY(layoutY);
-
-            int numberOfTab = Integer.parseInt (xPath.evaluate("/save/notes/note"+id+"/@tab",doc));
+            int numberOfTab = Integer.parseInt (xPath.evaluate("/save/notes/note"+noteNumber+"/@tab",doc));
             //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
             rootOfLoadingNote.setAccessibleText(String.valueOf(numberOfTab));
 
             var tab = tabs.get(numberOfTab);
             tab.add(rootOfLoadingNote);
-            boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/notes/note"+id+"/visibility/text()",doc));
+            boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/notes/note"+noteNumber+"/visibility/text()",doc));
             rootOfLoadingNote.setVisible(visibility);
 
+            double layoutX = Double.parseDouble (xPath.evaluate("/save/notes/note"+noteNumber+"/layout/layoutX/text()",doc));
+            double layoutY = Double.parseDouble (xPath.evaluate("/save/notes/note"+noteNumber+"/layout/layoutY/text()",doc));
+            rootOfLoadingNote.setLayoutX(layoutX);
+            rootOfLoadingNote.setLayoutY(layoutY);
 
             for (Node node : rootOfLoadingNote.getChildren())
             {
                 if(node instanceof TextArea)
                 {
-                    String text = xPath.evaluate("save/notes/note"+id+"/text/text()",doc);
+                    String text = xPath.evaluate("save/notes/note"+noteNumber+"/text/text()",doc);
                     ((TextArea) node).setText(text);
                 }
             }
         }
-
     }
 }

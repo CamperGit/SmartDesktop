@@ -1,5 +1,7 @@
-package com.camper.SmartDesktop;
+package com.camper.SmartDesktop.Info;
 
+import com.camper.SmartDesktop.Main;
+import com.camper.SmartDesktop.NodeDragger;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,25 +15,23 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.stage.Stage;
+import org.w3c.dom.Document;
 
+import javax.xml.xpath.XPath;
 import java.awt.*;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+import static com.camper.SmartDesktop.Info.Day.addEventOfDay;
 import static com.camper.SmartDesktop.Main.*;
 
 public class Calendar extends Application implements Initializable
 {
-
-    @FXML private ToolBar calendarToolBar;
-    @FXML private Button calendarCloseButton;
-    @FXML private boolean load=false;
-    @FXML private AnchorPane root;
-    @FXML private static AnchorPane selected;
-
     @FXML private Button calendarDay1Button;
     @FXML private ImageView CalendarDay1NotificationIV;
     @FXML private ImageView CalendarDay1TargetIV;
@@ -187,21 +187,41 @@ public class Calendar extends Application implements Initializable
     @FXML private ImageView CalendarDay31TargetIV;
     @FXML private ImageView CalendarDay31ScheduleIV;
 
+    @FXML private ToolBar calendarToolBar;
+    @FXML private Button calendarCloseButton;
+    private boolean load=false;
+    private static AnchorPane root;
+    private static AnchorPane selected; //Все ещё подумать про селектед. Мб поменять его на root
+    private static List<Day> daysWithEvents = new ArrayList<>();
+
+    public Calendar(){}
+
+    private Calendar(boolean load) { this.load=load; }
+
+    private AnchorPane getRoot() { return root; }
+
+    public static void clearDaysWithEvents() { daysWithEvents.clear(); }
+
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        //root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarRu.fxml")));
         root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarRu.fxml")));
         root.setLayoutX(80);
         root.setLayoutY(30);
         addChild(root);
-        /*if (!load)
+        if (!load)
         {
             //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
             root.setAccessibleText(String.valueOf(idOfSelectedTab));
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(root);
-        }*/
+        }
+
+        var dayWithEvent1 = addEventOfDay(LocalDate.of(2021,02,9), LocalTime.now(), Day.EventType.Goal,"test");
+        dayWithEvent1.addEvent(LocalTime.now(), Day.EventType.Schedule,"test2");
+        var dayWithEvent2 = addEventOfDay(LocalDate.of(2021,03,9), LocalTime.now(), Day.EventType.Notification,"testOtherDay");
+        daysWithEvents.add(dayWithEvent1);
+        daysWithEvents.add(dayWithEvent2);
     }
 
     @Override
@@ -214,6 +234,13 @@ public class Calendar extends Application implements Initializable
         var imageSchedule = new Image("Images/schedule14.png");
         CalendarDay1ScheduleIV.setImage(imageSchedule);
 
+        var imageNotificationActive = new Image("Images/notification14Active.png");
+        CalendarDay2NotificationIV.setImage(imageNotificationActive);
+        var imageTargetActive = new Image("Images/target14Active.png");
+        CalendarDay2TargetIV.setImage(imageTargetActive);
+        var imageScheduleActive = new Image("Images/schedule14Active.png");
+        CalendarDay2ScheduleIV.setImage(imageScheduleActive);
+
         calendarDay1Button.setOnAction((event ->
         {
             var alert = new Alert(Alert.AlertType.WARNING, "Выбранное сохранение было удалено или переименовано. Загрузка прервана", ButtonType.OK);
@@ -223,7 +250,7 @@ public class Calendar extends Application implements Initializable
         calendarCloseButton.setOnAction(event ->
         {
             selected = (AnchorPane) (((Button) event.getSource()).getParent());
-            selected.setVisible(false);
+            root.setVisible(false);
             Main.root.getChildren().remove(selected);
         });
 
@@ -232,5 +259,99 @@ public class Calendar extends Application implements Initializable
             selected = (AnchorPane) (((ToolBar) event.getSource()).getParent());
             NodeDragger.addDraggingProperty(selected,event);
         });
+    }
+
+    public static void addCalendarToXML(Document doc, boolean createEmptyXML)
+    {
+        var rootElement = doc.getFirstChild();
+
+        var calendarElement = doc.createElement("calendar");
+        //calendarElement.setAttribute("tab",root.getAccessibleText());
+        //Уберу в будущем, когда при создании пресета или его открытии по умолчанию будет создаваться объект календаря
+        //сейчас мы тут ловим nullPTR поэтому оставим костыль на время!
+        calendarElement.setAttribute("tab", String.valueOf(idOfSelectedTab));
+        rootElement.appendChild(calendarElement);
+
+        //При первой загрузке и если пользователь сам не добавил кнопкой - календарь всё равно должен быть, поэтому visibility будет false
+        var visibilityElement = doc.createElement("visibility");
+        calendarElement.appendChild(visibilityElement);
+        //var visibilityValue = doc.createTextNode(String.valueOf(root.isVisible()));
+        //Тоже самое. Убрать, когда будет загрузка календаря по умолчанию и оставить то, что было сверху
+        var visibilityValue = doc.createTextNode(String.valueOf(false));
+        visibilityElement.appendChild(visibilityValue);
+
+        var daysWithEventsElement = doc.createElement("daysWithEvents");
+        calendarElement.appendChild(daysWithEventsElement);
+
+        if (!createEmptyXML && daysWithEvents!=null && daysWithEvents.size()!=0)
+        {
+            int numberOfDay = 1;
+            for (var day : daysWithEvents)
+            {
+                var dayElement = doc.createElement("day" + numberOfDay);
+                daysWithEventsElement.appendChild(dayElement);
+
+                var dateElement = doc.createElement("date" );
+                dayElement.appendChild(dateElement);
+                var dateElementValue = doc.createTextNode(day.getDate().toString());
+                dateElement.appendChild(dateElementValue);
+
+                var eventsElement = doc.createElement("events" );
+                dayElement.appendChild(eventsElement);
+                int numberOfEvent = 1;
+                for (var event : day.getEvents())
+                {
+                    var eventElement = doc.createElement("event" + numberOfEvent);
+                    eventsElement.appendChild(eventElement);
+
+                    var timeOfEventElement = doc.createElement("time");
+                    eventElement.appendChild(timeOfEventElement);
+                    var timeOfEventElementValue = doc.createTextNode(event.getTime().toString());
+                    timeOfEventElement.appendChild(timeOfEventElementValue);
+
+                    var typeOfEventElement = doc.createElement("type");
+                    eventElement.appendChild(typeOfEventElement);
+                    var typeOfEventElementValue = doc.createTextNode(event.getType().toString());
+                    typeOfEventElement.appendChild(typeOfEventElementValue);
+
+                    var infoOfEventElement = doc.createElement("info");
+                    eventElement.appendChild(infoOfEventElement);
+                    var infoOfEventElementValue = doc.createTextNode(event.getInfo());
+                    infoOfEventElement.appendChild(infoOfEventElementValue);
+
+                    numberOfEvent++;
+                }
+                numberOfDay++;
+            }
+        }
+    }
+
+    public static void loadCalendarFromXML(Document doc, XPath xPath) throws Exception
+    {
+        int daysWithEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/*)",doc,Integer.class);
+        for (int numberOfDay = 1; numberOfDay < daysWithEvents+1; numberOfDay++)
+        {
+            var loadingCalendar = new Calendar(true);
+            loadingCalendar.start(Main.Stage);
+            AnchorPane rootOfLoadingCalendar = loadingCalendar.getRoot();
+
+            int numberOfTab = Integer.parseInt (xPath.evaluate("/save/calendar/@tab",doc));
+            //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
+            rootOfLoadingCalendar.setAccessibleText(String.valueOf(numberOfTab));
+
+            var tab = tabs.get(numberOfTab);
+            tab.add(rootOfLoadingCalendar);
+            boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/calendar/visibility/text()",doc));
+            rootOfLoadingCalendar.setVisible(visibility);
+
+            /*double layoutX = Double.parseDouble (xPath.evaluate("/save/notes/note"+noteNumber+"/layout/layoutX/text()",doc));
+            double layoutY = Double.parseDouble (xPath.evaluate("/save/notes/note"+noteNumber+"/layout/layoutY/text()",doc));
+            rootOfLoadingCalendar.setLayoutX(layoutX);
+            rootOfLoadingCalendar.setLayoutY(layoutY);*/
+
+            var date = LocalDate.parse(xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/date/text()",doc));
+            var day = new Day(date);
+            //Делаем форыч и вытаскиваем ивенты, после чего добавляем их в переменную day методом addEvent
+        }
     }
 }

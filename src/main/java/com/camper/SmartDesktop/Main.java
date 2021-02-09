@@ -1,6 +1,8 @@
 package com.camper.SmartDesktop;
 
 
+import com.camper.SmartDesktop.Info.*;
+import com.camper.SmartDesktop.Info.Calendar;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -12,10 +14,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -84,6 +84,7 @@ public class Main extends Application implements Initializable
         var list = root.getChildren();
         list.remove(numberOfImmutableElements,list.size());
         Note.clearSaveList();
+        Calendar.clearDaysWithEvents();
     }
 
     private static void clearTab()
@@ -91,7 +92,7 @@ public class Main extends Application implements Initializable
         for (int i = 1;i<(tabs.size()+1);i++) { tabs.get(i).clear(); }
     }
 
-    private static void testTimer() throws InterruptedException
+    private static void testTimer()
     {
         Task<Integer> task = new Task<>()
         {
@@ -382,14 +383,14 @@ public class Main extends Application implements Initializable
 
         note.setOnAction((event)->
         {
-            try { new Note().start(Stage); /*saveAll(null);*/ }
+            try { new Note().start(Stage); }
             catch (Exception e)
             { e.printStackTrace(); }
         });
 
         calendar.setOnAction((event ->
         {
-            try { new Calendar().start(Stage); /*saveAll(null);*/ }
+            try { new Calendar().start(Stage); }
             catch (Exception e)
             { e.printStackTrace(); }
         }));
