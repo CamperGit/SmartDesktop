@@ -190,31 +190,31 @@ public class Calendar extends Application implements Initializable
     @FXML private ToolBar calendarToolBar;
     @FXML private Button calendarCloseButton;
     private boolean load=false;
-    private static AnchorPane root;
-    private static AnchorPane selected; //¬се ещЄ подумать про селектед. ћб помен€ть его на root
+    private static AnchorPane CalendarRoot;
     private static List<Day> daysWithEvents = new ArrayList<>();
 
     public Calendar(){}
 
     private Calendar(boolean load) { this.load=load; }
 
-    private AnchorPane getRoot() { return root; }
+    public static AnchorPane getRoot() { return CalendarRoot; }
 
     public static void clearDaysWithEvents() { daysWithEvents.clear(); }
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarRu.fxml")));
-        root.setLayoutX(80);
-        root.setLayoutY(30);
-        addChild(root);
+        CalendarRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarRu.fxml")));
+        CalendarRoot.setLayoutX(80);
+        CalendarRoot.setLayoutY(30);
+        addChild(CalendarRoot);
         if (!load)
         {
-            //”становить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
-            root.setAccessibleText(String.valueOf(idOfSelectedTab));
-            var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
-            elementsOfSelectedTab.add(root);
+            /*CalendarRoot.setAccessibleText("-1");
+            var elementsOfSelectedTab = tabs.get(-1);
+            elementsOfSelectedTab.add(CalendarRoot);*/
+            CalendarRoot.setAccessibleText("-1");
+            CalendarRoot.setVisible(false);
         }
 
         var dayWithEvent1 = addEventOfDay(LocalDate.of(2021,02,9), LocalTime.now(), Day.EventType.Goal,"test");
@@ -249,15 +249,15 @@ public class Calendar extends Application implements Initializable
 
         calendarCloseButton.setOnAction(event ->
         {
-            selected = (AnchorPane) (((Button) event.getSource()).getParent());
-            root.setVisible(false);
-            Main.root.getChildren().remove(selected);
+            CalendarRoot.setVisible(false);
+            var elementsOfSelectedTab = tabs.get(Integer.parseInt(CalendarRoot.getAccessibleText()));
+            elementsOfSelectedTab.remove(CalendarRoot);
+            CalendarRoot.setAccessibleText("-1");
         });
 
         calendarToolBar.setOnMouseDragged(event ->
         {
-            selected = (AnchorPane) (((ToolBar) event.getSource()).getParent());
-            NodeDragger.addDraggingProperty(selected,event);
+            NodeDragger.addDraggingProperty(CalendarRoot,event);
         });
     }
 
@@ -266,25 +266,43 @@ public class Calendar extends Application implements Initializable
         var rootElement = doc.getFirstChild();
 
         var calendarElement = doc.createElement("calendar");
-        //calendarElement.setAttribute("tab",root.getAccessibleText());
-        //”беру в будущем, когда при создании пресета или его открытии по умолчанию будет создаватьс€ объект календар€
-        //сейчас мы тут ловим nullPTR поэтому оставим костыль на врем€!
-        calendarElement.setAttribute("tab", String.valueOf(idOfSelectedTab));
+        //String s = CalendarRoot.getAccessibleText();
+        //if (CalendarRoot.getAccessibleText()==null)
+        if (createEmptyXML)
+        {
+            calendarElement.setAttribute("tab","-1");
+        }
+        else
+        {
+            calendarElement.setAttribute("tab",CalendarRoot.getAccessibleText());
+        }
         rootElement.appendChild(calendarElement);
 
         //ѕри первой загрузке и если пользователь сам не добавил кнопкой - календарь всЄ равно должен быть, поэтому visibility будет false
         var visibilityElement = doc.createElement("visibility");
         calendarElement.appendChild(visibilityElement);
-        //var visibilityValue = doc.createTextNode(String.valueOf(root.isVisible()));
-        //“оже самое. ”брать, когда будет загрузка календар€ по умолчанию и оставить то, что было сверху
         var visibilityValue = doc.createTextNode(String.valueOf(false));
-        visibilityElement.appendChild(visibilityValue);
+
+        var layoutElement = doc.createElement("layout");
+        calendarElement.appendChild(layoutElement);
+
+        var layoutX = doc.createElement("layoutX");
+        layoutElement.appendChild(layoutX);
+        var layoutXValue = doc.createTextNode(String.valueOf((int)(CalendarRoot.getLayoutX())));
+        layoutX.appendChild(layoutXValue);
+
+        var layoutY = doc.createElement("layoutY" );
+        layoutElement.appendChild(layoutY);
+        var layoutYValue = doc.createTextNode(String.valueOf((int)(CalendarRoot.getLayoutY())));
+        layoutY.appendChild(layoutYValue);
 
         var daysWithEventsElement = doc.createElement("daysWithEvents");
         calendarElement.appendChild(daysWithEventsElement);
 
         if (!createEmptyXML && daysWithEvents!=null && daysWithEvents.size()!=0)
         {
+            visibilityValue = doc.createTextNode(String.valueOf(CalendarRoot.isVisible()));
+
             int numberOfDay = 1;
             for (var day : daysWithEvents)
             {
@@ -324,26 +342,48 @@ public class Calendar extends Application implements Initializable
                 numberOfDay++;
             }
         }
+
+        visibilityElement.appendChild(visibilityValue);
     }
 
     public static void loadCalendarFromXML(Document doc, XPath xPath) throws Exception
     {
-        int daysWithEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/*)",doc,Integer.class);
-        for (int numberOfDay = 1; numberOfDay < daysWithEvents+1; numberOfDay++)
+        //≈сли это загрузка последнего сохранени€, то у нас будет создан пустой календарь по умолчанию, а нам его нужно удалить.
+        //¬ случае загрузки пресета или его новом создании, данна€ проверка не пройдЄт, потому что мы перед загрузкой
+        //чистим новые элементы, в которых как раз-таки и лежит наш пустой или не пустой календарь.
+        if (CalendarRoot!=null)
         {
-            var loadingCalendar = new Calendar(true);
-            loadingCalendar.start(Main.Stage);
-            AnchorPane rootOfLoadingCalendar = loadingCalendar.getRoot();
+            Main.root.getChildren().remove(CalendarRoot);
+            Calendar.clearDaysWithEvents();
+        }
 
-            int numberOfTab = Integer.parseInt (xPath.evaluate("/save/calendar/@tab",doc));
-            //”становить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
-            rootOfLoadingCalendar.setAccessibleText(String.valueOf(numberOfTab));
+        var loadingCalendar = new Calendar(true);
+        loadingCalendar.start(Main.Stage);
+        var rootOfLoadingCalendar = getRoot();
 
+        int numberOfTab = Integer.parseInt (xPath.evaluate("/save/calendar/@tab",doc));
+
+        //”становить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
+        rootOfLoadingCalendar.setAccessibleText(String.valueOf(numberOfTab));
+
+        if (numberOfTab!=-1)
+        {
             var tab = tabs.get(numberOfTab);
             tab.add(rootOfLoadingCalendar);
-            boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/calendar/visibility/text()",doc));
-            rootOfLoadingCalendar.setVisible(visibility);
+        }
 
+        boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/calendar/visibility/text()",doc));
+        rootOfLoadingCalendar.setVisible(visibility);
+
+        double layoutX = Double.parseDouble (xPath.evaluate("/save/calendar/layout/layoutX/text()",doc));
+        double layoutY = Double.parseDouble (xPath.evaluate("/save/calendar/layout/layoutY/text()",doc));
+        rootOfLoadingCalendar.setLayoutX(layoutX);
+        rootOfLoadingCalendar.setLayoutY(layoutY);
+
+        int countOfDaysWithEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/*)",doc,Integer.class);
+
+        for (int numberOfDay = 1; numberOfDay < countOfDaysWithEvents+1; numberOfDay++)
+        {
             /*double layoutX = Double.parseDouble (xPath.evaluate("/save/notes/note"+noteNumber+"/layout/layoutX/text()",doc));
             double layoutY = Double.parseDouble (xPath.evaluate("/save/notes/note"+noteNumber+"/layout/layoutY/text()",doc));
             rootOfLoadingCalendar.setLayoutX(layoutX);
@@ -351,7 +391,18 @@ public class Calendar extends Application implements Initializable
 
             var date = LocalDate.parse(xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/date/text()",doc));
             var day = new Day(date);
-            //ƒелаем форыч и вытаскиваем ивенты, после чего добавл€ем их в переменную day методом addEvent
+
+            //ƒелаем цикл и вытаскиваем ивенты, после чего добавл€ем их в переменную day методом addEvent
+            int countOfEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/day"+numberOfDay+"/events/*)",doc,Integer.class);
+            for (int numberOfEvent = 1; numberOfEvent < countOfEvents+1; numberOfEvent++)
+            {
+                var time = LocalTime.parse(xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/events/event"+numberOfEvent +"/time/text()",doc));
+                var type = Enum.valueOf(Day.EventType.class,xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/events/event"+numberOfEvent +"/type/text()",doc));
+                var info =xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/events/event"+numberOfEvent +"/info/text()",doc);
+
+                day.addEvent(time,type,info);
+            }
+            daysWithEvents.add(day);
         }
     }
 }

@@ -151,7 +151,7 @@ public class Note extends Application implements Initializable
         {
             var loadingNote = new Note(true);
             loadingNote.start(Main.Stage);
-            AnchorPane rootOfLoadingNote = loadingNote.getRoot();
+            var rootOfLoadingNote = loadingNote.getRoot();
 
             int numberOfTab = Integer.parseInt (xPath.evaluate("/save/notes/note"+noteNumber+"/@tab",doc));
             //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан

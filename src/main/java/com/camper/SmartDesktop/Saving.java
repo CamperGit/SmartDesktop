@@ -91,7 +91,6 @@ public class Saving
         Note.addNotesToXML(doc, true);
         Calendar.addCalendarToXML(doc,true);
 
-
         var rootElement = doc.getFirstChild();
         var lastTabElement = doc.createElement("lastTab");
         lastTabElement.setAttribute("tab", "1");

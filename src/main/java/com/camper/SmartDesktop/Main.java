@@ -31,6 +31,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Array;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
@@ -159,13 +160,20 @@ public class Main extends Application implements Initializable
         tabs.put(4,elementsOfTab4);
         tabs.put(5,elementsOfTab5);
 
+        Stage = stage;
+
         root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreenRu.fxml")));
         var scene = new Scene(root,DEFAULT_WIDTH,DEFAULT_HEIGHT-66);
 
-        Stage = stage;
         numberOfImmutableElements = root.getChildren().size();
 
+        try { new Calendar().start(Stage); }
+        catch (Exception e)
+        { e.printStackTrace(); }
+
         currencySaveName = loadSave(null);
+
+
         //После загрузки находит таб с пресетами и устанавливает ему пресет равный числу в сохранённом файле
         for (Node node : root.getChildren())
         {
@@ -185,6 +193,7 @@ public class Main extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+
         //Ожидание конкретного времени
         /*timerTestButton.setOnAction((event)->
         {
@@ -390,9 +399,19 @@ public class Main extends Application implements Initializable
 
         calendar.setOnAction((event ->
         {
-            try { new Calendar().start(Stage); }
-            catch (Exception e)
-            { e.printStackTrace(); }
+            var calendar = Calendar.getRoot();
+            calendar.setVisible(true);
+
+            int tabNumber = Integer.parseInt(calendar.getAccessibleText());
+            if (tabNumber!=-1)
+            {
+                var oldTab = tabs.get(tabNumber);
+                oldTab.remove(calendar);
+            }
+
+            calendar.setAccessibleText(String.valueOf(idOfSelectedTab));
+            var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
+            elementsOfSelectedTab.add(calendar);
         }));
     }
 }
