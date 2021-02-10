@@ -70,12 +70,11 @@ public class Calendar extends Application implements Initializable
             targetIcons.clear();
             scheduleIcons.clear();
         }
-
-        var dayWithEvent1 = addEventOfDay(LocalDate.of(2021,2,9), LocalTime.now(), Day.EventType.Goal,"test");
+        /*var dayWithEvent1 = addEventOfDay(LocalDate.of(2021,2,9), LocalTime.now(), Day.EventType.Goal,"test");
         dayWithEvent1.addEvent(LocalTime.now(), Day.EventType.Schedule,"test2");
         var dayWithEvent2 = addEventOfDay(LocalDate.of(2021,3,9), LocalTime.now(), Day.EventType.Notification,"testOtherDay");
         daysWithEvents.add(dayWithEvent1);
-        daysWithEvents.add(dayWithEvent2);
+        daysWithEvents.add(dayWithEvent2);*/
     }
 
     @Override
@@ -146,38 +145,43 @@ public class Calendar extends Application implements Initializable
 
         var layoutX = doc.createElement("layoutX");
         layoutElement.appendChild(layoutX);
-        var layoutXValue = doc.createTextNode(String.valueOf((int)(CalendarRoot.getLayoutX())));
-        layoutX.appendChild(layoutXValue);
-
+        Text layoutXValue;
 
         var layoutY = doc.createElement("layoutY" );
         layoutElement.appendChild(layoutY);
-        var layoutYValue = doc.createTextNode(String.valueOf((int)(CalendarRoot.getLayoutY())));
-        layoutY.appendChild(layoutYValue);
+        Text layoutYValue;
+
+        //ѕри первой загрузке и если пользователь сам не добавил кнопкой - календарь всЄ равно должен быть, поэтому visibility будет false
+        var visibilityElement = doc.createElement("visibility");
+        calendarElement.appendChild(visibilityElement);
+        Text visibilityValue;
 
         //≈сли это первый запуск или создание нового пресета мы сразу устанавливаем значение атрибуту на -1
         if (createEmptyXML)
         {
             calendarElement.setAttribute("tab","-1");
+            layoutXValue = doc.createTextNode("80");
+            layoutYValue = doc.createTextNode("30");
+            visibilityValue = doc.createTextNode(String.valueOf(false));
+
         }
         else
         {
             calendarElement.setAttribute("tab",CalendarRoot.getAccessibleText());
+            layoutXValue = doc.createTextNode(String.valueOf((int)(CalendarRoot.getLayoutX())));
+            layoutYValue = doc.createTextNode(String.valueOf((int)(CalendarRoot.getLayoutY())));
+            visibilityValue = doc.createTextNode(String.valueOf(CalendarRoot.isVisible()));
         }
         rootElement.appendChild(calendarElement);
-
-        //ѕри первой загрузке и если пользователь сам не добавил кнопкой - календарь всЄ равно должен быть, поэтому visibility будет false
-        var visibilityElement = doc.createElement("visibility");
-        calendarElement.appendChild(visibilityElement);
-        var visibilityValue = doc.createTextNode(String.valueOf(false));
+        layoutX.appendChild(layoutXValue);
+        layoutY.appendChild(layoutYValue);
+        visibilityElement.appendChild(visibilityValue);
 
         var daysWithEventsElement = doc.createElement("daysWithEvents");
         calendarElement.appendChild(daysWithEventsElement);
 
         if (!createEmptyXML && daysWithEvents!=null && daysWithEvents.size()!=0)
         {
-            visibilityValue = doc.createTextNode(String.valueOf(CalendarRoot.isVisible()));
-
             int numberOfDay = 1;
             for (var day : daysWithEvents)
             {
@@ -217,21 +221,10 @@ public class Calendar extends Application implements Initializable
                 numberOfDay++;
             }
         }
-
-        visibilityElement.appendChild(visibilityValue);
     }
 
     public static void loadCalendarFromXML(Document doc, XPath xPath) throws Exception
     {
-        //≈сли это загрузка последнего сохранени€, то у нас будет создан пустой календарь по умолчанию, а нам его нужно удалить.
-        //¬ случае загрузки пресета или его новом создании, данна€ проверка не пройдЄт, потому что мы перед загрузкой
-        //чистим новые элементы, в которых как раз-таки и лежит наш пустой или не пустой календарь.
-        if (CalendarRoot!=null)
-        {
-            Main.root.getChildren().remove(CalendarRoot);
-            Calendar.clearDaysWithEvents();
-        }
-
         var loadingCalendar = new Calendar(true);
         loadingCalendar.start(Main.Stage);
         var rootOfLoadingCalendar = getRoot();

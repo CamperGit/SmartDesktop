@@ -168,12 +168,14 @@ public class Main extends Application implements Initializable
 
         numberOfImmutableElements = root.getChildren().size();
 
-        try { new Calendar().start(stage); }
-        catch (Exception e)
-        { e.printStackTrace(); }
-
         currencySaveName = loadSave(null);
 
+        if (Calendar.getRoot()==null)
+        {
+            try { new Calendar().start(stage); }
+            catch (Exception e)
+            { e.printStackTrace(); }
+        }
         //updateCalendarIcons();
 
         //После загрузки находит таб с пресетами и устанавливает ему пресет равный числу в сохранённом файле
