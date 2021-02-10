@@ -38,10 +38,11 @@ public class Calendar extends Application implements Initializable
     @FXML private ChoiceBox<Integer> yearChoiceBox;
     private boolean load=false;
     private static AnchorPane CalendarRoot;
-    private static List<Day> daysWithEvents = new ArrayList<>();
-    public static List<ImageView> notificationIcons = new ArrayList<>();
-    private static List<ImageView> targetIcons = new ArrayList<>();
-    private static List<ImageView> scheduleIcons = new ArrayList<>();
+    private final static List<Day> daysWithEvents = new ArrayList<>();
+    private final static List<ImageView> notificationIcons = new ArrayList<>();
+    private final static List<ImageView> goalIcons = new ArrayList<>();
+    private final static List<ImageView> scheduleIcons = new ArrayList<>();
+    private final static int DAYS_IN_MONTH = Month.of(LocalDate.now().getMonth().getValue()).length(LocalDate.now().isLeapYear());
 
     public Calendar(){}
 
@@ -49,7 +50,13 @@ public class Calendar extends Application implements Initializable
 
     public static AnchorPane getRoot() { return CalendarRoot; }
 
-    public static void clearDaysWithEvents() { daysWithEvents.clear(); }
+    public static void clearLastInfo()
+    {
+        daysWithEvents.clear();
+        notificationIcons.clear();
+        goalIcons.clear();
+        scheduleIcons.clear();
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -66,9 +73,9 @@ public class Calendar extends Application implements Initializable
         }
         else
         {
-            notificationIcons.clear();
-            targetIcons.clear();
-            scheduleIcons.clear();
+           /* notificationIcons.clear();
+            goalIcons.clear();
+            scheduleIcons.clear();*/
         }
         /*var dayWithEvent1 = addEventOfDay(LocalDate.of(2021,2,9), LocalTime.now(), Day.EventType.Goal,"test");
         dayWithEvent1.addEvent(LocalTime.now(), Day.EventType.Schedule,"test2");
@@ -80,6 +87,7 @@ public class Calendar extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        this.addIconsToLists();
         for (int i = 1981; i <= 2100; i++)
         {
             yearChoiceBox.getItems().add(i);
@@ -88,7 +96,7 @@ public class Calendar extends Application implements Initializable
         var currentYear = LocalDate.now().getYear();
         yearChoiceBox.setValue(currentYear);
 
-        //Для будущей локализации
+        //Для будущей локализации(Для английского)
         //monthChoiceBox.getItems().addAll(List.of(Month.values()).stream().map(Enum::toString).map(month->(month.charAt(0) + month.substring(1).toLowerCase(Locale.ENGLISH))).collect(Collectors.toList()));
 
         //Для русского
@@ -97,9 +105,30 @@ public class Calendar extends Application implements Initializable
         currentMonth = currentMonth.substring(0,1).toUpperCase() + currentMonth.substring(1);
         monthChoiceBox.setValue(currentMonth);
 
-        LocalDate.now().getDayOfMonth();
+        monthChoiceBox.setOnAction(event ->
+        {
+            //Для русского
+            loadEventsIconOfMonth(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()));
+        });
+        yearChoiceBox.setOnAction(event ->
+        {
+            //Для русского
+            loadEventsIconOfMonth(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()));
+        });
+        loadEventsIconOfMonth(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()));
 
-        var imageNotification = new Image("Images/notification14.png");
+        calendarDay1Button.setOnAction(event ->
+        {
+            int numberOfDay = Integer.parseInt(calendarDay1Button.getText());
+            if (daysWithEvents.size()!=0)
+            {
+               // LocalDate.of(yearChoiceBox.getValue(),monthChoiceBox.getValue())
+            }
+            else
+            { }
+        });
+
+        /* var imageNotification = new Image("Images/notification14.png");
         CalendarDay1NotificationIV.setImage(imageNotification);
 
         var imageTarget = new Image("Images/target14.png");
@@ -112,13 +141,13 @@ public class Calendar extends Application implements Initializable
         var imageTargetActive = new Image("Images/target14Active.png");
         CalendarDay2TargetIV.setImage(imageTargetActive);
         var imageScheduleActive = new Image("Images/schedule14Active.png");
-        CalendarDay2ScheduleIV.setImage(imageScheduleActive);
+        CalendarDay2ScheduleIV.setImage(imageScheduleActive);*/
 
-        calendarDay1Button.setOnAction((event ->
+        /*calendarDay1Button.setOnAction((event ->
         {
             var alert = new Alert(Alert.AlertType.WARNING, "Выбранное сохранение было удалено или переименовано. Загрузка прервана", ButtonType.OK);
             alert.showAndWait();
-        }));
+        }));*/
 
         calendarCloseButton.setOnAction(event ->
         {
@@ -225,6 +254,27 @@ public class Calendar extends Application implements Initializable
 
     public static void loadCalendarFromXML(Document doc, XPath xPath) throws Exception
     {
+        int countOfDaysWithEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/*)",doc,Integer.class);
+
+        for (int numberOfDay = 1; numberOfDay < countOfDaysWithEvents+1; numberOfDay++)
+        {
+
+            var date = LocalDate.parse(xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/date/text()",doc));
+            var day = new Day(date);
+
+            //Делаем цикл и вытаскиваем ивенты, после чего добавляем их в переменную day методом addEvent
+            int countOfEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/day"+numberOfDay+"/events/*)",doc,Integer.class);
+            for (int numberOfEvent = 1; numberOfEvent < countOfEvents+1; numberOfEvent++)
+            {
+                var time = LocalTime.parse(xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/events/event"+numberOfEvent +"/time/text()",doc));
+                var type = Enum.valueOf(Day.EventType.class,xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/events/event"+numberOfEvent +"/type/text()",doc));
+                var info =xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/events/event"+numberOfEvent +"/info/text()",doc);
+
+                day.addEvent(time,type,info);
+            }
+            daysWithEvents.add(day);
+        }
+
         var loadingCalendar = new Calendar(true);
         loadingCalendar.start(Main.Stage);
         var rootOfLoadingCalendar = getRoot();
@@ -248,190 +298,309 @@ public class Calendar extends Application implements Initializable
         double layoutY = Double.parseDouble (xPath.evaluate("/save/calendar/layout/layoutY/text()",doc));
         rootOfLoadingCalendar.setLayoutX(layoutX);
         rootOfLoadingCalendar.setLayoutY(layoutY);
-
-        int countOfDaysWithEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/*)",doc,Integer.class);
-
-        for (int numberOfDay = 1; numberOfDay < countOfDaysWithEvents+1; numberOfDay++)
-        {
-
-            var date = LocalDate.parse(xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/date/text()",doc));
-            var day = new Day(date);
-
-            //Делаем цикл и вытаскиваем ивенты, после чего добавляем их в переменную day методом addEvent
-            int countOfEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/day"+numberOfDay+"/events/*)",doc,Integer.class);
-            for (int numberOfEvent = 1; numberOfEvent < countOfEvents+1; numberOfEvent++)
-            {
-                var time = LocalTime.parse(xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/events/event"+numberOfEvent +"/time/text()",doc));
-                var type = Enum.valueOf(Day.EventType.class,xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/events/event"+numberOfEvent +"/type/text()",doc));
-                var info =xPath.evaluate("/save/calendar/daysWithEvents/day"+numberOfDay+"/events/event"+numberOfEvent +"/info/text()",doc);
-
-                day.addEvent(time,type,info);
-            }
-            daysWithEvents.add(day);
-        }
     }
 
     private void addIconsToLists()
     {
         notificationIcons.add(CalendarDay1NotificationIV);
+        notificationIcons.add(CalendarDay2NotificationIV);
+        notificationIcons.add(CalendarDay3NotificationIV);
+        notificationIcons.add(CalendarDay4NotificationIV);
+        notificationIcons.add(CalendarDay5NotificationIV);
+        notificationIcons.add(CalendarDay6NotificationIV);
+        notificationIcons.add(CalendarDay7NotificationIV);
+        notificationIcons.add(CalendarDay8NotificationIV);
+        notificationIcons.add(CalendarDay9NotificationIV);
+        notificationIcons.add(CalendarDay10NotificationIV);
+        notificationIcons.add(CalendarDay11NotificationIV);
+        notificationIcons.add(CalendarDay12NotificationIV);
+        notificationIcons.add(CalendarDay13NotificationIV);
+        notificationIcons.add(CalendarDay14NotificationIV);
+        notificationIcons.add(CalendarDay15NotificationIV);
+        notificationIcons.add(CalendarDay16NotificationIV);
+        notificationIcons.add(CalendarDay17NotificationIV);
+        notificationIcons.add(CalendarDay18NotificationIV);
+        notificationIcons.add(CalendarDay19NotificationIV);
+        notificationIcons.add(CalendarDay20NotificationIV);
+        notificationIcons.add(CalendarDay21NotificationIV);
+        notificationIcons.add(CalendarDay22NotificationIV);
+        notificationIcons.add(CalendarDay23NotificationIV);
+        notificationIcons.add(CalendarDay24NotificationIV);
+        notificationIcons.add(CalendarDay25NotificationIV);
+        notificationIcons.add(CalendarDay26NotificationIV);
+        notificationIcons.add(CalendarDay27NotificationIV);
+        notificationIcons.add(CalendarDay28NotificationIV);
+        notificationIcons.add(CalendarDay29NotificationIV);
+        notificationIcons.add(CalendarDay30NotificationIV);
+        notificationIcons.add(CalendarDay31NotificationIV);
+
+        goalIcons.add(CalendarDay1GoalIV);
+        goalIcons.add(CalendarDay2GoalIV);
+        goalIcons.add(CalendarDay3GoalIV);
+        goalIcons.add(CalendarDay4GoalIV);
+        goalIcons.add(CalendarDay5GoalIV);
+        goalIcons.add(CalendarDay6GoalIV);
+        goalIcons.add(CalendarDay7GoalIV);
+        goalIcons.add(CalendarDay8GoalIV);
+        goalIcons.add(CalendarDay9GoalIV);
+        goalIcons.add(CalendarDay10GoalIV);
+        goalIcons.add(CalendarDay11GoalIV);
+        goalIcons.add(CalendarDay12GoalIV);
+        goalIcons.add(CalendarDay13GoalIV);
+        goalIcons.add(CalendarDay14GoalIV);
+        goalIcons.add(CalendarDay15GoalIV);
+        goalIcons.add(CalendarDay16GoalIV);
+        goalIcons.add(CalendarDay17GoalIV);
+        goalIcons.add(CalendarDay18GoalIV);
+        goalIcons.add(CalendarDay19GoalIV);
+        goalIcons.add(CalendarDay20GoalIV);
+        goalIcons.add(CalendarDay21GoalIV);
+        goalIcons.add(CalendarDay22GoalIV);
+        goalIcons.add(CalendarDay23GoalIV);
+        goalIcons.add(CalendarDay24GoalIV);
+        goalIcons.add(CalendarDay25GoalIV);
+        goalIcons.add(CalendarDay26GoalIV);
+        goalIcons.add(CalendarDay27GoalIV);
+        goalIcons.add(CalendarDay28GoalIV);
+        goalIcons.add(CalendarDay29GoalIV);
+        goalIcons.add(CalendarDay30GoalIV);
+        goalIcons.add(CalendarDay31GoalIV);
+
+        scheduleIcons.add(CalendarDay1ScheduleIV);
+        scheduleIcons.add(CalendarDay2ScheduleIV);
+        scheduleIcons.add(CalendarDay3ScheduleIV);
+        scheduleIcons.add(CalendarDay4ScheduleIV);
+        scheduleIcons.add(CalendarDay5ScheduleIV);
+        scheduleIcons.add(CalendarDay6ScheduleIV);
+        scheduleIcons.add(CalendarDay7ScheduleIV);
+        scheduleIcons.add(CalendarDay8ScheduleIV);
+        scheduleIcons.add(CalendarDay9ScheduleIV);
+        scheduleIcons.add(CalendarDay10ScheduleIV);
+        scheduleIcons.add(CalendarDay11ScheduleIV);
+        scheduleIcons.add(CalendarDay12ScheduleIV);
+        scheduleIcons.add(CalendarDay13ScheduleIV);
+        scheduleIcons.add(CalendarDay14ScheduleIV);
+        scheduleIcons.add(CalendarDay15ScheduleIV);
+        scheduleIcons.add(CalendarDay16ScheduleIV);
+        scheduleIcons.add(CalendarDay17ScheduleIV);
+        scheduleIcons.add(CalendarDay18ScheduleIV);
+        scheduleIcons.add(CalendarDay19ScheduleIV);
+        scheduleIcons.add(CalendarDay20ScheduleIV);
+        scheduleIcons.add(CalendarDay21ScheduleIV);
+        scheduleIcons.add(CalendarDay22ScheduleIV);
+        scheduleIcons.add(CalendarDay23ScheduleIV);
+        scheduleIcons.add(CalendarDay24ScheduleIV);
+        scheduleIcons.add(CalendarDay25ScheduleIV);
+        scheduleIcons.add(CalendarDay26ScheduleIV);
+        scheduleIcons.add(CalendarDay27ScheduleIV);
+        scheduleIcons.add(CalendarDay28ScheduleIV);
+        scheduleIcons.add(CalendarDay29ScheduleIV);
+        scheduleIcons.add(CalendarDay30ScheduleIV);
+        scheduleIcons.add(CalendarDay31ScheduleIV);
     }
 
-    public static void updateCalendarIcons()
+    private static void loadEventsIconOfMonth(int year, int month)
     {
-        notificationIcons.get(0).setImage(new Image("Images/notification14Active.png"));
+        for (int i =1; i<=31; i++)
+        {
+            updateDayIcons(i,false,false,false);
+        }
+        for (var day : daysWithEvents)
+        {
+            var dateOfDayWithEvent = LocalDate.of(day.getDate().getYear(),day.getDate().getMonth(),day.getDate().getDayOfMonth());
+            for (int i = 1; i<=DAYS_IN_MONTH; i++)
+            {
+                var date = LocalDate.of(year,month,i);
+                if (dateOfDayWithEvent.equals(date))
+                {
+                   updateDayIcons(i, day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
+                   break;
+                }
+            }
+        }
     }
+
+    public static void updateDayIcons(int day, boolean notification, boolean goal, boolean schedule)
+    {
+        day--;
+        if (notification) {notificationIcons.get(day).setImage(new Image("Images/notification14Active.png"));}
+        else {notificationIcons.get(day).setImage(null); }
+
+        if (goal) {goalIcons.get(day).setImage(new Image("Images/goal14Active.png"));}
+        else {goalIcons.get(day).setImage(null); }
+
+        if (schedule) {scheduleIcons.get(day).setImage(new Image("Images/schedule14Active.png"));}
+        else {scheduleIcons.get(day).setImage(null); }
+    }
+
+    private static int getNumberOfRussianMonth(String month)
+    {
+        if (month.equals("Январь")) {return 1;}
+        if (month.equals("Февраль")) {return 2;}
+        if (month.equals("Март")) {return 3;}
+        if (month.equals("Апрель")) {return 4;}
+        if (month.equals("Май")) {return 5;}
+        if (month.equals("Июнь")) {return 6;}
+        if (month.equals("Июль")) {return 7;}
+        if (month.equals("Август")) {return 8;}
+        if (month.equals("Сентябрь")) {return 9;}
+        if (month.equals("Октябрь")) {return 10;}
+        if (month.equals("Ноябрь")) {return 11;}
+        return 12;
+    }
+
     @FXML private Button calendarDay1Button;
     @FXML private ImageView CalendarDay1NotificationIV;
-    @FXML private ImageView CalendarDay1TargetIV;
+    @FXML private ImageView CalendarDay1GoalIV;
     @FXML private ImageView CalendarDay1ScheduleIV;
 
     @FXML private Button calendarDay2Button;
     @FXML private ImageView CalendarDay2NotificationIV;
-    @FXML private ImageView CalendarDay2TargetIV;
+    @FXML private ImageView CalendarDay2GoalIV;
     @FXML private ImageView CalendarDay2ScheduleIV;
 
     @FXML private Button calendarDay3Button;
     @FXML private ImageView CalendarDay3NotificationIV;
-    @FXML private ImageView CalendarDay3TargetIV;
+    @FXML private ImageView CalendarDay3GoalIV;
     @FXML private ImageView CalendarDay3ScheduleIV;
 
     @FXML private Button calendarDay4Button;
     @FXML private ImageView CalendarDay4NotificationIV;
-    @FXML private ImageView CalendarDay4TargetIV;
+    @FXML private ImageView CalendarDay4GoalIV;
     @FXML private ImageView CalendarDay4ScheduleIV;
 
     @FXML private Button calendarDay5Button;
     @FXML private ImageView CalendarDay5NotificationIV;
-    @FXML private ImageView CalendarDay5TargetIV;
+    @FXML private ImageView CalendarDay5GoalIV;
     @FXML private ImageView CalendarDay5ScheduleIV;
 
     @FXML private Button calendarDay6Button;
     @FXML private ImageView CalendarDay6NotificationIV;
-    @FXML private ImageView CalendarDay6TargetIV;
+    @FXML private ImageView CalendarDay6GoalIV;
     @FXML private ImageView CalendarDay6ScheduleIV;
 
     @FXML private Button calendarDay7Button;
     @FXML private ImageView CalendarDay7NotificationIV;
-    @FXML private ImageView CalendarDay7TargetIV;
+    @FXML private ImageView CalendarDay7GoalIV;
     @FXML private ImageView CalendarDay7ScheduleIV;
 
     @FXML private Button calendarDay8Button;
     @FXML private ImageView CalendarDay8NotificationIV;
-    @FXML private ImageView CalendarDay8TargetIV;
+    @FXML private ImageView CalendarDay8GoalIV;
     @FXML private ImageView CalendarDay8ScheduleIV;
 
     @FXML private Button calendarDay9Button;
     @FXML private ImageView CalendarDay9NotificationIV;
-    @FXML private ImageView CalendarDay9TargetIV;
+    @FXML private ImageView CalendarDay9GoalIV;
     @FXML private ImageView CalendarDay9ScheduleIV;
 
     @FXML private Button calendarDay10Button;
     @FXML private ImageView CalendarDay10NotificationIV;
-    @FXML private ImageView CalendarDay10TargetIV;
+    @FXML private ImageView CalendarDay10GoalIV;
     @FXML private ImageView CalendarDay10ScheduleIV;
 
     @FXML private Button calendarDay11Button;
     @FXML private ImageView CalendarDay11NotificationIV;
-    @FXML private ImageView CalendarDay11TargetIV;
+    @FXML private ImageView CalendarDay11GoalIV;
     @FXML private ImageView CalendarDay11ScheduleIV;
 
     @FXML private Button calendarDay12Button;
     @FXML private ImageView CalendarDay12NotificationIV;
-    @FXML private ImageView CalendarDay12TargetIV;
+    @FXML private ImageView CalendarDay12GoalIV;
     @FXML private ImageView CalendarDay12ScheduleIV;
 
     @FXML private Button calendarDay13Button;
     @FXML private ImageView CalendarDay13NotificationIV;
-    @FXML private ImageView CalendarDay13TargetIV;
+    @FXML private ImageView CalendarDay13GoalIV;
     @FXML private ImageView CalendarDay13ScheduleIV;
 
     @FXML private Button calendarDay14Button;
     @FXML private ImageView CalendarDay14NotificationIV;
-    @FXML private ImageView CalendarDay14TargetIV;
+    @FXML private ImageView CalendarDay14GoalIV;
     @FXML private ImageView CalendarDay14ScheduleIV;
 
     @FXML private Button calendarDay15Button;
     @FXML private ImageView CalendarDay15NotificationIV;
-    @FXML private ImageView CalendarDay15TargetIV;
+    @FXML private ImageView CalendarDay15GoalIV;
     @FXML private ImageView CalendarDay15ScheduleIV;
 
     @FXML private Button calendarDay16Button;
     @FXML private ImageView CalendarDay16NotificationIV;
-    @FXML private ImageView CalendarDay16TargetIV;
+    @FXML private ImageView CalendarDay16GoalIV;
     @FXML private ImageView CalendarDay16ScheduleIV;
 
     @FXML private Button calendarDay17Button;
     @FXML private ImageView CalendarDay17NotificationIV;
-    @FXML private ImageView CalendarDay17TargetIV;
+    @FXML private ImageView CalendarDay17GoalIV;
     @FXML private ImageView CalendarDay17ScheduleIV;
 
     @FXML private Button calendarDay18Button;
     @FXML private ImageView CalendarDay18NotificationIV;
-    @FXML private ImageView CalendarDay18TargetIV;
+    @FXML private ImageView CalendarDay18GoalIV;
     @FXML private ImageView CalendarDay18ScheduleIV;
 
     @FXML private Button calendarDay19Button;
     @FXML private ImageView CalendarDay19NotificationIV;
-    @FXML private ImageView CalendarDay19TargetIV;
+    @FXML private ImageView CalendarDay19GoalIV;
     @FXML private ImageView CalendarDay19ScheduleIV;
 
     @FXML private Button calendarDay20Button;
     @FXML private ImageView CalendarDay20NotificationIV;
-    @FXML private ImageView CalendarDay20TargetIV;
+    @FXML private ImageView CalendarDay20GoalIV;
     @FXML private ImageView CalendarDay20ScheduleIV;
 
     @FXML private Button calendarDay21Button;
     @FXML private ImageView CalendarDay21NotificationIV;
-    @FXML private ImageView CalendarDay21TargetIV;
+    @FXML private ImageView CalendarDay21GoalIV;
     @FXML private ImageView CalendarDay21ScheduleIV;
 
     @FXML private Button calendarDay22Button;
     @FXML private ImageView CalendarDay22NotificationIV;
-    @FXML private ImageView CalendarDay22TargetIV;
+    @FXML private ImageView CalendarDay22GoalIV;
     @FXML private ImageView CalendarDay22ScheduleIV;
 
     @FXML private Button calendarDay23Button;
     @FXML private ImageView CalendarDay23NotificationIV;
-    @FXML private ImageView CalendarDay23TargetIV;
+    @FXML private ImageView CalendarDay23GoalIV;
     @FXML private ImageView CalendarDay23ScheduleIV;
 
     @FXML private Button calendarDay24Button;
     @FXML private ImageView CalendarDay24NotificationIV;
-    @FXML private ImageView CalendarDay24TargetIV;
+    @FXML private ImageView CalendarDay24GoalIV;
     @FXML private ImageView CalendarDay24ScheduleIV;
 
     @FXML private Button calendarDay25Button;
     @FXML private ImageView CalendarDay25NotificationIV;
-    @FXML private ImageView CalendarDay25TargetIV;
+    @FXML private ImageView CalendarDay25GoalIV;
     @FXML private ImageView CalendarDay25ScheduleIV;
 
     @FXML private Button calendarDay26Button;
     @FXML private ImageView CalendarDay26NotificationIV;
-    @FXML private ImageView CalendarDay26TargetIV;
+    @FXML private ImageView CalendarDay26GoalIV;
     @FXML private ImageView CalendarDay26ScheduleIV;
 
     @FXML private Button calendarDay27Button;
     @FXML private ImageView CalendarDay27NotificationIV;
-    @FXML private ImageView CalendarDay27TargetIV;
+    @FXML private ImageView CalendarDay27GoalIV;
     @FXML private ImageView CalendarDay27ScheduleIV;
 
     @FXML private Button calendarDay28Button;
     @FXML private ImageView CalendarDay28NotificationIV;
-    @FXML private ImageView CalendarDay28TargetIV;
+    @FXML private ImageView CalendarDay28GoalIV;
     @FXML private ImageView CalendarDay28ScheduleIV;
 
     @FXML private Button calendarDay29Button;
     @FXML private ImageView CalendarDay29NotificationIV;
-    @FXML private ImageView CalendarDay29TargetIV;
+    @FXML private ImageView CalendarDay29GoalIV;
     @FXML private ImageView CalendarDay29ScheduleIV;
 
     @FXML private Button calendarDay30Button;
     @FXML private ImageView CalendarDay30NotificationIV;
-    @FXML private ImageView CalendarDay30TargetIV;
+    @FXML private ImageView CalendarDay30GoalIV;
     @FXML private ImageView CalendarDay30ScheduleIV;
 
     @FXML private Button calendarDay31Button;
     @FXML private ImageView CalendarDay31NotificationIV;
-    @FXML private ImageView CalendarDay31TargetIV;
+    @FXML private ImageView CalendarDay31GoalIV;
     @FXML private ImageView CalendarDay31ScheduleIV;
 }

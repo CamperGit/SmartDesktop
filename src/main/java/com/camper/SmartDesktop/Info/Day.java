@@ -7,6 +7,16 @@ import java.util.List;
 
 public class Day
 {
+
+    public boolean isHaveNotification() { return haveNotification; }
+    public void setHaveNotification(boolean haveNotification) { this.haveNotification = haveNotification; }
+
+    public boolean isHaveGoal() { return haveGoal; }
+    public void setHaveGoal(boolean haveGoal) { this.haveGoal = haveGoal; }
+
+    public boolean isHaveSchedule() { return haveSchedule; }
+    public void setHaveSchedule(boolean haveSchedule) { this.haveSchedule = haveSchedule; }
+
     public enum EventType{Goal, Notification, Schedule};
     private LocalDate date;
     private boolean haveGoal = false;
@@ -26,6 +36,9 @@ public class Day
     public void addEvent(LocalTime time,EventType type, String info)
     {
         var event = new EventOfDay(time, type, info);
+        if (type==EventType.Notification) {this.setHaveNotification(true);}
+        if (type==EventType.Goal) {this.setHaveGoal(true);}
+        if (type==EventType.Schedule) {this.setHaveSchedule(true);}
         this.getEvents().add(event);
     }
 

@@ -31,12 +31,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.Array;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
 
-import static com.camper.SmartDesktop.Info.Calendar.updateCalendarIcons;
 import static com.camper.SmartDesktop.Loading.*;
 import static com.camper.SmartDesktop.Saving.addNewSaveFile;
 import static com.camper.SmartDesktop.Saving.saveAll;
@@ -86,7 +84,7 @@ public class Main extends Application implements Initializable
         var list = root.getChildren();
         list.remove(numberOfImmutableElements,list.size());
         Note.clearSaveList();
-        Calendar.clearDaysWithEvents();
+        Calendar.clearLastInfo();
     }
 
     private static void clearTab()
