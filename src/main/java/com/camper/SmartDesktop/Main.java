@@ -36,6 +36,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
 
+import static com.camper.SmartDesktop.Info.Calendar.updateCalendarIcons;
 import static com.camper.SmartDesktop.Loading.*;
 import static com.camper.SmartDesktop.Saving.addNewSaveFile;
 import static com.camper.SmartDesktop.Saving.saveAll;
@@ -167,12 +168,13 @@ public class Main extends Application implements Initializable
 
         numberOfImmutableElements = root.getChildren().size();
 
-        try { new Calendar().start(Stage); }
+        try { new Calendar().start(stage); }
         catch (Exception e)
         { e.printStackTrace(); }
 
         currencySaveName = loadSave(null);
 
+        //updateCalendarIcons();
 
         //После загрузки находит таб с пресетами и устанавливает ему пресет равный числу в сохранённом файле
         for (Node node : root.getChildren())
