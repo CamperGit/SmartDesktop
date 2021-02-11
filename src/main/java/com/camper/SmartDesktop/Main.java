@@ -63,6 +63,7 @@ public class Main extends Application implements Initializable
     @FXML private ImageView imagePlayerIV;
     @FXML private ImageView mediaPlayerIV;
     @FXML private ImageView calendarIV;
+    @FXML private ImageView notificationInfoIV;
 
     private static MediaPlayer mediaPlayer;
     private static int numberOfImmutableElements;
@@ -174,7 +175,6 @@ public class Main extends Application implements Initializable
             catch (Exception e)
             { e.printStackTrace(); }
         }
-        //updateCalendarIcons();
 
         //После загрузки находит таб с пресетами и устанавливает ему пресет равный числу в сохранённом файле
         for (Node node : root.getChildren())
@@ -208,15 +208,12 @@ public class Main extends Application implements Initializable
                 e.printStackTrace();
             }
         });*/
-        var noteIcon = new Image("Images/note35.png");
-        var imagePlayerIcon = new Image("Images/imageViewer35.png");
-        var mediaPlayerIcon = new Image("Images/videoPlayer35.png");
-        var calendarIcon = new Image("Images/calendar35.png");
 
-        noteIV.setImage(noteIcon);
-        imagePlayerIV.setImage(imagePlayerIcon);
-        mediaPlayerIV.setImage(mediaPlayerIcon);
-        calendarIV.setImage(calendarIcon);
+        noteIV.setImage(new Image("Images/note35.png"));
+        imagePlayerIV.setImage(new Image("Images/imageViewer35.png"));
+        mediaPlayerIV.setImage(new Image("Images/videoPlayer35.png"));
+        calendarIV.setImage(new Image("Images/calendar35.png"));
+        notificationInfoIV.setImage(new Image("Images/bell25Active.png"));
 
 
         autorizeButton.setLayoutX(DEFAULT_WIDTH-120);

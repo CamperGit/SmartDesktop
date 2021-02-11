@@ -6,28 +6,27 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Text;
 
 import javax.xml.xpath.XPath;
-import java.awt.*;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.Year;
 import java.time.format.TextStyle;
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.camper.SmartDesktop.Info.Day.addEventOfDay;
 import static com.camper.SmartDesktop.Main.*;
 
 public class Calendar extends Application implements Initializable
@@ -42,7 +41,7 @@ public class Calendar extends Application implements Initializable
     private final static List<ImageView> notificationIcons = new ArrayList<>();
     private final static List<ImageView> goalIcons = new ArrayList<>();
     private final static List<ImageView> scheduleIcons = new ArrayList<>();
-    private final static int DAYS_IN_MONTH = Month.of(LocalDate.now().getMonth().getValue()).length(LocalDate.now().isLeapYear());
+    //private final static int DAYS_IN_MONTH = Month.of(LocalDate.now().getMonth().getValue()).length(LocalDate.now().isLeapYear());
 
     public Calendar(){}
 
@@ -70,12 +69,6 @@ public class Calendar extends Application implements Initializable
             //Если это не загрузка
             CalendarRoot.setAccessibleText("-1");
             CalendarRoot.setVisible(false);
-        }
-        else
-        {
-           /* notificationIcons.clear();
-            goalIcons.clear();
-            scheduleIcons.clear();*/
         }
         /*var dayWithEvent1 = addEventOfDay(LocalDate.of(2021,2,9), LocalTime.now(), Day.EventType.Goal,"test");
         dayWithEvent1.addEvent(LocalTime.now(), Day.EventType.Schedule,"test2");
@@ -109,39 +102,126 @@ public class Calendar extends Application implements Initializable
         {
             //Для русского
             loadEventsIconOfMonth(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()));
+            int dayInMonth = Month.of(getNumberOfRussianMonth(monthChoiceBox.getValue())).length(Year.isLeap(yearChoiceBox.getValue()));
+            if (dayInMonth>=29)
+            {
+                calendarDay29Button.setDisable(false);
+                calendarDay29Button.setVisible(true);
+            }
+            else
+            {
+                calendarDay29Button.setDisable(true);
+                calendarDay29Button.setVisible(false);
+            }
+            if (dayInMonth>=30)
+            {
+                calendarDay30Button.setDisable(false);
+                calendarDay30Button.setVisible(true);
+            }
+            else
+            {
+                calendarDay30Button.setDisable(true);
+                calendarDay30Button.setVisible(false);
+            }
+            if (dayInMonth>=31)
+            {
+                calendarDay31Button.setDisable(false);
+                calendarDay31Button.setVisible(true);
+            }
+            else
+            {
+                calendarDay31Button.setDisable(true);
+                calendarDay31Button.setVisible(false);
+            }
+            System.out.println();
         });
         yearChoiceBox.setOnAction(event ->
         {
             //Для русского
             loadEventsIconOfMonth(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()));
+            int dayInMonth = Month.of(getNumberOfRussianMonth(monthChoiceBox.getValue())).length(Year.isLeap(yearChoiceBox.getValue()));
+            if (dayInMonth>=29)
+            {
+                calendarDay29Button.setDisable(false);
+                calendarDay29Button.setVisible(true);
+            }
+            else
+            {
+                calendarDay29Button.setDisable(true);
+                calendarDay29Button.setVisible(false);
+            }
+            if (dayInMonth>=30)
+            {
+                calendarDay30Button.setDisable(false);
+                calendarDay30Button.setVisible(true);
+            }
+            else
+            {
+                calendarDay30Button.setDisable(true);
+                calendarDay30Button.setVisible(false);
+            }
+            if (dayInMonth>=31)
+            {
+                calendarDay31Button.setDisable(false);
+                calendarDay31Button.setVisible(true);
+            }
+            else
+            {
+                calendarDay31Button.setDisable(true);
+                calendarDay31Button.setVisible(false);
+            }
         });
         loadEventsIconOfMonth(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()));
 
-        calendarDay1Button.setOnAction(event ->
+        calendarDay1Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),1,event));
+        calendarDay2Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),2,event));
+        calendarDay3Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),3,event));
+        calendarDay4Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),4,event));
+        calendarDay5Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),5,event));
+        calendarDay6Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),6,event));
+        calendarDay7Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),7,event));
+        calendarDay8Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),8,event));
+        calendarDay9Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),9,event));
+        calendarDay10Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),10,event));
+        calendarDay11Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),11,event));
+        calendarDay12Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),12,event));
+        calendarDay13Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),13,event));
+        calendarDay14Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),14,event));
+        calendarDay15Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),15,event));
+        calendarDay16Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),16,event));
+        calendarDay17Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),17,event));
+        calendarDay18Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),18,event));
+        calendarDay19Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),19,event));
+        calendarDay20Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),20,event));
+        calendarDay21Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),21,event));
+        calendarDay22Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),22,event));
+        calendarDay23Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),23,event));
+        calendarDay24Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),24,event));
+        calendarDay25Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),25,event));
+        calendarDay26Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),26,event));
+        calendarDay27Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),27,event));
+        calendarDay28Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),28,event));
+        calendarDay29Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),29,event));
+        calendarDay30Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),30,event));
+        calendarDay31Button.setOnMouseClicked(event -> checkEventsOfThisButton(yearChoiceBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()),31,event));
+
+        int dayInMonth = Month.of(getNumberOfRussianMonth(monthChoiceBox.getValue())).length(Year.isLeap(yearChoiceBox.getValue()));
+        if (!(dayInMonth>=29))
         {
-            int numberOfDay = Integer.parseInt(calendarDay1Button.getText());
-            if (daysWithEvents.size()!=0)
-            {
-               // LocalDate.of(yearChoiceBox.getValue(),monthChoiceBox.getValue())
-            }
-            else
-            { }
-        });
+            calendarDay29Button.setDisable(true);
+            calendarDay29Button.setVisible(false);
+        }
 
-        /* var imageNotification = new Image("Images/notification14.png");
-        CalendarDay1NotificationIV.setImage(imageNotification);
-
-        var imageTarget = new Image("Images/target14.png");
-        CalendarDay1TargetIV.setImage(imageTarget);
-        var imageSchedule = new Image("Images/schedule14.png");
-        CalendarDay1ScheduleIV.setImage(imageSchedule);
-
-        var imageNotificationActive = new Image("Images/notification14Active.png");
-        CalendarDay2NotificationIV.setImage(imageNotificationActive);
-        var imageTargetActive = new Image("Images/target14Active.png");
-        CalendarDay2TargetIV.setImage(imageTargetActive);
-        var imageScheduleActive = new Image("Images/schedule14Active.png");
-        CalendarDay2ScheduleIV.setImage(imageScheduleActive);*/
+        if (!(dayInMonth>=30))
+        {
+            calendarDay30Button.setDisable(true);
+            calendarDay30Button.setVisible(false);
+        }
+        if (!(dayInMonth>=31))
+        {
+            calendarDay31Button.setDisable(true);
+            calendarDay31Button.setVisible(false);
+        }
 
         /*calendarDay1Button.setOnAction((event ->
         {
@@ -408,7 +488,7 @@ public class Calendar extends Application implements Initializable
         for (var day : daysWithEvents)
         {
             var dateOfDayWithEvent = LocalDate.of(day.getDate().getYear(),day.getDate().getMonth(),day.getDate().getDayOfMonth());
-            for (int i = 1; i<=DAYS_IN_MONTH; i++)
+            for (int i = 1; i<=Month.of(month).length(Year.isLeap(year)); i++)
             {
                 var date = LocalDate.of(year,month,i);
                 if (dateOfDayWithEvent.equals(date))
@@ -447,6 +527,33 @@ public class Calendar extends Application implements Initializable
         if (month.equals("Октябрь")) {return 10;}
         if (month.equals("Ноябрь")) {return 11;}
         return 12;
+    }
+
+    public static void checkEventsOfThisButton(int year, int month, int numberOfDay, MouseEvent event)
+    {
+        var dayOfThisButton = LocalDate.of(year,month,numberOfDay);
+        if (daysWithEvents.size()!=0)
+        {
+            boolean haveEvents=false;
+            for (var day : daysWithEvents)
+            {
+                var dateOfDayWithEvent = LocalDate.of(day.getDate().getYear(),day.getDate().getMonth(), day.getDate().getDayOfMonth());
+                if(dayOfThisButton.equals(dateOfDayWithEvent))
+                {
+                    try { new EventsOfDayInfo(event,day).start(Stage); }
+                    catch (Exception e)
+                    { e.printStackTrace(); }
+                    haveEvents=true;
+                    break;
+                }
+            }
+            if (!haveEvents)
+            {
+                try { new EventsOfDayInfo(event,new Day(dayOfThisButton)).start(Stage); }
+                catch (Exception e)
+                { e.printStackTrace(); }
+            }
+        }
     }
 
     @FXML private Button calendarDay1Button;
