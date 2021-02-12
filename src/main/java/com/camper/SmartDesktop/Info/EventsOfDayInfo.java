@@ -35,6 +35,11 @@ public class EventsOfDayInfo extends Application implements Initializable
     @FXML private CheckBox schedulerCheckBox;
     @FXML private CheckBox allTypesCheckBox;
     @FXML private Button addNotificationButton;
+    @FXML private Button addGoalsButton;
+    @FXML private Button addScheduleButton;
+    @FXML private ImageView addNotificationButtonIV;
+    @FXML private ImageView addGoalsButtonIV;
+    @FXML private ImageView addScheduleButtonIV;
     private static AnchorPane paneOfInfoRoot;
     private static List<EventOfDay> events;
     private static boolean entered=false;
@@ -57,7 +62,7 @@ public class EventsOfDayInfo extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfoRuTest.fxml")));
+        paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfoRu.fxml")));
         int leftDownCornerX = (int) (mouseEvent.getSceneX()-mouseEvent.getX());
         int leftDownCornerY = (int) (mouseEvent.getSceneY()-mouseEvent.getY())+38+4;//38 - высота кнопки
         int layoutX=leftDownCornerX;
@@ -106,6 +111,17 @@ public class EventsOfDayInfo extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        addNotificationButtonIV.setImage(new Image("Images/add18.png"));
+        addGoalsButtonIV.setImage(new Image("Images/add18.png"));
+        addScheduleButtonIV.setImage(new Image("Images/add18.png"));
+
+        addNotificationButton.setOnAction(event ->
+        {
+            try { new NotificationSD().start(Stage); }
+            catch (Exception e)
+            { e.printStackTrace(); }
+        });
+
         notificationCheckBox.setOnAction(event->
         {
             updateScrollArea(notificationCheckBox.isSelected(),goalsCheckBox.isSelected(),schedulerCheckBox.isSelected());
@@ -196,7 +212,8 @@ public class EventsOfDayInfo extends Application implements Initializable
         var scroller = new ScrollPane(content);
         scroller.setVisible(true);
         scroller.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scroller.setLayoutY(28);
+        //scroller.setLayoutY(28);
+        scroller.setLayoutY(40);
         var childList = paneOfInfoRoot.getChildren();
         for(var node : childList)
         {

@@ -1,7 +1,7 @@
 package com.camper.SmartDesktop;
 
-import com.camper.SmartDesktop.Info.Calendar;
-import com.camper.SmartDesktop.Info.Note;
+import com.camper.SmartDesktop.Info.CalendarSD;
+import com.camper.SmartDesktop.Info.NoteSD;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static com.camper.SmartDesktop.Info.Calendar.getRoot;
 import static com.camper.SmartDesktop.Main.*;
 import static com.camper.SmartDesktop.Main.DIRPATH;
 
@@ -43,8 +42,8 @@ public class Saving
         var rootDocument = doc.createElement("save");
         doc.appendChild(rootDocument);
 
-        Note.addNotesToXML(doc, false);
-        Calendar.addCalendarToXML(doc,false);
+        NoteSD.addNotesToXML(doc, false);
+        CalendarSD.addCalendarToXML(doc,false);
 
         var t = TransformerFactory.newInstance().newTransformer();
         t.setOutputProperty(OutputKeys.INDENT,"yes"); //Отступ
@@ -89,8 +88,8 @@ public class Saving
         var rootDocument = doc.createElement("save");
         doc.appendChild(rootDocument);
 
-        Note.addNotesToXML(doc, true);
-        Calendar.addCalendarToXML(doc,true);
+        NoteSD.addNotesToXML(doc, true);
+        CalendarSD.addCalendarToXML(doc,true);
 
         var rootElement = doc.getFirstChild();
         var lastTabElement = doc.createElement("lastTab");

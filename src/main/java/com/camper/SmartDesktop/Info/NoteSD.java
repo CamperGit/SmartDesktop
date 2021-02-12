@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 
 import static com.camper.SmartDesktop.Main.*;
 
-public class Note extends Application implements Initializable
+public class NoteSD extends Application implements Initializable
 {
     @FXML private ImageView closeButtonImage;
     @FXML private ToolBar noteToolBar;
@@ -37,8 +37,8 @@ public class Note extends Application implements Initializable
     private static AnchorPane selected;
     private static List<AnchorPane> notes = new ArrayList<>();
 
-    public Note() {}
-    private Note(boolean load)
+    public NoteSD() {}
+    private NoteSD(boolean load)
     {
         this.load=load;
     }
@@ -81,7 +81,6 @@ public class Note extends Application implements Initializable
         {
             selected = (AnchorPane) (((Button) event.getSource()).getParent());
             notes.remove(selected);
-            selected.setVisible(false);
             Main.root.getChildren().remove(selected);
         });
 
@@ -149,7 +148,7 @@ public class Note extends Application implements Initializable
         int numberOfNotes = xPath.evaluateExpression("count(/save/notes/*)",doc,Integer.class);
         for (int noteNumber = 1; noteNumber < numberOfNotes+1; noteNumber++)
         {
-            var loadingNote = new Note(true);
+            var loadingNote = new NoteSD(true);
             loadingNote.start(Main.Stage);
             var rootOfLoadingNote = loadingNote.getRoot();
 

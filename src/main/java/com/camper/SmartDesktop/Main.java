@@ -2,7 +2,7 @@ package com.camper.SmartDesktop;
 
 
 import com.camper.SmartDesktop.Info.*;
-import com.camper.SmartDesktop.Info.Calendar;
+import com.camper.SmartDesktop.Info.CalendarSD;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -59,6 +59,7 @@ public class Main extends Application implements Initializable
     @FXML private Button note;
     @FXML private Button calendar;
     @FXML private Button autorizeButton;
+    @FXML private Button checkNotificationButton;
     @FXML private ImageView noteIV;
     @FXML private ImageView imagePlayerIV;
     @FXML private ImageView mediaPlayerIV;
@@ -84,8 +85,8 @@ public class Main extends Application implements Initializable
     {
         var list = root.getChildren();
         list.remove(numberOfImmutableElements,list.size());
-        Note.clearSaveList();
-        Calendar.clearLastInfo();
+        NoteSD.clearSaveList();
+        CalendarSD.clearLastInfo();
     }
 
     private static void clearTab()
@@ -169,9 +170,9 @@ public class Main extends Application implements Initializable
 
         currencySaveName = loadSave(null);
 
-        if (Calendar.getRoot()==null)
+        if (CalendarSD.getRoot()==null)
         {
-            try { new Calendar().start(stage); }
+            try { new CalendarSD().start(stage); }
             catch (Exception e)
             { e.printStackTrace(); }
         }
@@ -219,6 +220,18 @@ public class Main extends Application implements Initializable
         autorizeButton.setLayoutX(DEFAULT_WIDTH-120);
         savesChoiceBox.setLayoutX(DEFAULT_WIDTH-320);
         addNewPresetButton.setLayoutX(DEFAULT_WIDTH-345);
+        checkNotificationButton.setLayoutX(DEFAULT_WIDTH-512);
+
+        checkNotificationButton.setOnAction(event->
+        {
+            try
+            {
+                new CompletedEvents().start(Stage);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
 
         var selectionModel=mainTabPane.getSelectionModel();
         loadSavesToSavesList(savesChoiceBox);
@@ -391,14 +404,14 @@ public class Main extends Application implements Initializable
 
         note.setOnAction((event)->
         {
-            try { new Note().start(Stage); }
+            try { new NoteSD().start(Stage); }
             catch (Exception e)
             { e.printStackTrace(); }
         });
 
         calendar.setOnAction((event ->
         {
-            var calendar = Calendar.getRoot();
+            var calendar = CalendarSD.getRoot();
             calendar.setVisible(true);
 
             int tabNumber = Integer.parseInt(calendar.getAccessibleText());

@@ -1,7 +1,7 @@
 package com.camper.SmartDesktop;
 
-import com.camper.SmartDesktop.Info.Calendar;
-import com.camper.SmartDesktop.Info.Note;
+import com.camper.SmartDesktop.Info.CalendarSD;
+import com.camper.SmartDesktop.Info.NoteSD;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -101,8 +101,8 @@ public class Loading
                     saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
                 }
 
-                Note.loadNotesFromXML(doc,xPath);
-                Calendar.loadCalendarFromXML(doc,xPath);
+                NoteSD.loadNotesFromXML(doc,xPath);
+                CalendarSD.loadCalendarFromXML(doc,xPath);
 
                 idOfSelectedTab = Integer.parseInt(xPath.evaluate("save/lastTab/@tab",doc));
             }

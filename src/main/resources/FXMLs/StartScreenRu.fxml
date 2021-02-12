@@ -18,7 +18,7 @@
    <children>
       <ImageView fx:id="imageViewer" fitHeight="1080.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" />
       <MediaView fx:id="videoViewer" fitHeight="1080.0" fitWidth="1920.0" />
-      <MenuBar layoutX="-14.0" prefHeight="26.0" prefWidth="1470.0">
+      <MenuBar layoutX="-14.0" prefHeight="26.0" prefWidth="1422.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -107,7 +107,7 @@
          </opaqueInsets>
       </TabPane>
       <Button fx:id="autorizeButton" layoutX="1800.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Войти" />
-      <Button fx:id="checkNotificationButton" layoutX="1455.0" maxHeight="25.0" maxWidth="-Infinity" minHeight="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Уведомления">
+      <Button fx:id="checkNotificationButton" layoutX="1408.0" maxHeight="25.0" maxWidth="-Infinity" minHeight="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="167.0" text="Прошедшие события">
          <graphic>
             <ImageView fx:id="notificationInfoIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
          </graphic>

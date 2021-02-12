@@ -1,0 +1,7 @@
+.big-check-box > .box {
+    -fx-padding: 0.62em
+}
+
+.medium-check-box > .box {
+    -fx-padding: 0.5em
+}
