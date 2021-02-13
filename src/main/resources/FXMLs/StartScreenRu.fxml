@@ -107,7 +107,7 @@
          </opaqueInsets>
       </TabPane>
       <Button fx:id="autorizeButton" layoutX="1800.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Войти" />
-      <Button fx:id="checkNotificationButton" layoutX="1408.0" maxHeight="25.0" maxWidth="-Infinity" minHeight="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="167.0" text="Прошедшие события">
+      <Button fx:id="checkDeprecatedEventsButton" accessibleHelp="deprecatedEventsBell" layoutX="1408.0" maxHeight="25.0" maxWidth="-Infinity" minHeight="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="167.0" text="Прошедшие события">
          <graphic>
             <ImageView fx:id="notificationInfoIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
          </graphic>

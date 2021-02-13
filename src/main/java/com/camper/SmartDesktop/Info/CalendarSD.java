@@ -17,10 +17,7 @@ import org.w3c.dom.Text;
 
 import javax.xml.xpath.XPath;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.Year;
+import java.time.*;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -297,7 +294,9 @@ public class CalendarSD extends Application implements Initializable
 
                 day.addEvent(time,type,info);
             }
-            daysWithEvents.add(day);
+
+            var haveEvents = Day.checkOfDeprecatedEvents(day);
+            if (haveEvents) {daysWithEvents.add(day);}
         }
 
         var loadingCalendar = new CalendarSD(true);

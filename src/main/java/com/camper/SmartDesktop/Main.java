@@ -59,7 +59,7 @@ public class Main extends Application implements Initializable
     @FXML private Button note;
     @FXML private Button calendar;
     @FXML private Button autorizeButton;
-    @FXML private Button checkNotificationButton;
+    @FXML private Button checkDeprecatedEventsButton;
     @FXML private ImageView noteIV;
     @FXML private ImageView imagePlayerIV;
     @FXML private ImageView mediaPlayerIV;
@@ -214,23 +214,23 @@ public class Main extends Application implements Initializable
         imagePlayerIV.setImage(new Image("Images/imageViewer35.png"));
         mediaPlayerIV.setImage(new Image("Images/videoPlayer35.png"));
         calendarIV.setImage(new Image("Images/calendar35.png"));
-        notificationInfoIV.setImage(new Image("Images/bell25Active.png"));
+        notificationInfoIV.setImage(new Image("Images/bell25.png"));
 
 
         autorizeButton.setLayoutX(DEFAULT_WIDTH-120);
         savesChoiceBox.setLayoutX(DEFAULT_WIDTH-320);
         addNewPresetButton.setLayoutX(DEFAULT_WIDTH-345);
-        checkNotificationButton.setLayoutX(DEFAULT_WIDTH-512);
+        checkDeprecatedEventsButton.setLayoutX(DEFAULT_WIDTH-512);
 
-        checkNotificationButton.setOnAction(event->
+        checkDeprecatedEventsButton.setOnMouseClicked(event->
         {
             try
             {
-                new CompletedEvents().start(Stage);
-            } catch (Exception e)
-            {
-                e.printStackTrace();
+                new DeprecatedEvents().start(Stage);
+                DeprecatedEvents.updateBellIcon();
             }
+            catch (Exception e)
+            { e.printStackTrace(); }
         });
 
         var selectionModel=mainTabPane.getSelectionModel();

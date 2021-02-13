@@ -18,7 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.net.URL;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -28,100 +27,45 @@ import java.util.ResourceBundle;
 
 import static com.camper.SmartDesktop.Main.*;
 
-public class EventsOfDayInfo extends Application implements Initializable
+public class DeprecatedEvents extends Application implements Initializable
 {
     @FXML private CheckBox notificationCheckBox;
     @FXML private CheckBox goalsCheckBox;
     @FXML private CheckBox schedulerCheckBox;
     @FXML private CheckBox allTypesCheckBox;
-    @FXML private Button addNotificationButton;
-    @FXML private Button addGoalsButton;
-    @FXML private Button addScheduleButton;
-    @FXML private ImageView addNotificationButtonIV;
-    @FXML private ImageView addGoalsButtonIV;
-    @FXML private ImageView addScheduleButtonIV;
-    private static AnchorPane paneOfInfoRoot;
-    private static List<EventOfDay> events;
+    private static AnchorPane checkDeprecatedEventsRoot;
+    private static List<Day> daysWithDeprecatedEvents = new ArrayList<>();
     private static boolean entered=false;
-    private MouseEvent mouseEvent;
 
-
-    public EventsOfDayInfo(){}
-    public EventsOfDayInfo(MouseEvent mouseEvent, Day dayWithEvents )
-    {
-        if (paneOfInfoRoot!=null)
-        {
-            events.clear();
-            Main.root.getChildren().remove(paneOfInfoRoot);
-            paneOfInfoRoot=null;
-        }
-        events = new ArrayList<>(dayWithEvents.getEvents());
-        this.mouseEvent=mouseEvent;
-    }
+    public static List<Day> getDaysWithDeprecatedEvents() { return daysWithDeprecatedEvents; }
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfoRu.fxml")));
-        int leftDownCornerX = (int) (mouseEvent.getSceneX()-mouseEvent.getX());
-        int leftDownCornerY = (int) (mouseEvent.getSceneY()-mouseEvent.getY())+38+4;//38 - высота кнопки
-        int layoutX=leftDownCornerX;
-        int layoutY=leftDownCornerY;
-        int width = 460;
-        int height = 280;
-
-        if (leftDownCornerX+width>DEFAULT_WIDTH)
-        {
-            layoutX=leftDownCornerX-width;
-        }
-        if (leftDownCornerY+height>DEFAULT_HEIGHT)
-        {
-            layoutY=leftDownCornerY-height-38;
-        }
-        paneOfInfoRoot.setLayoutX(layoutX);
-        paneOfInfoRoot.setLayoutY(layoutY);
+        checkDeprecatedEventsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/deprecatedEvents.fxml")));
+        checkDeprecatedEventsRoot.setLayoutX(DEFAULT_WIDTH-512);
+        checkDeprecatedEventsRoot.setLayoutY(25);
         updateScrollArea(true,true,true);
 
-        paneOfInfoRoot.setOnMouseEntered(event-> entered=true);
-        paneOfInfoRoot.setOnMouseExited(event ->
+        checkDeprecatedEventsRoot.setOnMouseEntered(event-> entered=true);
+        checkDeprecatedEventsRoot.setOnMouseExited(event ->
         {
             if (entered)
             {
                 entered=false;
-                events.clear();
-                Main.root.getChildren().remove(paneOfInfoRoot);
-                paneOfInfoRoot=null;
+                daysWithDeprecatedEvents.clear();
+                Main.root.getChildren().remove(checkDeprecatedEventsRoot);
+                updateBellIcon();
             }
         });
-        Main.root.setOnMouseClicked(event->
-        {
-            if (paneOfInfoRoot!=null && Main.root.getChildren().contains(paneOfInfoRoot))
-            {
-                if (!(paneOfInfoRoot.contains(event.getX(),event.getY())))
-                {
-                    events.clear();
-                    Main.root.getChildren().remove(paneOfInfoRoot);
-                    paneOfInfoRoot=null;
-                }
-            }
-        });
-        addChild(paneOfInfoRoot);
+
+        addChild(checkDeprecatedEventsRoot);
+        //daysWithDeprecatedEvents.clear();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        addNotificationButtonIV.setImage(new Image("Images/add18.png"));
-        addGoalsButtonIV.setImage(new Image("Images/add18.png"));
-        addScheduleButtonIV.setImage(new Image("Images/add18.png"));
-
-        addNotificationButton.setOnAction(event ->
-        {
-            try { new NotificationSD().start(Stage); }
-            catch (Exception e)
-            { e.printStackTrace(); }
-        });
-
         notificationCheckBox.setOnAction(event->
         {
             updateScrollArea(notificationCheckBox.isSelected(),goalsCheckBox.isSelected(),schedulerCheckBox.isSelected());
@@ -168,52 +112,91 @@ public class EventsOfDayInfo extends Application implements Initializable
         schedulerCheckBox.setSelected(true);
     }
 
+    public static void updateBellIcon()
+    {
+        for (Node node : Main.root.getChildren())
+        {
+            if (node instanceof Button && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("deprecatedEventsBell"))
+            {
+                var button = (Button)node;
+                if (daysWithDeprecatedEvents.size()!=0)
+                {
+                    button.setGraphic(new ImageView(new Image("Images/bell25Active.png")));
+                }
+                else
+                {
+                    button.setGraphic(new ImageView(new Image("Images/bell25.png")));
+                }
+                break;
+            }
+        }
+    }
+
     private void updateScrollArea(boolean notification, boolean goal, boolean schedule)
     {
-        var content = new VBox(8);
-        content.setMaxWidth(459);
-        content.setMaxHeight(252);
-        content.setPrefWidth(459);
-        content.setPrefHeight(252);
-        content.setMinWidth(459);
+        var content = new VBox(12);
+        content.setMaxWidth(478);
+        content.setMaxHeight(235);
+        content.setPrefWidth(478);
+        content.setPrefHeight(235);
+        content.setMinWidth(478);
 
-        if (events.size()!=0)
+        for (var day : daysWithDeprecatedEvents)
         {
-            for (var event : events)
-            {
-                var type = event.getType();
+            var date = new Label(day.getDate().toString());
+            date.setAlignment(Pos.CENTER);
+            var hSeparatorUnderDate = new Separator();
 
-                var icon = new ImageView();
-                icon.setFitWidth(35);
-                icon.setFitHeight(35);
-                icon.setLayoutX(2);
-                HBox hbox = null;
-                if (type==Day.EventType.Notification && notification)
+            VBox vbox=new VBox();
+            var events = day.getEvents();
+            if (events.size()!=0)
+            {
+                for (var event : events)
                 {
-                    icon.setImage(new Image("Images/notification42.png"));
-                    hbox = addInfoOfEvent(event,icon);
-                }
-                if (type==Day.EventType.Goal && goal)
-                {
-                    icon.setImage(new Image("Images/goal42.png"));
-                    hbox = addInfoOfEvent(event,icon);
-                }
-                if (type==Day.EventType.Schedule && schedule)
-                {
-                    icon.setImage(new Image("Images/schedule42.png"));
-                    hbox = addInfoOfEvent(event,icon);
-                }
-                if (hbox!=null)
-                {
-                    content.getChildren().add(hbox);
+                    var type = event.getType();
+
+                    var icon = new ImageView();
+                    icon.setFitWidth(25);
+                    icon.setFitHeight(25);
+                    icon.setLayoutX(0);
+                    HBox hbox = null;
+                    if (type==Day.EventType.Notification && notification)
+                    {
+                        icon.setImage(new Image("Images/notification42.png"));
+                        hbox = addInfoOfEvent(event,icon);
+                    }
+                    if (type==Day.EventType.Goal && goal)
+                    {
+                        icon.setImage(new Image("Images/goal42.png"));
+                        hbox = addInfoOfEvent(event,icon);
+                    }
+                    if (type==Day.EventType.Schedule && schedule)
+                    {
+                        icon.setImage(new Image("Images/schedule42.png"));
+                        hbox = addInfoOfEvent(event,icon);
+                    }
+                    if (hbox!=null)
+                    {
+                        var hSeparator = new Separator();
+                        if (!(vbox.getChildren().contains(date) && vbox.getChildren().contains(hSeparatorUnderDate)))
+                        {
+                            vbox.getChildren().addAll(date, hSeparatorUnderDate, hbox, hSeparator);
+                        }
+                        else {vbox.getChildren().addAll(hbox, hSeparator);}
+                        vbox.setMaxWidth(477);
+                        vbox.setPrefWidth(477);
+                        vbox.setMinWidth(477);
+                        vbox.setAlignment(Pos.CENTER);
+                    }
                 }
             }
+            content.getChildren().add(vbox);
         }
         var scroller = new ScrollPane(content);
         scroller.setVisible(true);
         scroller.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scroller.setLayoutY(40);
-        var childList = paneOfInfoRoot.getChildren();
+        scroller.setLayoutY(65);
+        var childList = checkDeprecatedEventsRoot.getChildren();
         for(var node : childList)
         {
             if (node instanceof ScrollPane)
@@ -224,7 +207,6 @@ public class EventsOfDayInfo extends Application implements Initializable
             }
         }
         childList.add(scroller);
-        //paneOfInfoRoot.getChildren().removeIf(node -> node instanceof ScrollPane);
     }
 
     private HBox addInfoOfEvent(EventOfDay event, ImageView icon)
@@ -237,17 +219,19 @@ public class EventsOfDayInfo extends Application implements Initializable
         time.setEditable(false);
 
         var info = new TextArea(event.getInfo());
-        info.setPrefWidth(346);
-        info.setPrefHeight(42);
+        info.setPrefWidth(360);
+        info.setPrefHeight(25);
+        info.setMaxHeight(25);
+        info.setMinHeight(25);
         info.setEditable(false);
         info.setWrapText(true);
 
         var hbox = new HBox(4,icon,hSeparator,time,info);
-        hbox.setPrefWidth(456);
+        hbox.setPrefWidth(479);
         hbox.setPrefHeight(42);
-        hbox.setMinWidth(456);
+        hbox.setMinWidth(479);
         hbox.setMinHeight(42);
-        hbox.setMaxWidth(456);
+        hbox.setMaxWidth(479);//456
         hbox.setMaxHeight(42);
         hbox.setAlignment(Pos.CENTER);
         hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);

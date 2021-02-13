@@ -62,7 +62,7 @@ public class NotificationSD extends Application implements Initializable
             Main.root.getChildren().remove(selectedNotification);
         });
 
-        for (int i =1;i<9;i++)
+        for (int i =0;i<9;i++)
         {
             notificationComboBoxHours.getItems().add("0"+i);
         }
@@ -81,7 +81,7 @@ public class NotificationSD extends Application implements Initializable
         notificationAddButton.setOnAction(event ->
         {
             var dateOfEvent = notificationDatePicker.getValue();
-            var timeOfEvent = LocalTime.of(Integer.parseInt(notificationComboBoxHours.getValue()),Integer.parseInt(notificationComboBoxHours.getValue()));
+            var timeOfEvent = LocalTime.of(Integer.parseInt(notificationComboBoxHours.getValue()),Integer.parseInt(notificationComboBoxMinutes.getValue()));
             var daysWithEvents = getDaysWithEvents();
             if (dateOfEvent!=null)
             {
