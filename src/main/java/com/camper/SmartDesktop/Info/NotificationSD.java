@@ -35,16 +35,16 @@ public class NotificationSD extends Application implements Initializable
     @FXML private TextArea notificationTextArea;
     @FXML private ToolBar notificationToolBar;
 
-    private AnchorPane root;
-    private static AnchorPane selected;
+    private AnchorPane NotificationRoot;
+    private static AnchorPane selectedNotification;
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        root= FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/notificationRu.fxml")));
-        root.setLayoutX(DEFAULT_WIDTH/2-340/2);
-        root.setLayoutY(DEFAULT_HEIGHT/2-248/2);
-        addChild(root);
+        NotificationRoot= FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/notificationRu.fxml")));
+        NotificationRoot.setLayoutX(DEFAULT_WIDTH/2-340/2);
+        NotificationRoot.setLayoutY(DEFAULT_HEIGHT/2-248/2);
+        addChild(NotificationRoot);
     }
 
     @Override
@@ -52,14 +52,14 @@ public class NotificationSD extends Application implements Initializable
     {
         notificationToolBar.setOnMouseDragged(event ->
         {
-            NotificationSD.selected = (AnchorPane) (((ToolBar) event.getSource()).getParent());
-            NodeDragger.addDraggingProperty(NotificationSD.selected,event);
+            selectedNotification = (AnchorPane) (((ToolBar) event.getSource()).getParent());
+            NodeDragger.addDraggingProperty(selectedNotification,event);
         });
 
         notificationCloseButton.setOnAction(event->
         {
-            NotificationSD.selected = (AnchorPane) (((Button) event.getSource()).getParent());
-            Main.root.getChildren().remove(NotificationSD.selected);
+            selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
+            Main.root.getChildren().remove(selectedNotification);
         });
 
         for (int i =1;i<9;i++)
@@ -91,17 +91,19 @@ public class NotificationSD extends Application implements Initializable
                     {
                         day.addEvent(timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
                         updateDayIcons(day.getDate(),day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
-                        NotificationSD.selected = (AnchorPane) (((Button) event.getSource()).getParent());
-                        Main.root.getChildren().remove(NotificationSD.selected);
+                        selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
+                        Main.root.getChildren().remove(selectedNotification);
                         return;
                     }
                 }
                 var day = addEventOfDay(dateOfEvent, timeOfEvent, Day.EventType.Notification,notificationTextArea.getText());
                 daysWithEvents.add(day);
                 updateDayIcons(day.getDate(),day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
-                NotificationSD.selected = (AnchorPane) (((Button) event.getSource()).getParent());
-                Main.root.getChildren().remove(NotificationSD.selected);
+                selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
+                Main.root.getChildren().remove(selectedNotification);
             }
         });
+
+        notificationCancelButton.setOnAction(notificationCloseButton.getOnAction());
     }
 }

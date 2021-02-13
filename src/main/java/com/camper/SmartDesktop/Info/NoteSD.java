@@ -33,8 +33,8 @@ public class NoteSD extends Application implements Initializable
     @FXML private Button noteTestButton;
     @FXML private Button noteCloseButton;
     private boolean load=false;
-    private AnchorPane root;
-    private static AnchorPane selected;
+    private AnchorPane NoteRoot;
+    private static AnchorPane selectedNote;
     private static List<AnchorPane> notes = new ArrayList<>();
 
     public NoteSD() {}
@@ -43,24 +43,24 @@ public class NoteSD extends Application implements Initializable
         this.load=load;
     }
 
-    private AnchorPane getRoot() { return root; }
+    private AnchorPane getRoot() { return NoteRoot; }
 
     public static void clearSaveList() { notes.clear(); }
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/noteRu.fxml")));
-        root.setLayoutX(80);
-        root.setLayoutY(30);
-        notes.add(root);
-        addChild(root);
+        NoteRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/noteRu.fxml")));
+        NoteRoot.setLayoutX(80);
+        NoteRoot.setLayoutY(30);
+        notes.add(NoteRoot);
+        addChild(NoteRoot);
         if (!load)
         {
             //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
-            root.setAccessibleText(String.valueOf(idOfSelectedTab));
+            NoteRoot.setAccessibleText(String.valueOf(idOfSelectedTab));
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
-            elementsOfSelectedTab.add(root);
+            elementsOfSelectedTab.add(NoteRoot);
         }
     }
 
@@ -79,15 +79,15 @@ public class NoteSD extends Application implements Initializable
         //noteCloseButton.graphicProperty().setValue(new ImageView("Images/closeButton28.png"));
         noteCloseButton.setOnAction(event ->
         {
-            selected = (AnchorPane) (((Button) event.getSource()).getParent());
-            notes.remove(selected);
-            Main.root.getChildren().remove(selected);
+            selectedNote = (AnchorPane) (((Button) event.getSource()).getParent());
+            notes.remove(selectedNote);
+            Main.root.getChildren().remove(selectedNote);
         });
 
         noteToolBar.setOnMouseDragged(event ->
         {
-            selected = (AnchorPane) (((ToolBar) event.getSource()).getParent());
-            NodeDragger.addDraggingProperty(selected,event);
+            selectedNote = (AnchorPane) (((ToolBar) event.getSource()).getParent());
+            NodeDragger.addDraggingProperty(selectedNote,event);
         });
     }
 

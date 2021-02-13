@@ -6,10 +6,7 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -107,76 +104,13 @@ public class CalendarSD extends Application implements Initializable
         {
             selectedMonth = getNumberOfRussianMonth(monthChoiceBox.getValue());
             //Для русского
-            loadEventsIconOfMonth(yearComboBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()));
-            int dayInMonth = Month.of(getNumberOfRussianMonth(monthChoiceBox.getValue())).length(Year.isLeap(yearComboBox.getValue()));
-            if (dayInMonth>=29)
-            {
-                calendarDay29Button.setDisable(false);
-                calendarDay29Button.setVisible(true);
-            }
-            else
-            {
-                calendarDay29Button.setDisable(true);
-                calendarDay29Button.setVisible(false);
-            }
-            if (dayInMonth>=30)
-            {
-                calendarDay30Button.setDisable(false);
-                calendarDay30Button.setVisible(true);
-            }
-            else
-            {
-                calendarDay30Button.setDisable(true);
-                calendarDay30Button.setVisible(false);
-            }
-            if (dayInMonth>=31)
-            {
-                calendarDay31Button.setDisable(false);
-                calendarDay31Button.setVisible(true);
-            }
-            else
-            {
-                calendarDay31Button.setDisable(true);
-                calendarDay31Button.setVisible(false);
-            }
+            deletingUnnecessaryDaysInCalendar();
         });
         yearComboBox.setOnAction(event ->
         {
             //Для русского
             selectedYear=yearComboBox.getValue();
-
-            loadEventsIconOfMonth(yearComboBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()));
-            int dayInMonth = Month.of(getNumberOfRussianMonth(monthChoiceBox.getValue())).length(Year.isLeap(yearComboBox.getValue()));
-            if (dayInMonth>=29)
-            {
-                calendarDay29Button.setDisable(false);
-                calendarDay29Button.setVisible(true);
-            }
-            else
-            {
-                calendarDay29Button.setDisable(true);
-                calendarDay29Button.setVisible(false);
-            }
-            if (dayInMonth>=30)
-            {
-                calendarDay30Button.setDisable(false);
-                calendarDay30Button.setVisible(true);
-            }
-            else
-            {
-                calendarDay30Button.setDisable(true);
-                calendarDay30Button.setVisible(false);
-            }
-            if (dayInMonth>=31)
-            {
-                calendarDay31Button.setDisable(false);
-                calendarDay31Button.setVisible(true);
-            }
-            else
-            {
-                calendarDay31Button.setDisable(true);
-                calendarDay31Button.setVisible(false);
-            }
+            deletingUnnecessaryDaysInCalendar();
         });
         loadEventsIconOfMonth(yearComboBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()));
 
@@ -217,17 +151,24 @@ public class CalendarSD extends Application implements Initializable
         {
             calendarDay29Button.setDisable(true);
             calendarDay29Button.setVisible(false);
+            day29UpperSeparator.setVisible(false);
+            day29RightSeparator.setVisible(false);
+
         }
 
         if (!(dayInMonth>=30))
         {
             calendarDay30Button.setDisable(true);
             calendarDay30Button.setVisible(false);
+            day30UpperSeparator.setVisible(false);
+            day30RightSeparator.setVisible(false);
         }
         if (!(dayInMonth>=31))
         {
             calendarDay31Button.setDisable(true);
             calendarDay31Button.setVisible(false);
+            day31UpperSeparator.setVisible(false);
+            day31RightSeparator.setVisible(false);
         }
 
         /*calendarDay1Button.setOnAction((event ->
@@ -382,6 +323,54 @@ public class CalendarSD extends Application implements Initializable
         double layoutY = Double.parseDouble (xPath.evaluate("/save/calendar/layout/layoutY/text()",doc));
         rootOfLoadingCalendar.setLayoutX(layoutX);
         rootOfLoadingCalendar.setLayoutY(layoutY);
+    }
+
+    private void deletingUnnecessaryDaysInCalendar()
+    {
+        loadEventsIconOfMonth(yearComboBox.getValue(),getNumberOfRussianMonth(monthChoiceBox.getValue()));
+        int dayInMonth = Month.of(getNumberOfRussianMonth(monthChoiceBox.getValue())).length(Year.isLeap(yearComboBox.getValue()));
+        if (dayInMonth>=29)
+        {
+            calendarDay29Button.setDisable(false);
+            calendarDay29Button.setVisible(true);
+            day29UpperSeparator.setVisible(true);
+            day29RightSeparator.setVisible(true);
+        }
+        else
+        {
+            calendarDay29Button.setDisable(true);
+            calendarDay29Button.setVisible(false);
+            day29UpperSeparator.setVisible(false);
+            day29RightSeparator.setVisible(false);
+        }
+        if (dayInMonth>=30)
+        {
+            calendarDay30Button.setDisable(false);
+            calendarDay30Button.setVisible(true);
+            day30UpperSeparator.setVisible(true);
+            day30RightSeparator.setVisible(true);
+        }
+        else
+        {
+            calendarDay30Button.setDisable(true);
+            calendarDay30Button.setVisible(false);
+            day30UpperSeparator.setVisible(false);
+            day30RightSeparator.setVisible(false);
+        }
+        if (dayInMonth>=31)
+        {
+            calendarDay31Button.setDisable(false);
+            calendarDay31Button.setVisible(true);
+            day31UpperSeparator.setVisible(true);
+            day31RightSeparator.setVisible(true);
+        }
+        else
+        {
+            calendarDay31Button.setDisable(true);
+            calendarDay31Button.setVisible(false);
+            day31UpperSeparator.setVisible(false);
+            day31RightSeparator.setVisible(false);
+        }
     }
 
     private void addIconsToLists()
@@ -575,8 +564,13 @@ public class CalendarSD extends Application implements Initializable
                 { e.printStackTrace(); }
             }
         }
+        else
+        {
+            try { new EventsOfDayInfo(event,new Day(dayOfThisButton)).start(Stage); }
+            catch (Exception e)
+            { e.printStackTrace(); }
+        }
     }
-
     @FXML private Button calendarDay1Button;
     @FXML private ImageView CalendarDay1NotificationIV;
     @FXML private ImageView CalendarDay1GoalIV;
@@ -721,14 +715,20 @@ public class CalendarSD extends Application implements Initializable
     @FXML private ImageView CalendarDay29NotificationIV;
     @FXML private ImageView CalendarDay29GoalIV;
     @FXML private ImageView CalendarDay29ScheduleIV;
+    @FXML private Separator day29UpperSeparator;
+    @FXML private Separator day29RightSeparator;
 
     @FXML private Button calendarDay30Button;
     @FXML private ImageView CalendarDay30NotificationIV;
     @FXML private ImageView CalendarDay30GoalIV;
     @FXML private ImageView CalendarDay30ScheduleIV;
+    @FXML private Separator day30UpperSeparator;
+    @FXML private Separator day30RightSeparator;
 
     @FXML private Button calendarDay31Button;
     @FXML private ImageView CalendarDay31NotificationIV;
     @FXML private ImageView CalendarDay31GoalIV;
     @FXML private ImageView CalendarDay31ScheduleIV;
+    @FXML private Separator day31UpperSeparator;
+    @FXML private Separator day31RightSeparator;
 }
