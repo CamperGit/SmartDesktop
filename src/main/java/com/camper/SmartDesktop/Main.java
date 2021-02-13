@@ -35,6 +35,7 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
 
+import static com.camper.SmartDesktop.Info.UpcomingEvent.*;
 import static com.camper.SmartDesktop.Loading.*;
 import static com.camper.SmartDesktop.Saving.addNewSaveFile;
 import static com.camper.SmartDesktop.Saving.saveAll;
@@ -94,38 +95,6 @@ public class Main extends Application implements Initializable
         for (int i = 1;i<(tabs.size()+1);i++) { tabs.get(i).clear(); }
     }
 
-    private static void testTimer()
-    {
-        Task<Integer> task = new Task<>()
-        {
-            @Override
-            protected Integer call() throws Exception
-            {
-                LocalTime now = LocalTime.now();
-                LocalTime waitingTime = now.plusSeconds(5);
-                while (now.isBefore(waitingTime))
-                {
-                    now=LocalTime.now();
-                    try
-                    {
-                        Thread.sleep(100);
-
-                    } catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-                Platform.runLater(()->
-                {
-                    var alert = new Alert(Alert.AlertType.WARNING, "Выбранное сохранение было удалено или переименовано. Загрузка прервана", ButtonType.OK);
-                    alert.showAndWait();
-                });
-                return 1;
-            }
-        };
-        new Thread(task).start();
-    }
-
     @Override
     public void start(Stage stage) throws Exception
     {
@@ -134,6 +103,7 @@ public class Main extends Application implements Initializable
             try { saveAll(event); }
             catch (ParserConfigurationException | TransformerException | IOException e)
             { e.printStackTrace(); }
+            executorService.shutdown();
         });
 
         if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources"))&&Files.exists(Paths.get(DIRPATH+"\\Resources"))))
@@ -188,6 +158,9 @@ public class Main extends Application implements Initializable
             }
         }
 
+        //Ожидание конкретного времени
+        executorService.execute(returnTask());
+
         stage.setScene(scene);
         stage.setTitle("SmartDesktop");
         stage.show();
@@ -196,20 +169,6 @@ public class Main extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-
-        //Ожидание конкретного времени
-        /*timerTestButton.setOnAction((event)->
-        {
-            try
-            {
-                testTimer();
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-        });*/
-
         noteIV.setImage(new Image("Images/note35.png"));
         imagePlayerIV.setImage(new Image("Images/imageViewer35.png"));
         mediaPlayerIV.setImage(new Image("Images/videoPlayer35.png"));

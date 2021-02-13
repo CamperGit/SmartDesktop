@@ -53,6 +53,14 @@ public class Day
         this.getEvents().add(event);
     }
 
+    public void addEvent(EventOfDay event)
+    {
+        if (event.getType()==EventType.Notification) {this.setHaveNotification(true);}
+        if (event.getType()==EventType.Goal) {this.setHaveGoal(true);}
+        if (event.getType()==EventType.Schedule) {this.setHaveSchedule(true);}
+        this.getEvents().add(event);
+    }
+
     public static Day addEventOfDay(LocalDate date, LocalTime time,EventType type, String info)
     {
         var day = new Day(date);

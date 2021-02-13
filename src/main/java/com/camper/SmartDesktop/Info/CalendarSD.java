@@ -299,6 +299,8 @@ public class CalendarSD extends Application implements Initializable
             if (haveEvents) {daysWithEvents.add(day);}
         }
 
+        UpcomingEvent.loadEventsToQueue(daysWithEvents);
+
         var loadingCalendar = new CalendarSD(true);
         loadingCalendar.start(Main.Stage);
         var rootOfLoadingCalendar = getRoot();

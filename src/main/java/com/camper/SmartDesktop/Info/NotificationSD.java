@@ -89,7 +89,11 @@ public class NotificationSD extends Application implements Initializable
                 {
                     if (day.getDate().equals(dateOfEvent))
                     {
-                        day.addEvent(timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
+                        var eventOfDay = new EventOfDay(timeOfEvent,Day.EventType.Notification, notificationTextArea.getText()) ;
+                        //day.addEvent(timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
+                        day.addEvent(eventOfDay);
+                        UpcomingEvent.addEventToQueue(day.getDate(),eventOfDay);
+
                         updateDayIcons(day.getDate(),day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
                         selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
                         Main.root.getChildren().remove(selectedNotification);
@@ -98,6 +102,9 @@ public class NotificationSD extends Application implements Initializable
                 }
                 var day = addEventOfDay(dateOfEvent, timeOfEvent, Day.EventType.Notification,notificationTextArea.getText());
                 daysWithEvents.add(day);
+                var eventOfDay = day.getEvents().get(0);//День с событием только создан и первый элемент и есть искомая нами ссылка на событие
+                UpcomingEvent.addEventToQueue(day.getDate(),eventOfDay);
+
                 updateDayIcons(day.getDate(),day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
                 selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
                 Main.root.getChildren().remove(selectedNotification);
