@@ -62,7 +62,7 @@ public class NotificationSD extends Application implements Initializable
             Main.root.getChildren().remove(selectedNotification);
         });
 
-        for (int i =0;i<9;i++)
+        for (int i =0;i<=9;i++)
         {
             notificationComboBoxHours.getItems().add("0"+i);
         }
@@ -70,11 +70,11 @@ public class NotificationSD extends Application implements Initializable
         notificationComboBoxHours.setValue(String.valueOf(LocalTime.now().getHour()));
         notificationComboBoxHours.setVisibleRowCount(6);
 
-        for (int i =1;i<9;i++)
+        for (int i =0;i<=9;i++)
         {
             notificationComboBoxMinutes.getItems().add("0"+i);
         }
-        notificationComboBoxMinutes.getItems().addAll(IntStream.iterate(10,n->n<=60, n->++n).mapToObj(Integer::toString).collect(Collectors.toList()));
+        notificationComboBoxMinutes.getItems().addAll(IntStream.iterate(10,n->n<60, n->++n).mapToObj(Integer::toString).collect(Collectors.toList()));
         notificationComboBoxMinutes.setValue(String.valueOf(LocalTime.now().getMinute()));
         notificationComboBoxMinutes.setVisibleRowCount(6);
 

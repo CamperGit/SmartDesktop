@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static com.camper.SmartDesktop.Info.UpcomingEvent.disableEventQueue;
+import static com.camper.SmartDesktop.Info.UpcomingEvent.executorService;
 import static com.camper.SmartDesktop.Main.*;
 import static com.camper.SmartDesktop.Main.DIRPATH;
 
@@ -33,7 +35,7 @@ public class Saving
      *              у пользовател€ желает ли он сохранить файл или нет. ≈сли значение равно null, то никакое диалоговое окно вызывать не
      *              нужно и сохранени€ произойдЄт принудительно, без подтверждени€ от пользовател€
      */
-    public static void saveAll(WindowEvent event) throws ParserConfigurationException, TransformerException, IOException
+    public static void saveAll(WindowEvent event) throws ParserConfigurationException, TransformerException, IOException, InterruptedException
     {
         var factory = DocumentBuilderFactory.newInstance();
         var builder = factory.newDocumentBuilder();
@@ -62,8 +64,9 @@ public class Saving
             if (alertResult.getButtonData() == ButtonBar.ButtonData.YES)
             {
                 filename = currencySaveName;
+
             }
-            if (alertResult.getButtonData() == ButtonBar.ButtonData.NO) { return; }
+            if (alertResult.getButtonData() == ButtonBar.ButtonData.NO) { disableEventQueue(); return; }
             if (alertResult.getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE) { event.consume(); return;}
 
         }
@@ -77,6 +80,7 @@ public class Saving
         saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
 
         t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));
+        disableEventQueue();
     }
 
     public static void createEmptyXML(String filename) throws ParserConfigurationException, TransformerException, IOException

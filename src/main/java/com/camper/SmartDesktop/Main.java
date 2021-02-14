@@ -101,9 +101,8 @@ public class Main extends Application implements Initializable
         stage.setOnCloseRequest((event)->
         {
             try { saveAll(event); }
-            catch (ParserConfigurationException | TransformerException | IOException e)
+            catch (ParserConfigurationException | TransformerException | IOException | InterruptedException e)
             { e.printStackTrace(); }
-            executorService.shutdown();
         });
 
         if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources"))&&Files.exists(Paths.get(DIRPATH+"\\Resources"))))

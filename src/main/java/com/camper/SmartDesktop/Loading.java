@@ -102,6 +102,7 @@ public class Loading
                 }
 
                 NoteSD.loadNotesFromXML(doc,xPath);
+                // алендарь всегда должен грузитьс€ последним!!!
                 CalendarSD.loadCalendarFromXML(doc,xPath);
 
                 idOfSelectedTab = Integer.parseInt(xPath.evaluate("save/lastTab/@tab",doc));

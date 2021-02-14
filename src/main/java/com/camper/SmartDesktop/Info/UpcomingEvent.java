@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class UpcomingEvent
 {
@@ -30,16 +31,16 @@ public class UpcomingEvent
             protected Integer call() throws Exception
             {
                 var now = LocalDateTime.now();
-                /*if (upcomingEvent!=null)
+                while (eventsOnQueue.size()==0)
                 {
-
-                }*/
-                while (upcomingEvent==null || now.isBefore(upcomingEvent))
+                    Thread.onSpinWait();
+                }
+                upcomingEvent=eventsOnQueue.peek();
+                while (now.isBefore(upcomingEvent))
                 {
                     now=LocalDateTime.now();
                     try
                     {
-                        upcomingEvent = eventsOnQueue.peek();
                         Thread.sleep(100);
                     }
                     catch (InterruptedException e)
@@ -66,15 +67,6 @@ public class UpcomingEvent
             }
         });
 
-        /*task.setOnRunning(event->
-        {
-            if(upcomingEvent!= null && !upcomingEvent.equals(eventsOnQueue.peek()))
-            {
-                task.cancel();
-                executorService.execute(returnTask());
-            }
-        });*/
-
         return task;
     }
 
@@ -93,6 +85,8 @@ public class UpcomingEvent
                 }
             }
         }
+
+
     }
 
     public static void addEventToQueue(LocalDate date, EventOfDay event)
@@ -104,6 +98,16 @@ public class UpcomingEvent
         {
             task.cancel();
             executorService.execute(returnTask());
+        }
+    }
+
+    public static void disableEventQueue() throws InterruptedException
+    {
+        if (task!=null) { task.cancel(); }
+        executorService.shutdownNow();
+        if (!executorService.awaitTermination(100, TimeUnit.MICROSECONDS))
+        {
+            System.exit(0);
         }
     }
 }
