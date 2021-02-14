@@ -298,7 +298,7 @@ public class CalendarSD extends Application implements Initializable
             var haveEvents = Day.checkOfDeprecatedEvents(day);
             if (haveEvents) {daysWithEvents.add(day);}
         }
-
+        UpcomingEvent.disableEventQueue(false);
         UpcomingEvent.loadEventsToQueue(daysWithEvents);
 
         var loadingCalendar = new CalendarSD(true);

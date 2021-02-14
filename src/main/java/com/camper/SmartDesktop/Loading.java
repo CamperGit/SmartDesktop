@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static com.camper.SmartDesktop.Info.UpcomingEvent.runEventTask;
 import static com.camper.SmartDesktop.Main.*;
 import static com.camper.SmartDesktop.Main.saveInfo;
 import static com.camper.SmartDesktop.Saving.addNewSaveFile;
@@ -114,6 +115,7 @@ public class Loading
                 createEmptyXML(filename);
                 saveInfo.setProperty("lastSaveName",filename);
                 saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+                runEventTask();
             }
             currencySaveName = filename;
             return filename;

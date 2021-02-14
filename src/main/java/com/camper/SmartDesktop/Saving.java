@@ -66,7 +66,7 @@ public class Saving
                 filename = currencySaveName;
 
             }
-            if (alertResult.getButtonData() == ButtonBar.ButtonData.NO) { disableEventQueue(); return; }
+            if (alertResult.getButtonData() == ButtonBar.ButtonData.NO) { disableEventQueue(true); return; }
             if (alertResult.getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE) { event.consume(); return;}
 
         }
@@ -80,7 +80,8 @@ public class Saving
         saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
 
         t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));
-        disableEventQueue();
+        if(event!=null){disableEventQueue(true);} //Если событие на закрытие дошло до сюда и оно не пустое, значит пользователь
+        //подтвердил сохранение и хочет выйти.
     }
 
     public static void createEmptyXML(String filename) throws ParserConfigurationException, TransformerException, IOException

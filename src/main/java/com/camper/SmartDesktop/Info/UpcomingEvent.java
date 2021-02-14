@@ -14,6 +14,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import static com.camper.SmartDesktop.Info.CalendarSD.updateDayIcons;
+
 public class UpcomingEvent
 {
     private static PriorityBlockingQueue<LocalDateTime> eventsOnQueue = new PriorityBlockingQueue<>(5,LocalDateTime::compareTo);
@@ -22,11 +24,10 @@ public class UpcomingEvent
     private static Task<Integer> task;
     private static LocalDateTime upcomingEvent;
 
-    public static Task<Integer> returnTask()
+    private static Task<Integer> returnTask()
     {
         task = new Task<>()
         {
-            //LocalDateTime timeOfEvent;
             @Override
             protected Integer call() throws Exception
             {
@@ -41,7 +42,7 @@ public class UpcomingEvent
                     now=LocalDateTime.now();
                     try
                     {
-                        Thread.sleep(100);
+                        Thread.sleep(1000);
                     }
                     catch (InterruptedException e)
                     {
@@ -51,6 +52,18 @@ public class UpcomingEvent
                 Platform.runLater(()->
                 {
                     var otherInfoOfEvent = infoOfEvents.get(upcomingEvent);
+                    var date = upcomingEvent.toLocalDate();
+                    var day = Day.removeEventFromDay(date,otherInfoOfEvent);
+                    if (day==null)
+                    {
+                        updateDayIcons(date,false,false,false);
+
+                    }
+                    else
+                    {
+                        updateDayIcons(date,day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
+                    }
+
                     var alert = new Alert(Alert.AlertType.WARNING, otherInfoOfEvent.getType().toString()+": " + otherInfoOfEvent.getInfo(), ButtonType.OK);
                     alert.showAndWait();
                 });
@@ -85,8 +98,7 @@ public class UpcomingEvent
                 }
             }
         }
-
-
+        runEventTask();
     }
 
     public static void addEventToQueue(LocalDate date, EventOfDay event)
@@ -97,17 +109,30 @@ public class UpcomingEvent
         if (task!=null && upcomingEvent!=null && dateAndTime.isBefore(upcomingEvent))
         {
             task.cancel();
-            executorService.execute(returnTask());
+            runEventTask();
         }
     }
 
-    public static void disableEventQueue() throws InterruptedException
+    public static void disableEventQueue(boolean exit) throws InterruptedException
     {
-        if (task!=null) { task.cancel(); }
-        executorService.shutdownNow();
-        if (!executorService.awaitTermination(100, TimeUnit.MICROSECONDS))
+        if (task!=null) { task.cancel(); task=null; }
+        if (exit)
         {
-            System.exit(0);
+            executorService.shutdownNow();
+            if (!executorService.awaitTermination(100, TimeUnit.MICROSECONDS))
+            {
+                System.exit(0);
+            }
         }
+        else
+        {
+            eventsOnQueue.clear();
+            infoOfEvents.clear();
+        }
+    }
+
+    public static void runEventTask()
+    {
+        executorService.execute(returnTask());
     }
 }

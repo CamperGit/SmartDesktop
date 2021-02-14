@@ -158,7 +158,7 @@ public class Main extends Application implements Initializable
         }
 
         //Ожидание конкретного времени
-        executorService.execute(returnTask());
+        //executorService.execute(returnTask());
 
         stage.setScene(scene);
         stage.setTitle("SmartDesktop");

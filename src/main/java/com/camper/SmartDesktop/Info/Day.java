@@ -114,6 +114,46 @@ public class Day
             return true;
         }
     }
+
+    /**
+     *
+     * @param date - дата дня для поиска среди списка
+     * @param event - событие для удаления
+     * @return возвращает null, если в дне больше не осталось событий. Если же события ещё есть, то возвращает день, из
+     * которого было удалено событие
+     */
+    public static Day removeEventFromDay(LocalDate date, EventOfDay event)
+    {
+        Day day=null;
+        var daysWithEvents = CalendarSD.getDaysWithEvents();
+        for(var dayWithEvent : daysWithEvents)
+        {
+            if (dayWithEvent.getDate().equals(date))
+            {
+                var events = dayWithEvent.getEvents();
+                events.remove(event);
+                if (events.size()!=0)
+                {
+                    day = dayWithEvent;
+                    day.setHaveNotification(false);
+                    day.setHaveGoal(false);
+                    day.setHaveSchedule(false);
+                    for (var eventFromList : events)
+                    {
+                        if (eventFromList.getType()==EventType.Notification){day.setHaveNotification(true);}
+                        if (eventFromList.getType()==EventType.Goal){day.setHaveGoal(true);}
+                        if (eventFromList.getType()==EventType.Schedule){day.setHaveSchedule(true);}
+                    }
+                }
+                else
+                {
+                    daysWithEvents.remove(dayWithEvent);
+                }
+                break;
+            }
+        }
+        return day;
+    }
 }
 
 class EventOfDay
