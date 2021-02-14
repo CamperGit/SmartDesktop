@@ -36,7 +36,16 @@ public class NotificationSD extends Application implements Initializable
     @FXML private ToolBar notificationToolBar;
 
     private AnchorPane NotificationRoot;
+    private static LocalDate date=null;
     private static AnchorPane selectedNotification;
+
+
+    public NotificationSD(){}
+
+    public NotificationSD(LocalDate date)
+    {
+        this.date=date;
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -67,16 +76,52 @@ public class NotificationSD extends Application implements Initializable
             notificationComboBoxHours.getItems().add("0"+i);
         }
         notificationComboBoxHours.getItems().addAll(IntStream.iterate(10,n->n<=24, n->++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        notificationComboBoxHours.setValue(String.valueOf(LocalTime.now().getHour()));
+        String hour = LocalTime.now().getHour() <10 ? "0" + LocalTime.now().getHour() : String.valueOf(LocalTime.now().getHour());
+        notificationComboBoxHours.setValue(hour);
         notificationComboBoxHours.setVisibleRowCount(6);
+
+        notificationComboBoxHours.setOnScroll(event ->
+        {
+            int deltaY = (int) event.getDeltaY()/25;
+            int result = Integer.parseInt(notificationComboBoxHours.getValue())+deltaY;
+            if (result<0) {result=0;}
+            if (result>23) {result=23;}
+            String resultString=String.valueOf(result);
+            if (result<10)
+            {
+                resultString = "0"+result;
+            }
+            notificationComboBoxHours.setValue(resultString);
+        });
+
 
         for (int i =0;i<=9;i++)
         {
             notificationComboBoxMinutes.getItems().add("0"+i);
         }
         notificationComboBoxMinutes.getItems().addAll(IntStream.iterate(10,n->n<60, n->++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        notificationComboBoxMinutes.setValue(String.valueOf(LocalTime.now().getMinute()));
+        String minute = LocalTime.now().getMinute() <10 ? "0" + LocalTime.now().getMinute() : String.valueOf(LocalTime.now().getMinute());
+        notificationComboBoxMinutes.setValue(minute);
         notificationComboBoxMinutes.setVisibleRowCount(6);
+
+        notificationComboBoxMinutes.setOnScroll(event ->
+        {
+            int deltaY = (int) event.getDeltaY()/25;
+            int result = Integer.parseInt(notificationComboBoxMinutes.getValue())+deltaY;
+            if (result<0) {result=0;}
+            if (result>59) {result=59;}
+            String resultString=String.valueOf(result);
+            if (result<10)
+            {
+                resultString = "0"+result;
+            }
+            notificationComboBoxMinutes.setValue(resultString);
+        });
+
+        if (date!=null)
+        {
+            notificationDatePicker.setValue(date);
+        }
 
         notificationAddButton.setOnAction(event ->
         {

@@ -1,10 +1,14 @@
 package com.camper.SmartDesktop.Info;
 
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,13 +20,26 @@ import java.util.concurrent.TimeUnit;
 
 import static com.camper.SmartDesktop.Info.CalendarSD.updateDayIcons;
 
-public class UpcomingEvent
+public class UpcomingEvent extends Application implements Initializable
 {
     private static PriorityBlockingQueue<LocalDateTime> eventsOnQueue = new PriorityBlockingQueue<>(5,LocalDateTime::compareTo);
     private static Map<LocalDateTime,EventOfDay> infoOfEvents = new HashMap<>();
-    public static ExecutorService executorService = Executors.newCachedThreadPool();
+    private static ExecutorService executorService = Executors.newCachedThreadPool();
     private static Task<Integer> task;
     private static LocalDateTime upcomingEvent;
+    private static boolean alreadyShowing=false;
+
+    @Override
+    public void start(Stage primaryStage) throws Exception
+    {
+
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources)
+    {
+
+    }
 
     private static Task<Integer> returnTask()
     {
@@ -42,7 +59,7 @@ public class UpcomingEvent
                     now=LocalDateTime.now();
                     try
                     {
-                        Thread.sleep(1000);
+                        Thread.sleep(100);
                     }
                     catch (InterruptedException e)
                     {
@@ -51,21 +68,25 @@ public class UpcomingEvent
                 }
                 Platform.runLater(()->
                 {
-                    var otherInfoOfEvent = infoOfEvents.get(upcomingEvent);
-                    var date = upcomingEvent.toLocalDate();
-                    var day = Day.removeEventFromDay(date,otherInfoOfEvent);
-                    if (day==null)
+                    if (!alreadyShowing)
                     {
-                        updateDayIcons(date,false,false,false);
+                        var otherInfoOfEvent = infoOfEvents.get(upcomingEvent);
+                        var date = upcomingEvent.toLocalDate();
+                        var day = Day.removeEventFromDay(date,otherInfoOfEvent);
+                        if (day==null)
+                        {
+                            updateDayIcons(date,false,false,false);
 
-                    }
-                    else
-                    {
-                        updateDayIcons(date,day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
-                    }
+                        }
+                        else
+                        {
+                            updateDayIcons(date,day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
+                        }
 
-                    var alert = new Alert(Alert.AlertType.WARNING, otherInfoOfEvent.getType().toString()+": " + otherInfoOfEvent.getInfo(), ButtonType.OK);
-                    alert.showAndWait();
+                        alreadyShowing=true;
+                        var alert = new Alert(Alert.AlertType.WARNING, otherInfoOfEvent.getType().toString()+": " + otherInfoOfEvent.getInfo(), ButtonType.OK);
+                        alert.showAndWait();
+                    }
                 });
                 return eventsOnQueue.size();
             }
@@ -73,6 +94,7 @@ public class UpcomingEvent
 
         task.setOnSucceeded(event->
         {
+            alreadyShowing=false;
             eventsOnQueue.remove();
             if (task.getValue()!=0)
             {

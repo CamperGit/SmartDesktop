@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 
 import javax.swing.*;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,7 @@ public class EventsOfDayInfo extends Application implements Initializable
     private static AnchorPane paneOfInfoRoot;
     private static List<EventOfDay> events;
     private static boolean entered=false;
+    private static LocalDate date=null;
     private MouseEvent mouseEvent;
 
 
@@ -54,9 +56,11 @@ public class EventsOfDayInfo extends Application implements Initializable
             events.clear();
             Main.root.getChildren().remove(paneOfInfoRoot);
             paneOfInfoRoot=null;
+            date=null;
         }
         events = new ArrayList<>(dayWithEvents.getEvents());
         this.mouseEvent=mouseEvent;
+        date = dayWithEvents.getDate();
     }
 
     @Override
@@ -91,6 +95,7 @@ public class EventsOfDayInfo extends Application implements Initializable
                 events.clear();
                 Main.root.getChildren().remove(paneOfInfoRoot);
                 paneOfInfoRoot=null;
+                date=null;
             }
         });
         Main.root.setOnMouseClicked(event->
@@ -102,6 +107,7 @@ public class EventsOfDayInfo extends Application implements Initializable
                     events.clear();
                     Main.root.getChildren().remove(paneOfInfoRoot);
                     paneOfInfoRoot=null;
+                    date=null;
                 }
             }
         });
@@ -117,7 +123,7 @@ public class EventsOfDayInfo extends Application implements Initializable
 
         addNotificationButton.setOnAction(event ->
         {
-            try { new NotificationSD().start(Stage); }
+            try { new NotificationSD(date).start(Stage); }
             catch (Exception e)
             { e.printStackTrace(); }
         });

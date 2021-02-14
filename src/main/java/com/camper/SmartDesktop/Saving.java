@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static com.camper.SmartDesktop.Info.UpcomingEvent.disableEventQueue;
-import static com.camper.SmartDesktop.Info.UpcomingEvent.executorService;
 import static com.camper.SmartDesktop.Main.*;
 import static com.camper.SmartDesktop.Main.DIRPATH;
 
