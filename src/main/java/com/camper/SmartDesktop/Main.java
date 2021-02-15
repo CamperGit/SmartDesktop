@@ -70,6 +70,7 @@ public class Main extends Application implements Initializable
     @FXML private ImageView calendarIV;
     @FXML private ImageView deprecatedEventsIV;
 
+
     private static MediaPlayer mediaPlayer;
     private static int numberOfImmutableElements;
     public static int idOfSelectedTab=1;
