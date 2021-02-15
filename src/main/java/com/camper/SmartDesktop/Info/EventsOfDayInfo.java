@@ -249,12 +249,7 @@ public class EventsOfDayInfo extends Application implements Initializable
         info.setWrapText(true);
 
         var hbox = new HBox(4,icon,hSeparator,time,info);
-        hbox.setPrefWidth(456);
-        hbox.setPrefHeight(42);
-        hbox.setMinWidth(456);
-        hbox.setMinHeight(42);
-        hbox.setMaxWidth(456);
-        hbox.setMaxHeight(42);
+        Main.setRegion(hbox,456,42);
         hbox.setAlignment(Pos.CENTER);
         hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 

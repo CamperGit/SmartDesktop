@@ -43,7 +43,7 @@ public class NoteSD extends Application implements Initializable
         this.load=load;
     }
 
-    private AnchorPane getRoot() { return NoteRoot; }
+    private AnchorPane getNoteRoot() { return NoteRoot; }
 
     public static void clearSaveList() { notes.clear(); }
 
@@ -150,7 +150,7 @@ public class NoteSD extends Application implements Initializable
         {
             var loadingNote = new NoteSD(true);
             loadingNote.start(Main.Stage);
-            var rootOfLoadingNote = loadingNote.getRoot();
+            var rootOfLoadingNote = loadingNote.getNoteRoot();
 
             int numberOfTab = Integer.parseInt (xPath.evaluate("/save/notes/note"+noteNumber+"/@tab",doc));
             //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан

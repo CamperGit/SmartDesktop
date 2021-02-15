@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Info/CalendarSD.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Info/EventsOfDayInfo.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Info/ScheduleSD.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Loading.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/SaveAndLoadScreen.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Saving.java" charset="windows-1251" />

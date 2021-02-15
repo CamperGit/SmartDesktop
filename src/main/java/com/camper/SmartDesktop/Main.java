@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -58,14 +59,16 @@ public class Main extends Application implements Initializable
     @FXML private Button imageFileChooserButton;
     @FXML private Button videoFileChooserButton;
     @FXML private Button note;
+    @FXML private Button schedule;
     @FXML private Button calendar;
     @FXML private Button autorizeButton;
     @FXML private Button checkDeprecatedEventsButton;
     @FXML private ImageView noteIV;
+    @FXML private ImageView scheduleIV;
     @FXML private ImageView imagePlayerIV;
     @FXML private ImageView mediaPlayerIV;
     @FXML private ImageView calendarIV;
-    @FXML private ImageView notificationInfoIV;
+    @FXML private ImageView deprecatedEventsIV;
 
     private static MediaPlayer mediaPlayer;
     private static int numberOfImmutableElements;
@@ -81,6 +84,16 @@ public class Main extends Application implements Initializable
     public static final String DIRPATH = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
 
     public static void addChild(Parent node) { root.getChildren().add(node); }
+
+    public static void setRegion(Region node, int width, int height)
+    {
+        node.setMinHeight(height);
+        node.setPrefHeight(height);
+        node.setMaxHeight(height);
+        node.setMinWidth(width);
+        node.setPrefWidth(width);
+        node.setMaxWidth(width);
+    }
 
     private static void deleteAllNewElements()
     {
@@ -157,9 +170,6 @@ public class Main extends Application implements Initializable
             }
         }
 
-        //Ожидание конкретного времени
-        //executorService.execute(returnTask());
-
         stage.setScene(scene);
         stage.setTitle("SmartDesktop");
         stage.show();
@@ -169,10 +179,11 @@ public class Main extends Application implements Initializable
     public void initialize(URL location, ResourceBundle resources)
     {
         noteIV.setImage(new Image("Images/note35.png"));
+        scheduleIV.setImage(new Image("Images/schedule35.png"));
         imagePlayerIV.setImage(new Image("Images/imageViewer35.png"));
         mediaPlayerIV.setImage(new Image("Images/videoPlayer35.png"));
         calendarIV.setImage(new Image("Images/calendar35.png"));
-        notificationInfoIV.setImage(new Image("Images/bell25.png"));
+        deprecatedEventsIV.setImage(new Image("Images/bell25.png"));
 
 
         autorizeButton.setLayoutX(DEFAULT_WIDTH-120);
@@ -360,9 +371,16 @@ public class Main extends Application implements Initializable
             }
         });
 
-        note.setOnAction((event)->
+        note.setOnAction(event->
         {
             try { new NoteSD().start(Stage); }
+            catch (Exception e)
+            { e.printStackTrace(); }
+        });
+
+        schedule.setOnAction(event->
+        {
+            try { new ScheduleSD().start(Stage); }
             catch (Exception e)
             { e.printStackTrace(); }
         });

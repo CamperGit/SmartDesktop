@@ -227,12 +227,7 @@ public class DeprecatedEvents extends Application implements Initializable
         info.setWrapText(true);
 
         var hbox = new HBox(4,icon,hSeparator,time,info);
-        hbox.setPrefWidth(479);
-        hbox.setPrefHeight(42);
-        hbox.setMinWidth(479);
-        hbox.setMinHeight(42);
-        hbox.setMaxWidth(479);//456
-        hbox.setMaxHeight(42);
+        Main.setRegion(hbox,479,42);
         hbox.setAlignment(Pos.CENTER);
         hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 

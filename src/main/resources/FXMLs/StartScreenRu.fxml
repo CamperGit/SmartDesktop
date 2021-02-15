@@ -43,9 +43,14 @@
                <content>
                   <ToolBar accessibleHelp="ToolTabPane" orientation="VERTICAL" prefHeight="1044.0" prefWidth="45.0">
                     <items>
+                        <Button fx:id="schedule" layoutX="-2.0" maxHeight="35.0" maxWidth="35.0" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #f4f4f4;">
+                           <graphic>
+                              <ImageView fx:id="scheduleIV" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </Button>
                       <Button fx:id="note" maxHeight="35.0" maxWidth="35.0" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #f4f4f4;">
                            <graphic>
-                              <ImageView fx:id="noteIV" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="noteIV" fitHeight="35.0" fitWidth="30.0" layoutX="5.0" pickOnBounds="true" preserveRatio="true" />
                            </graphic></Button>
                     </items>
                   </ToolBar>
@@ -109,7 +114,7 @@
       <Button fx:id="autorizeButton" layoutX="1800.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Войти" />
       <Button fx:id="checkDeprecatedEventsButton" accessibleHelp="deprecatedEventsBell" layoutX="1408.0" maxHeight="25.0" maxWidth="-Infinity" minHeight="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="167.0" text="Прошедшие события">
          <graphic>
-            <ImageView fx:id="notificationInfoIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="deprecatedEventsIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
          </graphic>
       </Button>
    </children>
