@@ -18,7 +18,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.w3c.dom.Document;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -105,13 +108,16 @@ public class ScheduleSD extends Application implements Initializable
                 if (child instanceof ScrollPane)
                 {
                     var vbox = (VBox)(((ScrollPane)child).getContent());
-                    createNewLine(vbox.getChildren());
+                    createNewLine(vbox.getChildren(),null,null,false,null);
                 }
             }
         });
 
         scheduleContentVbox.setSpacing(10);
-        createNewLine(scheduleContentVbox.getChildren());
+        if (scheduleContentVbox.getChildren().size()==0)
+        {
+            createNewLine(scheduleContentVbox.getChildren(),null,null,false,null);
+        }
 
         scheduleCloseButton.setOnAction(event ->
         {
@@ -171,7 +177,7 @@ public class ScheduleSD extends Application implements Initializable
 
     }
 
-    private void createNewLine(ObservableList<Node> content)
+    private static void createNewLine(ObservableList<Node> content,LocalTime startTime, LocalTime endTime, boolean checkBoxState, String info)
     {
         var hbox = new HBox();
         Main.setRegion(hbox,460,25);
@@ -198,11 +204,23 @@ public class ScheduleSD extends Application implements Initializable
 
         hours1.getItems().addAll(numbers0_9);
         hours1.getItems().addAll(IntStream.iterate(10, n->n<24, n->++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        hours1.setValue("16");
+        if (startTime==null) { hours1.setValue("16"); }
+        else
+        {
+            String hour = startTime.getHour() <10 ? "0" + startTime.getHour() : String.valueOf(startTime.getHour());
+            hours1.setValue(hour);
+        }
+        hours1.setAccessibleHelp("startTimeHours");
         hours1.setVisibleRowCount(6);
         hours2.getItems().addAll(numbers0_9);
         hours2.getItems().addAll(IntStream.iterate(10, n->n<24, n->++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        hours2.setValue("17");
+        if (endTime==null) { hours2.setValue("17"); }
+        else
+        {
+            String hour = endTime.getHour() <10 ? "0" + endTime.getHour() : String.valueOf(endTime.getHour());
+            hours2.setValue(hour);
+        }
+        hours2.setAccessibleHelp("endTimeHours");
         hours2.setVisibleRowCount(6);
 
         var separatorBetweenTime = new Separator(Orientation.VERTICAL);
@@ -212,11 +230,23 @@ public class ScheduleSD extends Application implements Initializable
 
         minutes1.getItems().addAll(numbers0_9);
         minutes1.getItems().addAll(IntStream.iterate(10,n->n<60, n->++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        minutes1.setValue("00");
+        if (startTime==null) {minutes1.setValue("00"); }
+        else
+        {
+            String minute = startTime.getMinute() <10 ? "0" + startTime.getMinute() : String.valueOf(startTime.getMinute());
+            minutes1.setValue(minute);
+        }
+        minutes1.setAccessibleHelp("startTimeMinutes");
         minutes1.setVisibleRowCount(6);
         minutes2.getItems().addAll(numbers0_9);
         minutes2.getItems().addAll(IntStream.iterate(10,n->n<60, n->++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        minutes2.setValue("00");
+        if (endTime==null) { minutes2.setValue("00"); }
+        else
+        {
+            String minute = endTime.getMinute() <10 ? "0" + endTime.getMinute() : String.valueOf(endTime.getMinute());
+            minutes2.setValue(minute);
+        }
+        minutes2.setAccessibleHelp("endTimeMinutes");
         minutes2.setVisibleRowCount(6);
 
 
@@ -233,6 +263,7 @@ public class ScheduleSD extends Application implements Initializable
         addEventCheckBox.setLayoutX(5);
         addEventCheckBox.setText("ѕоказать уведомление");
         addEventCheckBox.getStylesheets().add(Objects.requireNonNull(mainCL.getResource("FXMLs/mediumCheckBox.css")).toExternalForm());
+        addEventCheckBox.setSelected(checkBoxState);
 
 
 
@@ -253,6 +284,10 @@ public class ScheduleSD extends Application implements Initializable
 
         var text = new TextArea();
         text.setWrapText(true);
+        if (info!=null)
+        {
+            text.setText(info);
+        }
         Main.setRegion(text,435,25);
         var hbox2 = new HBox(leftOffset2,text);
 
@@ -274,7 +309,6 @@ public class ScheduleSD extends Application implements Initializable
             {
                 var eventOfDay = new EventOfDay(LocalTime.of(Integer.parseInt(hours1.getValue()),Integer.parseInt(minutes1.getValue())), Day.EventType.Schedule,text.getText());
                 map.put(addEventCheckBox,eventOfDay);
-
             }
             else
             {
@@ -310,5 +344,196 @@ public class ScheduleSD extends Application implements Initializable
             content.remove(line);
             content.remove(hSeparator);
         });
+    }
+
+    public static void addSchedulesToXML(Document doc, boolean createEmptyXML)
+    {
+        var rootElement = doc.getFirstChild();
+
+        var schedulesElement = doc.createElement("schedules");
+        rootElement.appendChild(schedulesElement);
+        if (!createEmptyXML)
+        {
+            for (int id=1; id< schedules.size()+1;id++)
+            {
+                var scheduleSD = schedules.get(id);
+                var schedule = scheduleSD.getScheduleRoot();
+                var scheduleElement = doc.createElement("schedule" + id);
+                scheduleElement.setAttribute("tab",schedule.getAccessibleText());
+
+                schedulesElement.appendChild(scheduleElement);
+
+                var visibilityElement = doc.createElement("visibility");
+                scheduleElement.appendChild(visibilityElement);
+                var visibilityValue = doc.createTextNode(String.valueOf(schedule.isVisible()));
+                visibilityElement.appendChild(visibilityValue);
+
+                var layoutElement = doc.createElement("layout");
+                scheduleElement.appendChild(layoutElement);
+
+                var layoutX = doc.createElement("layoutX" );
+                layoutElement.appendChild(layoutX);
+                var layoutXValue = doc.createTextNode(String.valueOf((int)(schedule.getLayoutX())));
+                layoutX.appendChild(layoutXValue);
+
+                var layoutY = doc.createElement("layoutY" );
+                layoutElement.appendChild(layoutY);
+                var layoutYValue = doc.createTextNode(String.valueOf((int)(schedule.getLayoutY())));
+                layoutY.appendChild(layoutYValue);
+
+                var dateElement = doc.createElement("date");
+                scheduleElement.appendChild(dateElement);
+                var dateElementValue = doc.createTextNode(String.valueOf(scheduleSD.getDate()));
+                dateElement.appendChild(dateElementValue);
+
+                VBox vbox=null;
+                for (Node node : schedule.getChildren())
+                {
+                    if(node instanceof ScrollPane)
+                    {
+                        vbox = (VBox) (((ScrollPane) node).getContent());
+                        break;
+                    }
+                }
+
+                var linesElement = doc.createElement("lines");
+                scheduleElement.appendChild(linesElement);
+                assert vbox != null;
+                int numberOfLine = 1;
+                for (var line : vbox.getChildren())
+                {
+                    if (line instanceof HBox)
+                    {
+                        VBox vboxOfLine = (VBox)(((HBox) line).getChildren().get(0));
+                        var lineElement = doc.createElement("line"+numberOfLine);
+                        linesElement.appendChild(lineElement);
+
+                        var startTimeElement = doc.createElement("startTime");
+                        lineElement.appendChild(startTimeElement);
+                        int startHour=0,startMinute=0;
+
+                        var endTimeElement = doc.createElement("endTime");
+                        lineElement.appendChild(endTimeElement);
+                        int endHour=0,endMinute=0;
+
+                        var checkBoxStateElement = doc.createElement("checkBoxState");
+                        lineElement.appendChild(checkBoxStateElement);
+                        String checkBoxState="false";
+
+                        var textElement = doc.createElement("text");
+                        lineElement.appendChild(textElement);
+                        String text="";
+
+                        for (var hBoxes : vboxOfLine.getChildren())
+                        {
+                            if (hBoxes instanceof HBox)
+                            {
+                                for (var node : ((HBox)hBoxes).getChildren())
+                                {
+                                    if(node instanceof ComboBox && node.getAccessibleHelp().equals("startTimeHours"))
+                                    {
+                                        startHour=Integer.parseInt(((ComboBox<String>) node).getValue());
+                                        continue;
+                                    }
+                                    if(node instanceof ComboBox && node.getAccessibleHelp().equals("endTimeHours"))
+                                    {
+                                        endHour=Integer.parseInt(((ComboBox<String>) node).getValue());
+                                        continue;
+                                    }
+                                    if(node instanceof ComboBox && node.getAccessibleHelp().equals("startTimeMinutes"))
+                                    {
+                                        startMinute=Integer.parseInt(((ComboBox<String>) node).getValue());
+                                        continue;
+                                    }
+                                    if(node instanceof ComboBox && node.getAccessibleHelp().equals("endTimeMinutes"))
+                                    {
+                                        endMinute=Integer.parseInt(((ComboBox<String>) node).getValue());
+                                        continue;
+                                    }
+                                    if (node instanceof CheckBox)
+                                    {
+                                        checkBoxState=String.valueOf(((CheckBox) node).isSelected());
+                                        continue;
+                                    }
+                                    if (node instanceof TextArea)
+                                    {
+                                        text = ((TextArea) node).getText();
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                        var startTimeElementValue = doc.createTextNode(String.valueOf(LocalTime.of(startHour,startMinute)));
+                        startTimeElement.appendChild(startTimeElementValue);
+
+                        var endTimeElementValue = doc.createTextNode(String.valueOf(LocalTime.of(endHour,endMinute)));
+                        endTimeElement.appendChild(endTimeElementValue);
+
+                        var checkBoxStateElementValue = doc.createTextNode(checkBoxState);
+                        checkBoxStateElement.appendChild(checkBoxStateElementValue);
+
+                        var textElementValue = doc.createTextNode(text);
+                        textElement.appendChild(textElementValue);
+
+                        numberOfLine++;
+                    }
+                }
+            }
+        }
+    }
+
+    public static void loadSchedulesFromXML(Document doc, XPath xPath) throws Exception
+    {
+        int numberOfSchedules = xPath.evaluateExpression("count(/save/schedules/*)",doc,Integer.class);
+        for (int id = 1; id < numberOfSchedules+1; id++)
+        {
+            var loadingSchedule = new ScheduleSD(true);
+            loadingSchedule.start(Main.Stage);
+            var rootOfLoadingSchedule = loadingSchedule.getScheduleRoot();
+
+            int numberOfTab = Integer.parseInt (xPath.evaluate("/save/schedules/schedule"+id+"/@tab",doc));
+            //”становить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
+            rootOfLoadingSchedule.setAccessibleText(String.valueOf(numberOfTab));
+
+            var tab = tabs.get(numberOfTab);
+            tab.add(rootOfLoadingSchedule);
+            boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/schedules/schedule"+id+"/visibility/text()",doc));
+            rootOfLoadingSchedule.setVisible(visibility);
+
+            double layoutX = Double.parseDouble (xPath.evaluate("/save/schedules/schedule"+id+"/layout/layoutX/text()",doc));
+            double layoutY = Double.parseDouble (xPath.evaluate("/save/schedules/schedule"+id+"/layout/layoutY/text()",doc));
+            rootOfLoadingSchedule.setLayoutX(layoutX);
+            rootOfLoadingSchedule.setLayoutY(layoutY);
+
+            VBox content = null;
+            for (Node node : rootOfLoadingSchedule.getChildren())
+            {
+                if (node instanceof DatePicker)
+                {
+                    String dateOnString = xPath.evaluate("save/schedules/schedule"+id+"/date/text()",doc);
+                    if(!(dateOnString.equals("null")))
+                    {
+                        LocalDate date = LocalDate.parse(dateOnString);
+                        ((DatePicker) node).setValue(date);
+                    }
+                }
+                if (node instanceof ScrollPane)
+                {
+                    content = (VBox)(((ScrollPane) node).getContent());
+                }
+            }
+
+
+            int numberOfLines = xPath.evaluateExpression("count(/save/schedules/schedule" + id+"/lines/*)",doc,Integer.class);
+            for (int numberOfLine = 1; numberOfLine < numberOfLines+1; numberOfLine++)
+            {
+                LocalTime startTime = LocalTime.parse(xPath.evaluate("save/schedules/schedule"+id+"/lines/line" + numberOfLine + "/startTime/text()",doc));
+                LocalTime endTime = LocalTime.parse(xPath.evaluate("save/schedules/schedule"+id+"/lines/line" + numberOfLine + "/endTime/text()",doc));
+                boolean checkBoxState = Boolean.parseBoolean(xPath.evaluate("save/schedules/schedule"+id+"/lines/line" + numberOfLine + "/checkBoxState/text()",doc));
+                String text = xPath.evaluate("save/schedules/schedule"+id+"/lines/line" + numberOfLine + "/text/text()",doc);
+
+                createNewLine(content.getChildren(),startTime,endTime,checkBoxState,text);
+            }
+        }
     }
 }
