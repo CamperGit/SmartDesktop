@@ -18,10 +18,7 @@ import org.w3c.dom.Document;
 
 import javax.xml.xpath.XPath;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static com.camper.SmartDesktop.Main.*;
 
@@ -34,18 +31,20 @@ public class NoteSD extends Application implements Initializable
     @FXML private Button noteCloseButton;
     private boolean load=false;
     private AnchorPane NoteRoot;
+    private int id;
     private static AnchorPane selectedNote;
-    private static List<AnchorPane> notes = new ArrayList<>();
+    private static Map<Integer,NoteSD> notes = new HashMap<>();
+    private static int nextId=1;
 
-    public NoteSD() {}
-    private NoteSD(boolean load)
-    {
-        this.load=load;
-    }
+    public NoteSD() { }
+    private NoteSD(boolean load) { this.load=load; }
 
     private AnchorPane getNoteRoot() { return NoteRoot; }
 
-    public static void clearSaveList() { notes.clear(); }
+    public static void clearSaveList() { notes.clear(); nextId=1;}
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -53,11 +52,13 @@ public class NoteSD extends Application implements Initializable
         NoteRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/noteRu.fxml")));
         NoteRoot.setLayoutX(80);
         NoteRoot.setLayoutY(30);
-        notes.add(NoteRoot);
+        this.id=nextId;
+        nextId++;
+        notes.put(this.id,this);
+        NoteRoot.setAccessibleHelp(String.valueOf(this.id));
         addChild(NoteRoot);
         if (!load)
         {
-            //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
             NoteRoot.setAccessibleText(String.valueOf(idOfSelectedTab));
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(NoteRoot);
@@ -75,12 +76,10 @@ public class NoteSD extends Application implements Initializable
             noteTextArea.appendText("Test text!");
         });
 
-
-        //noteCloseButton.graphicProperty().setValue(new ImageView("Images/closeButton28.png"));
         noteCloseButton.setOnAction(event ->
         {
             selectedNote = (AnchorPane) (((Button) event.getSource()).getParent());
-            notes.remove(selectedNote);
+            notes.remove(Integer.parseInt(selectedNote.getAccessibleHelp()));
             Main.root.getChildren().remove(selectedNote);
         });
 
@@ -99,11 +98,11 @@ public class NoteSD extends Application implements Initializable
         rootElement.appendChild(notesElement);
         if (!createEmptyXML)
         {
-            int noteNumber=1;
-            for (AnchorPane note : notes)
+            for (int id = 1; id<notes.size()+1;id++)
             {
-
-                var noteElement = doc.createElement("note" + noteNumber);
+                var noteSD = notes.get(id);
+                var note = noteSD.getNoteRoot();
+                var noteElement = doc.createElement("note" + id);
                 //Получить значение таба, при котором был создан элемент
                 noteElement.setAttribute("tab",note.getAccessibleText());
 
@@ -138,7 +137,6 @@ public class NoteSD extends Application implements Initializable
                         textElement.appendChild(textElementValue);
                     }
                 }
-                noteNumber++;
             }
         }
     }
@@ -146,23 +144,23 @@ public class NoteSD extends Application implements Initializable
     public static void loadNotesFromXML(Document doc, XPath xPath) throws Exception
     {
         int numberOfNotes = xPath.evaluateExpression("count(/save/notes/*)",doc,Integer.class);
-        for (int noteNumber = 1; noteNumber < numberOfNotes+1; noteNumber++)
+        for (int id = 1; id < numberOfNotes+1; id++)
         {
             var loadingNote = new NoteSD(true);
             loadingNote.start(Main.Stage);
             var rootOfLoadingNote = loadingNote.getNoteRoot();
 
-            int numberOfTab = Integer.parseInt (xPath.evaluate("/save/notes/note"+noteNumber+"/@tab",doc));
+            int numberOfTab = Integer.parseInt (xPath.evaluate("/save/notes/note"+id+"/@tab",doc));
             //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
             rootOfLoadingNote.setAccessibleText(String.valueOf(numberOfTab));
 
             var tab = tabs.get(numberOfTab);
             tab.add(rootOfLoadingNote);
-            boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/notes/note"+noteNumber+"/visibility/text()",doc));
+            boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/notes/note"+id+"/visibility/text()",doc));
             rootOfLoadingNote.setVisible(visibility);
 
-            double layoutX = Double.parseDouble (xPath.evaluate("/save/notes/note"+noteNumber+"/layout/layoutX/text()",doc));
-            double layoutY = Double.parseDouble (xPath.evaluate("/save/notes/note"+noteNumber+"/layout/layoutY/text()",doc));
+            double layoutX = Double.parseDouble (xPath.evaluate("/save/notes/note"+id+"/layout/layoutX/text()",doc));
+            double layoutY = Double.parseDouble (xPath.evaluate("/save/notes/note"+id+"/layout/layoutY/text()",doc));
             rootOfLoadingNote.setLayoutX(layoutX);
             rootOfLoadingNote.setLayoutY(layoutY);
 
@@ -170,7 +168,7 @@ public class NoteSD extends Application implements Initializable
             {
                 if(node instanceof TextArea)
                 {
-                    String text = xPath.evaluate("save/notes/note"+noteNumber+"/text/text()",doc);
+                    String text = xPath.evaluate("save/notes/note"+id+"/text/text()",doc);
                     ((TextArea) node).setText(text);
                 }
             }

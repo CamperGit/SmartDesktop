@@ -22,10 +22,7 @@ import javax.swing.*;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static com.camper.SmartDesktop.Main.*;
 
@@ -185,6 +182,7 @@ public class EventsOfDayInfo extends Application implements Initializable
 
         if (events.size()!=0)
         {
+            events.sort(Comparator.comparing(EventOfDay::getTime));
             for (var event : events)
             {
                 var type = event.getType();

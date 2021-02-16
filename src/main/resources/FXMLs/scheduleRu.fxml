@@ -11,10 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="280.0" maxWidth="460.0" minHeight="280.0" minWidth="460.0" prefHeight="280.0" prefWidth="460.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.ScheduleSD">
+<AnchorPane maxHeight="305.0" maxWidth="460.0" minHeight="280.0" minWidth="460.0" prefHeight="280.0" prefWidth="460.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.ScheduleSD">
    <children>
-      <ToolBar fx:id="scheduleToolBar" layoutX="25.0" prefHeight="25.0" prefWidth="289.0" />
-      <DatePicker layoutX="339.0" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="96.0" />
+      <ToolBar fx:id="scheduleToolBar" layoutX="25.0" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="289.0" />
       <Button fx:id="scheduleSettingsButton" layoutX="314.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
          <graphic>
             <ImageView fx:id="scheduleSettingsButtonIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
@@ -23,12 +22,11 @@
          <graphic>
             <ImageView fx:id="scheduleCloseButtonIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
          </graphic></Button>
-      <ScrollPane hbarPolicy="NEVER" layoutY="55.0" prefHeight="225.0" prefWidth="460.0">
+      <ScrollPane hbarPolicy="NEVER" layoutY="55.0" prefHeight="200.0" prefWidth="460.0">
          <content>
-            <VBox fx:id="scheduleContentVbox" alignment="TOP_CENTER" prefHeight="223.0" prefWidth="460.0">
+            <VBox fx:id="scheduleContentVbox" alignment="TOP_CENTER" prefHeight="198.0" prefWidth="460.0">
                <children>
                   <Separator prefWidth="200.0" />
-                  <Separator opacity="0.0" prefHeight="11.0" prefWidth="460.0" />
                </children>
             </VBox>
          </content>
@@ -38,10 +36,13 @@
             <ImageView fx:id="scheduleAddNewLineButtonIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
          </graphic>
       </Button>
-      <Label alignment="CENTER" layoutY="25.0" maxHeight="30.0" maxWidth="460.0" minHeight="30.0" minWidth="460.0" prefHeight="30.0" prefWidth="460.0" text="Расписание на 15.02.2021">
+      <Label fx:id="schedulerTextLabel" alignment="CENTER" layoutY="25.0" maxHeight="30.0" maxWidth="460.0" minHeight="30.0" minWidth="460.0" prefHeight="30.0" prefWidth="460.0" text="Расписание на 15.02.2021">
          <font>
-            <Font size="18.0" />
+            <Font name="Times New Roman" size="20.0" />
          </font>
       </Label>
+      <Separator layoutY="254.0" prefHeight="3.0" prefWidth="460.0" />
+      <Button fx:id="schedulerSaveButton" layoutY="255.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="460.0" text="Сохранить" />
+      <DatePicker fx:id="schedulerDatePicker" layoutX="339.0" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="96.0" />
    </children>
 </AnchorPane>

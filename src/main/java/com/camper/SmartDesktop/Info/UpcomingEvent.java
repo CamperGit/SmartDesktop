@@ -76,7 +76,6 @@ public class UpcomingEvent extends Application implements Initializable
                         if (day==null)
                         {
                             updateDayIcons(date,false,false,false);
-
                         }
                         else
                         {
@@ -120,7 +119,10 @@ public class UpcomingEvent extends Application implements Initializable
                 }
             }
         }
-        runEventTask();
+        if (task==null && upcomingEvent==null)
+        {
+            runEventTask();
+        }
     }
 
     public static void addEventToQueue(LocalDate date, EventOfDay event)
@@ -137,7 +139,7 @@ public class UpcomingEvent extends Application implements Initializable
 
     public static void disableEventQueue(boolean exit) throws InterruptedException
     {
-        if (task!=null) { task.cancel(); task=null; }
+        if (task!=null) { task.cancel(); task=null; upcomingEvent=null; }
         if (exit)
         {
             executorService.shutdownNow();

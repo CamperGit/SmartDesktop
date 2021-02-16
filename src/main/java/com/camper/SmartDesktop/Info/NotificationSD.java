@@ -13,16 +13,15 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.camper.SmartDesktop.Info.CalendarSD.getDaysWithEvents;
-import static com.camper.SmartDesktop.Info.CalendarSD.updateDayIcons;
+import static com.camper.SmartDesktop.Info.CalendarSD.*;
 import static com.camper.SmartDesktop.Info.Day.addEventOfDay;
 import static com.camper.SmartDesktop.Main.*;
+
 
 public class NotificationSD extends Application implements Initializable
 {
@@ -36,16 +35,24 @@ public class NotificationSD extends Application implements Initializable
     @FXML private ToolBar notificationToolBar;
 
     private AnchorPane NotificationRoot;
+    private int id;
     private static LocalDate date=null;
     private static AnchorPane selectedNotification;
-
+    private static Map<Integer, NotificationSD> notifications = new HashMap<>();
+    private static int nextId=1;
 
     public NotificationSD(){}
-
     public NotificationSD(LocalDate date)
     {
-        this.date=date;
+        NotificationSD.date=date;
     }
+
+    private AnchorPane getNotificationRoot() { return NotificationRoot; }
+
+    public static void clearSaveList() { notifications.clear(); nextId=1;}
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -53,6 +60,12 @@ public class NotificationSD extends Application implements Initializable
         NotificationRoot= FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/notificationRu.fxml")));
         NotificationRoot.setLayoutX(DEFAULT_WIDTH/2-340/2);
         NotificationRoot.setLayoutY(DEFAULT_HEIGHT/2-248/2);
+
+        this.id=nextId;
+        nextId++;
+        notifications.put(this.id,this);
+        NotificationRoot.setAccessibleHelp(String.valueOf(this.id));
+
         addChild(NotificationRoot);
     }
 
@@ -68,8 +81,11 @@ public class NotificationSD extends Application implements Initializable
         notificationCloseButton.setOnAction(event->
         {
             selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
+            notifications.remove(Integer.parseInt(selectedNotification.getAccessibleHelp()));
             Main.root.getChildren().remove(selectedNotification);
         });
+
+        notificationCancelButton.setOnAction(notificationCloseButton.getOnAction());
 
         for (int i =0;i<=9;i++)
         {
@@ -130,32 +146,26 @@ public class NotificationSD extends Application implements Initializable
             var daysWithEvents = getDaysWithEvents();
             if (dateOfEvent!=null)
             {
-                for (var day : daysWithEvents)
+                var day = checkUsingOfThisDate(dateOfEvent);
                 {
-                    if (day.getDate().equals(dateOfEvent))
+                    if (day!=null)
                     {
                         var eventOfDay = new EventOfDay(timeOfEvent,Day.EventType.Notification, notificationTextArea.getText()) ;
-                        //day.addEvent(timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
                         day.addEvent(eventOfDay);
                         UpcomingEvent.addEventToQueue(day.getDate(),eventOfDay);
-
-                        updateDayIcons(day.getDate(),day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
-                        selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
-                        Main.root.getChildren().remove(selectedNotification);
-                        return;
                     }
+                    else
+                    {
+                        day = addEventOfDay(dateOfEvent, timeOfEvent, Day.EventType.Notification,notificationTextArea.getText());
+                        daysWithEvents.add(day);
+                        var eventOfDay = day.getEvents().get(0);//День с событием только создан и первый элемент и есть искомая нами ссылка на событие
+                        UpcomingEvent.addEventToQueue(day.getDate(),eventOfDay);
+                    }
+                    updateDayIcons(day.getDate(),day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
+                    selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
+                    Main.root.getChildren().remove(selectedNotification);
                 }
-                var day = addEventOfDay(dateOfEvent, timeOfEvent, Day.EventType.Notification,notificationTextArea.getText());
-                daysWithEvents.add(day);
-                var eventOfDay = day.getEvents().get(0);//День с событием только создан и первый элемент и есть искомая нами ссылка на событие
-                UpcomingEvent.addEventToQueue(day.getDate(),eventOfDay);
-
-                updateDayIcons(day.getDate(),day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
-                selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
-                Main.root.getChildren().remove(selectedNotification);
             }
         });
-
-        notificationCancelButton.setOnAction(notificationCloseButton.getOnAction());
     }
 }

@@ -20,10 +20,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static com.camper.SmartDesktop.Main.*;
 
@@ -151,6 +148,7 @@ public class DeprecatedEvents extends Application implements Initializable
             var events = day.getEvents();
             if (events.size()!=0)
             {
+                events.sort(Comparator.comparing(EventOfDay::getTime));
                 for (var event : events)
                 {
                     var type = event.getType();

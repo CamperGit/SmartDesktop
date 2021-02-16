@@ -20,13 +20,15 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.camper.SmartDesktop.Info.CalendarSD.checkUsingOfThisDate;
+import static com.camper.SmartDesktop.Info.CalendarSD.updateDayIcons;
+import static com.camper.SmartDesktop.Info.Day.addEventOfDay;
 import static com.camper.SmartDesktop.Main.*;
 
 public class ScheduleSD extends Application implements Initializable
@@ -39,26 +41,46 @@ public class ScheduleSD extends Application implements Initializable
     @FXML private Button scheduleCloseButton;
     @FXML private Button scheduleSettingsButton;
     @FXML private Button scheduleAddNewLineButton;
+    @FXML private Button schedulerSaveButton;
+    @FXML private Label schedulerTextLabel;
     @FXML private VBox scheduleContentVbox;
+    @FXML private DatePicker schedulerDatePicker;
+
     private boolean load=false;
     private AnchorPane ScheduleRoot;
+    private Map<CheckBox,EventOfDay> eventsOfSchedule = new HashMap<>();
+    private int id;
+    private LocalDate date=null;
     private static AnchorPane selectedSchedule;
-    private static List<AnchorPane> schedules = new ArrayList<>();
+    private static Map<Integer, ScheduleSD> schedules = new HashMap<>();
+    private static int nextId=1;
 
     public ScheduleSD(){}
     private ScheduleSD(boolean load) { this.load=load; }
 
-    public static void clearSaveList() {schedules.clear();}
+    public static void clearSaveList() {schedules.clear(); nextId=1;}
+
+    public Map<CheckBox, EventOfDay> getEventsOfSchedule() { return eventsOfSchedule; }
+
+    public LocalDate getDate() { return date; }
+    public void setDate(LocalDate date) { this.date = date; }
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     private AnchorPane getScheduleRoot() {return ScheduleRoot;}
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        ScheduleRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleRu2.fxml")));
+        ScheduleRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleRu.fxml")));
         ScheduleRoot.setLayoutX(80);
         ScheduleRoot.setLayoutY(30);
-        schedules.add(ScheduleRoot);
+        this.id=nextId;
+        nextId++;
+        schedules.put(this.id,this);
+        ScheduleRoot.setAccessibleHelp(String.valueOf(this.id));
+
         addChild(ScheduleRoot);
         if (!load)
         {
@@ -83,18 +105,18 @@ public class ScheduleSD extends Application implements Initializable
                 if (child instanceof ScrollPane)
                 {
                     var vbox = (VBox)(((ScrollPane)child).getContent());
-                    createNewHBox(vbox.getChildren());
+                    createNewLine(vbox.getChildren());
                 }
             }
         });
 
         scheduleContentVbox.setSpacing(10);
-        createNewHBox(scheduleContentVbox.getChildren());
+        createNewLine(scheduleContentVbox.getChildren());
 
         scheduleCloseButton.setOnAction(event ->
         {
             selectedSchedule = (AnchorPane) (((Button) event.getSource()).getParent());
-            schedules.remove(selectedSchedule);
+            schedules.remove(Integer.parseInt(selectedSchedule.getAccessibleHelp()));
             Main.root.getChildren().remove(selectedSchedule);
         });
 
@@ -103,9 +125,53 @@ public class ScheduleSD extends Application implements Initializable
             selectedSchedule = (AnchorPane) (((ToolBar) event.getSource()).getParent());
             NodeDragger.addDraggingProperty(selectedSchedule,event);
         });
+
+        schedulerSaveButton.setOnAction(event->
+        {
+            selectedSchedule = (AnchorPane) (((Button) event.getSource()).getParent());
+            int id = Integer.parseInt(selectedSchedule.getAccessibleHelp());
+            var scheduleSD = schedules.get(id);
+            var date = scheduleSD.getDate();
+            var mapWithEvents = scheduleSD.getEventsOfSchedule();
+
+            if (date!=null)
+            {
+                var day = checkUsingOfThisDate(date);
+                {
+                    if (day == null)
+                    {
+                        day = new Day(date);
+                        CalendarSD.getDaysWithEvents().add(day);
+                    }
+                    for (var entry : mapWithEvents.entrySet())
+                    {
+                        CheckBox state = entry.getKey();
+                        EventOfDay eventOfDay = entry.getValue();
+                        if (state.isSelected())
+                        {
+                            day.addEvent(eventOfDay);
+                        }
+                    }
+                    UpcomingEvent.loadEventsToQueue(List.of(day));
+                    updateDayIcons(date,day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
+                }
+            }
+            else
+            {
+                var alert = new Alert(Alert.AlertType.WARNING, "Введите дату!", ButtonType.OK);
+                alert.showAndWait();
+            }
+        });
+
+        schedulerDatePicker.setOnAction(event->
+        {
+            var scheduleSD = schedules.get(Integer.parseInt((((DatePicker)(event.getSource())).getParent()).getAccessibleHelp()));
+            scheduleSD.setDate(schedulerDatePicker.getValue());
+        });
+
     }
 
-    private static void createNewHBox(ObservableList<Node> content)
+    private void createNewLine(ObservableList<Node> content)
     {
         var hbox = new HBox();
         Main.setRegion(hbox,460,25);
@@ -153,59 +219,6 @@ public class ScheduleSD extends Application implements Initializable
         minutes2.setValue("00");
         minutes2.setVisibleRowCount(6);
 
-        hours1.setOnScroll(event ->
-        {
-            int deltaY = (int) event.getDeltaY()/25;
-            int result = Integer.parseInt(hours1.getValue())+deltaY;
-            if (result<0) {result=0;}
-            if (result>23) {result=23;}
-            String resultString=String.valueOf(result);
-            if (result<10)
-            {
-                resultString = "0"+result;
-            }
-            hours1.setValue(resultString);
-        });
-        hours2.setOnScroll(event ->
-        {
-            int deltaY = (int) event.getDeltaY()/25;
-            int result = Integer.parseInt(hours2.getValue())+deltaY;
-            if (result<0) {result=0;}
-            if (result>23) {result=23;}
-            String resultString=String.valueOf(result);
-            if (result<10)
-            {
-                resultString = "0"+result;
-            }
-            hours2.setValue(resultString);
-        });
-
-        minutes1.setOnScroll(event ->
-        {
-            int deltaY = (int) event.getDeltaY()/25;
-            int result = Integer.parseInt(minutes1.getValue())+deltaY;
-            if (result<0) {result=0;}
-            if (result>59) {result=59;}
-            String resultString=String.valueOf(result);
-            if (result<10)
-            {
-                resultString = "0"+result;
-            }
-            minutes1.setValue(resultString);
-        });
-        minutes2.setOnScroll(event ->
-        {
-            int deltaY = (int) event.getDeltaY()/25;
-            int result = Integer.parseInt(minutes2.getValue())+deltaY;
-            if (result<0) {result=0;}
-            if (result>59) {result=59;}
-            String resultString=String.valueOf(result);
-            if (result<10)
-            {
-                resultString = "0"+result;
-            }
-            minutes2.setValue(resultString);
-        });
 
         var dash = new Label("-");
         dash.setAlignment(Pos.CENTER);
@@ -221,12 +234,15 @@ public class ScheduleSD extends Application implements Initializable
         addEventCheckBox.setText("Показать уведомление");
         addEventCheckBox.getStylesheets().add(Objects.requireNonNull(mainCL.getResource("FXMLs/mediumCheckBox.css")).toExternalForm());
 
+
+
         var spacingBetweenCheckBoxAndDeletingButton = new Separator(Orientation.VERTICAL);
         spacingBetweenCheckBoxAndDeletingButton.setVisible(false);
         spacingBetweenCheckBoxAndDeletingButton.setPrefWidth(6);
 
         var deletingButton = new Button();
         Main.setRegion(deletingButton,25,25);
+        deletingButton.setGraphic(new ImageView(new Image("Images/minus25.png")));
 
         hbox.getChildren().addAll(leftOffset1,hours1,minutes1,dash,hours2,minutes2,spacingBetweenTimeAndCheckBox,addEventCheckBox,spacingBetweenCheckBoxAndDeletingButton,deletingButton);
 
@@ -248,6 +264,46 @@ public class ScheduleSD extends Application implements Initializable
         var hSeparator = new Separator(Orientation.HORIZONTAL);
         hSeparator.setPrefHeight(10);
         content.addAll(line,hSeparator);
+
+        addEventCheckBox.setOnAction(event ->
+        {
+            var parent = ((Node)(event.getSource())).getParent();
+            var scheduleSD = schedules.get(returnAnchorId(parent));
+            var map = scheduleSD.getEventsOfSchedule();
+            if (addEventCheckBox.isSelected())
+            {
+                var eventOfDay = new EventOfDay(LocalTime.of(Integer.parseInt(hours1.getValue()),Integer.parseInt(minutes1.getValue())), Day.EventType.Schedule,text.getText());
+                map.put(addEventCheckBox,eventOfDay);
+
+            }
+            else
+            {
+                map.remove(addEventCheckBox);
+            }
+        });
+
+        text.setOnKeyTyped(event->
+        {
+            var parent = ((Node)(event.getSource())).getParent();
+            var scheduleSD = schedules.get(returnAnchorId(parent));
+            var map = scheduleSD.getEventsOfSchedule();
+            if (addEventCheckBox.isSelected())
+            {
+                var eventOfDay = new EventOfDay(LocalTime.of(Integer.parseInt(hours1.getValue()),Integer.parseInt(minutes1.getValue())), Day.EventType.Schedule,text.getText());
+                map.put(addEventCheckBox,eventOfDay);
+
+            }
+            else
+            {
+                map.remove(addEventCheckBox);
+            }
+        });
+
+        hours1.setOnAction(addEventCheckBox.getOnAction());
+        hours2.setOnAction(addEventCheckBox.getOnAction());
+        minutes1.setOnAction(addEventCheckBox.getOnAction());
+        minutes2.setOnAction(addEventCheckBox.getOnAction());
+
 
         deletingButton.setOnAction(event->
         {

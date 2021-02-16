@@ -64,14 +64,6 @@ public class CalendarSD extends Application implements Initializable
         CalendarRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarRu.fxml")));
         CalendarRoot.setLayoutX(80);
         CalendarRoot.setLayoutY(30);
-        /**
-         * 1)Теперь в классе кастомных элементов мы не храним лист AnchorPane. Вместо этого в классе Main мы будем хранить хешмапу с ссылками на кастомные элементы, где ключём является id, который будет установлен по приватному полю внутри себя.
-         * 2)Этот id должен храниться внутри AnchorPane, а именно свойства AccessibleHelp, что позволяет получить максимальную свободу действий при работе с элементами и при действии уже в запущенном приложении(Runtime) вытаскивать по ссылке на ивент корневой узел и в нём находить параметр AccessibleHelp, после чего по полученному id вытаскивать из хешмапы нужный нам элемент, то есть объект кастомного класса, и получать доступ к полям или методам данного объекта
-         *
-         * В следствие этого нужно изменить алгоритм сохранения и загрузки объектов на экран с учётом id и того, что мы храним данные элементы в хешмапе. Изменения не значительные, но нужно не проебатсься в этих изменениях
-         *
-         * Классы, которые будут подвержены изменениям в следствие рефакторинга NoteSD, NotificationSD, ScheduleSD, Loading, Saving, Main
-         */
         addChild(CalendarRoot);
         if (!load)
         {
@@ -479,6 +471,23 @@ public class CalendarSD extends Application implements Initializable
         scheduleIcons.add(CalendarDay29ScheduleIV);
         scheduleIcons.add(CalendarDay30ScheduleIV);
         scheduleIcons.add(CalendarDay31ScheduleIV);
+    }
+
+    /**
+     *
+     * @param date дата для проверки существования такой даты в списке дней с событиями
+     * @return null, если такая дата ещё не использовалась, day - если есть день с такой датой
+     */
+    public static Day checkUsingOfThisDate(LocalDate date)
+    {
+        for (var dayWithEvent : daysWithEvents)
+        {
+            if (dayWithEvent.getDate().equals(date))
+            {
+                return dayWithEvent;
+            }
+        }
+        return null;
     }
 
     private static void loadEventsIconOfMonth(int year, int month)

@@ -2,10 +2,7 @@ package com.camper.SmartDesktop;
 
 
 import com.camper.SmartDesktop.Info.*;
-import com.camper.SmartDesktop.Info.CalendarSD;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.media.Media;
@@ -27,23 +25,23 @@ import javafx.stage.Stage;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalTime;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
-import static com.camper.SmartDesktop.Info.UpcomingEvent.*;
 import static com.camper.SmartDesktop.Loading.*;
 import static com.camper.SmartDesktop.Saving.addNewSaveFile;
 import static com.camper.SmartDesktop.Saving.saveAll;
 
 public class Main extends Application implements Initializable
 {
-
     public static void main(String[] args) { launch(args); }
 
     @FXML private ChoiceBox<String> savesChoiceBox;
@@ -69,7 +67,6 @@ public class Main extends Application implements Initializable
     @FXML private ImageView mediaPlayerIV;
     @FXML private ImageView calendarIV;
     @FXML private ImageView deprecatedEventsIV;
-
 
     private static MediaPlayer mediaPlayer;
     private static int numberOfImmutableElements;
@@ -101,6 +98,8 @@ public class Main extends Application implements Initializable
         var list = root.getChildren();
         list.remove(numberOfImmutableElements,list.size());
         NoteSD.clearSaveList();
+        NotificationSD.clearSaveList();
+        ScheduleSD.clearSaveList();
         CalendarSD.clearLastInfo();
     }
 
@@ -402,6 +401,16 @@ public class Main extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(calendar);
         }));
+    }
+
+    public static int returnAnchorId(Node parent)
+    {
+        while (!(parent instanceof AnchorPane))
+        {
+            parent=parent.getParent();
+        }
+        var pane = (AnchorPane)parent;
+        return Integer.parseInt(pane.getAccessibleHelp());
     }
 }
 
