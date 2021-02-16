@@ -98,9 +98,10 @@ public class NoteSD extends Application implements Initializable
         rootElement.appendChild(notesElement);
         if (!createEmptyXML)
         {
-            for (int id = 1; id<notes.size()+1;id++)
+            int id=1;
+            for (var entry : notes.entrySet())
             {
-                var noteSD = notes.get(id);
+                var noteSD = notes.get(entry.getKey());
                 var note = noteSD.getNoteRoot();
                 var noteElement = doc.createElement("note" + id);
                 //Получить значение таба, при котором был создан элемент
@@ -137,6 +138,7 @@ public class NoteSD extends Application implements Initializable
                         textElement.appendChild(textElementValue);
                     }
                 }
+                id++;
             }
         }
     }

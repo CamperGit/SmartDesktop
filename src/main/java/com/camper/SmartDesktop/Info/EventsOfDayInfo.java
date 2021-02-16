@@ -125,6 +125,13 @@ public class EventsOfDayInfo extends Application implements Initializable
             { e.printStackTrace(); }
         });
 
+        addScheduleButton.setOnAction(event ->
+        {
+            try { new ScheduleSD(date).start(Stage); }
+            catch (Exception e)
+            { e.printStackTrace(); }
+        });
+
         notificationCheckBox.setOnAction(event->
         {
             updateScrollArea(notificationCheckBox.isSelected(),goalsCheckBox.isSelected(),schedulerCheckBox.isSelected());

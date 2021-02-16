@@ -59,6 +59,10 @@ public class ScheduleSD extends Application implements Initializable
     private static int nextId=1;
 
     public ScheduleSD(){}
+    public ScheduleSD(LocalDate date)
+    {
+        this.date=date;
+    }
     private ScheduleSD(boolean load) { this.load=load; }
 
     public static void clearSaveList() {schedules.clear(); nextId=1;}
@@ -112,6 +116,11 @@ public class ScheduleSD extends Application implements Initializable
                 }
             }
         });
+
+        if (date!=null)
+        {
+            schedulerDatePicker.setValue(date);
+        }
 
         scheduleContentVbox.setSpacing(10);
         if (scheduleContentVbox.getChildren().size()==0)
@@ -354,9 +363,10 @@ public class ScheduleSD extends Application implements Initializable
         rootElement.appendChild(schedulesElement);
         if (!createEmptyXML)
         {
-            for (int id=1; id< schedules.size()+1;id++)
+            int id=1;
+            for (var entry : schedules.entrySet())
             {
-                var scheduleSD = schedules.get(id);
+                var scheduleSD = schedules.get(entry.getKey());
                 var schedule = scheduleSD.getScheduleRoot();
                 var scheduleElement = doc.createElement("schedule" + id);
                 scheduleElement.setAttribute("tab",schedule.getAccessibleText());
@@ -478,6 +488,7 @@ public class ScheduleSD extends Application implements Initializable
                         numberOfLine++;
                     }
                 }
+                id++;
             }
         }
     }
@@ -515,6 +526,7 @@ public class ScheduleSD extends Application implements Initializable
                     {
                         LocalDate date = LocalDate.parse(dateOnString);
                         ((DatePicker) node).setValue(date);
+                        loadingSchedule.setDate(date);
                     }
                 }
                 if (node instanceof ScrollPane)
