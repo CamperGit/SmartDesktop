@@ -6,6 +6,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="248.0" prefWidth="340.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.NotificationSD">
@@ -21,4 +22,7 @@
       <ComboBox fx:id="notificationComboBoxMinutes" layoutX="78.0" layoutY="73.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
       <ComboBox fx:id="notificationComboBoxHours" layoutX="8.0" layoutY="73.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
    </children>
+   <effect>
+      <DropShadow />
+   </effect>
 </AnchorPane>
