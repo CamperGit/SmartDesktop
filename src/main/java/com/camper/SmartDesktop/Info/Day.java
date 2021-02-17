@@ -58,8 +58,11 @@ public class Day
         {
             if (eventOfDay.getType()==event.getType() && eventOfDay.getTime()==event.getTime() && eventOfDay.getInfo().equals(event.getInfo()))
             {
-                var alert = new Alert(Alert.AlertType.WARNING, "Данное событие уже существует. Выберите другую дату, время или тип", ButtonType.OK);
-                alert.showAndWait();
+                if (event.getType()==EventType.Notification)
+                {
+                    var alert = new Alert(Alert.AlertType.WARNING, "Данное напоминание уже существует. Выберите другую дату, время или текст", ButtonType.OK);
+                    alert.showAndWait();
+                }
                 return;
             }
         }

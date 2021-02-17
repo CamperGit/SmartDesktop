@@ -46,7 +46,6 @@ public class ScheduleSD extends Application implements Initializable
     @FXML private Button scheduleSettingsButton;
     @FXML private Button scheduleAddNewLineButton;
     @FXML private Button schedulerSaveButton;
-    @FXML private Label schedulerTextLabel;
     @FXML private VBox scheduleContentVbox;
     @FXML private DatePicker schedulerDatePicker;
 
@@ -185,6 +184,12 @@ public class ScheduleSD extends Application implements Initializable
             scheduleSD.setDate(schedulerDatePicker.getValue());
         });
 
+        scheduleSettingsButton.setOnMouseClicked(event->
+        {
+            try { new SchedulerCopySettings(event,new Day(LocalDate.now())).start(Main.Stage); }
+            catch (Exception e)
+            { e.printStackTrace(); }
+        });
     }
 
     private static void createNewLine(ObservableList<Node> content,LocalTime startTime, LocalTime endTime, boolean checkBoxState, String info)
