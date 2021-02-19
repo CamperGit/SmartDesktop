@@ -54,9 +54,11 @@ public class ScheduleSD extends Application implements Initializable
     private Map<CheckBox,EventOfDay> eventsOfSchedule = new HashMap<>();
     private int id;
     private LocalDate date=null;
+    private SchedulerCopySettings copySettings=null;
     private static AnchorPane selectedSchedule;
     private static Map<Integer, ScheduleSD> schedules = new HashMap<>();
     private static int nextId=1;
+
 
     public ScheduleSD(){}
     public ScheduleSD(LocalDate date)
@@ -74,6 +76,10 @@ public class ScheduleSD extends Application implements Initializable
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
+
+    public SchedulerCopySettings getCopySettings() { return copySettings; }
+    public void setCopySettings(SchedulerCopySettings copySettings) { this.copySettings = copySettings;
+   }
 
     private AnchorPane getScheduleRoot() {return ScheduleRoot;}
 
@@ -169,6 +175,12 @@ public class ScheduleSD extends Application implements Initializable
                     }
                     UpcomingEvent.loadEventsToQueue(List.of(day));
                     updateDayIcons(date,day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
+
+                    if (scheduleSD.getCopySettings()!=null)
+                    {
+                        var test = scheduleSD.getCopySettings().getRepeatSelected();
+                        System.out.println();
+                    }
                 }
             }
             else
@@ -186,9 +198,23 @@ public class ScheduleSD extends Application implements Initializable
 
         scheduleSettingsButton.setOnMouseClicked(event->
         {
-            try { new SchedulerCopySettings(event,new Day(LocalDate.now())).start(Main.Stage); }
-            catch (Exception e)
-            { e.printStackTrace(); }
+            int id = Integer.parseInt((((Button)(event.getSource())).getParent()).getAccessibleHelp());
+            var scheduleSD = schedules.get(id);
+            if (scheduleSD.getCopySettings()==null)
+            {
+                var settings = new SchedulerCopySettings(event,id);
+                scheduleSD.setCopySettings(settings);
+                try { settings.start(Main.Stage); }
+                catch (Exception e)
+                { e.printStackTrace(); }
+            }
+            else
+            {
+
+                var settings = scheduleSD.getCopySettings();
+                Main.root.getChildren().remove(settings.getCopySettingsRoot());
+                settings.showSettings(settings.getCopySettingsRoot());
+            }
         });
     }
 
