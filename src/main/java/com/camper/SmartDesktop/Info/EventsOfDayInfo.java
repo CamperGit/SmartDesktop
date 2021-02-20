@@ -235,7 +235,6 @@ public class EventsOfDayInfo extends Application implements Initializable
             }
         }
         childList.add(scroller);
-        //paneOfInfoRoot.getChildren().removeIf(node -> node instanceof ScrollPane);
     }
 
     private HBox addInfoOfEvent(EventOfDay event, ImageView icon)

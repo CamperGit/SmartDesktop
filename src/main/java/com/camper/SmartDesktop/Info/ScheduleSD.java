@@ -80,7 +80,7 @@ public class ScheduleSD extends Application implements Initializable
     public SchedulerCopySettings getCopySettings() { return copySettings; }
     public void setCopySettings(SchedulerCopySettings copySettings) { this.copySettings = copySettings; }
 
-    private VBox getScheduleContentVbox() {return scheduleContentVbox;}
+    //private VBox getScheduleContentVbox() {return scheduleContentVbox;}
 
     private AnchorPane getScheduleRoot() {return ScheduleRoot;}
 
@@ -124,7 +124,7 @@ public class ScheduleSD extends Application implements Initializable
                 if (child instanceof ScrollPane)
                 {
                     var vbox = (VBox)(((ScrollPane)child).getContent());
-                    createNewLine(vbox.getChildren(),null,null,false,null);
+                    createNewLine(vbox,null,null,false,null, Integer.parseInt(selectedSchedule.getAccessibleHelp()));
                 }
             }
         });
@@ -181,13 +181,20 @@ public class ScheduleSD extends Application implements Initializable
                             day.addEvent(eventOfDay);
                         }
                     }
-                    UpcomingEvent.loadEventsToQueue(List.of(day));
-                    updateDayIcons(date,day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
+                    var listOfDaysWithSchedules = new ArrayList<Day>();
+                    listOfDaysWithSchedules.add(day);
 
                     if (scheduleSD.getCopySettings()!=null)
                     {
-                        var test = scheduleSD.getCopySettings().getRepeatSelected();
-                        System.out.println();
+                        var repeat = scheduleSD.getCopySettings().getRepeatSelected();
+                        var period = scheduleSD.getCopySettings().getPeriodSelected();
+                        listOfDaysWithSchedules.addAll(copySchedule(day,repeat,period));
+                    }
+
+                    UpcomingEvent.loadEventsToQueue(listOfDaysWithSchedules);
+                    for (var dayFromList : listOfDaysWithSchedules)
+                    {
+                        updateDayIcons(dayFromList.getDate(),dayFromList.isHaveNotification(),dayFromList.isHaveGoal(),dayFromList.isHaveSchedule());
                     }
                 }
             }
@@ -225,7 +232,91 @@ public class ScheduleSD extends Application implements Initializable
         });
     }
 
-    private static void createNewLine(ObservableList<Node> content,LocalTime startTime, LocalTime endTime, boolean checkBoxState, String info)
+    private static List<Day> copySchedule(Day day, SchedulerCopySettings.ScheduleSettingsRepeat repeat, SchedulerCopySettings.ScheduleSettingsPeriod period)
+    {
+        var list = new ArrayList<Day>();
+        var date = day.getDate();
+        if (repeat == SchedulerCopySettings.ScheduleSettingsRepeat.DAY && period == SchedulerCopySettings.ScheduleSettingsPeriod.FOR_A_WEEK)
+        {
+            var limit = date.plusWeeks(1).minusDays(1);
+            while (date.isBefore(limit))
+            {
+                date = date.plusDays(1);
+                list.add(copyScheduleEventsFromDay(date,day));
+            }
+        }
+        if (repeat == SchedulerCopySettings.ScheduleSettingsRepeat.DAY && period == SchedulerCopySettings.ScheduleSettingsPeriod.FOR_A_MONTH)
+        {
+            var limit = date.plusMonths(1);
+            while (date.isBefore(limit))
+            {
+                date = date.plusDays(1);
+                list.add(copyScheduleEventsFromDay(date,day));
+            }
+        }
+        if (repeat == SchedulerCopySettings.ScheduleSettingsRepeat.WEEK && period == SchedulerCopySettings.ScheduleSettingsPeriod.FOR_A_MONTH)
+        {
+            var limit = date.plusMonths(1).minusWeeks(1);
+            while (date.isBefore(limit))
+            {
+                date = date.plusWeeks(1);
+                list.add(copyScheduleEventsFromDay(date,day));
+            }
+        }
+        if (repeat == SchedulerCopySettings.ScheduleSettingsRepeat.WEEK && period == SchedulerCopySettings.ScheduleSettingsPeriod.FOR_A_YEAR)
+        {
+            var limit = date.plusYears(1).minusWeeks(1);
+            date = date.plusWeeks(1);
+            while (date.isBefore(limit))
+            {
+                date = date.plusWeeks(1);
+                list.add(copyScheduleEventsFromDay(date, day));
+            }
+        }
+        if (repeat == SchedulerCopySettings.ScheduleSettingsRepeat.MONTH && period == SchedulerCopySettings.ScheduleSettingsPeriod.FOR_A_YEAR)
+        {
+            var limit = date.plusYears(1);
+            while (date.isBefore(limit))
+            {
+                date = date.plusMonths(1);
+                list.add(copyScheduleEventsFromDay(date, day));
+            }
+        }
+        if (repeat == SchedulerCopySettings.ScheduleSettingsRepeat.YEAR && period == SchedulerCopySettings.ScheduleSettingsPeriod.DONT)
+        {
+            var limit = date.plusYears(10);
+            while (date.isBefore(limit))
+            {
+                date = date.plusYears(1);
+                list.add(copyScheduleEventsFromDay(date, day));
+            }
+        }
+
+        return list;
+    }
+
+    private static Day copyScheduleEventsFromDay(LocalDate date, Day day)
+    {
+        var newDay = checkUsingOfThisDate(date);
+        {
+            if (newDay == null)
+            {
+                newDay = new Day(date);
+                CalendarSD.getDaysWithEvents().add(newDay);
+            }
+            for (var event : day.getEvents())
+            {
+                //ћы же копируем только расписание, поэтому другие ивенты, если они есть, добавл€ть не нужно
+                if (event.getType()== Day.EventType.Schedule)
+                {
+                    newDay.addEvent(event);
+                }
+            }
+        }
+        return newDay;
+    }
+
+    private static void createNewLine(VBox content,LocalTime startTime, LocalTime endTime, boolean checkBoxState, String info, int id)
     {
         var hbox = new HBox();
         Main.setRegion(hbox,460,25);
@@ -346,7 +437,7 @@ public class ScheduleSD extends Application implements Initializable
 
         var hSeparator = new Separator(Orientation.HORIZONTAL);
         hSeparator.setPrefHeight(10);
-        content.addAll(line,hSeparator);
+        content.getChildren().addAll(line,hSeparator);
 
         addEventCheckBox.setOnAction(event ->
         {
@@ -389,9 +480,17 @@ public class ScheduleSD extends Application implements Initializable
 
         deletingButton.setOnAction(event->
         {
-            content.remove(line);
-            content.remove(hSeparator);
+            content.getChildren().remove(line);
+            content.getChildren().remove(hSeparator);
         });
+
+        //Ќеобходимо при загрузке, чтобы добавить в мапу старые ивенты
+        if (addEventCheckBox.isSelected())
+        {
+            var map = schedules.get(id).getEventsOfSchedule();
+            var eventOfDay = new EventOfDay(LocalTime.of(Integer.parseInt(hours1.getValue()),Integer.parseInt(minutes1.getValue())), Day.EventType.Schedule,text.getText());
+            map.put(addEventCheckBox,eventOfDay);
+        }
     }
 
     public static void addSchedulesToXML(Document doc, boolean createEmptyXML)
@@ -607,7 +706,8 @@ public class ScheduleSD extends Application implements Initializable
                 boolean checkBoxState = Boolean.parseBoolean(xPath.evaluate("save/schedules/schedule"+id+"/lines/line" + numberOfLine + "/checkBoxState/text()",doc));
                 String text = xPath.evaluate("save/schedules/schedule"+id+"/lines/line" + numberOfLine + "/text/text()",doc);
 
-                createNewLine(content.getChildren(),startTime,endTime,checkBoxState,text);
+                assert content != null;
+                createNewLine(content,startTime,endTime,checkBoxState,text,id);
             }
         }
     }

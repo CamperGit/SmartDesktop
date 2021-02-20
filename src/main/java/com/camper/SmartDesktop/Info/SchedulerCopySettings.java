@@ -2,6 +2,7 @@ package com.camper.SmartDesktop.Info;
 
 import com.camper.SmartDesktop.Main;
 import javafx.application.Application;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -40,12 +41,12 @@ public class SchedulerCopySettings extends Application implements Initializable
     public boolean isEntered() { return entered; }
 
     public enum ScheduleSettingsRepeat{DONT, DAY, WEEK, MONTH, YEAR}
-    public enum ScheduleSettingsPeriod{FOR_A_WEEK, FOR_A_MONTH, FOR_A_YEAR}
+    public enum ScheduleSettingsPeriod{DONT, FOR_A_WEEK, FOR_A_MONTH, FOR_A_YEAR}
 
     private AnchorPane CopySettingsRoot;
     private MouseEvent mouseEvent;
     private ScheduleSettingsRepeat repeatSelected=ScheduleSettingsRepeat.DONT;
-    private ScheduleSettingsPeriod periodSelected=ScheduleSettingsPeriod.FOR_A_WEEK;
+    private ScheduleSettingsPeriod periodSelected=ScheduleSettingsPeriod.DONT;//=ScheduleSettingsPeriod.FOR_A_WEEK;
     private boolean entered=false;
     private boolean load = false;
     private int id;
@@ -137,49 +138,100 @@ public class SchedulerCopySettings extends Application implements Initializable
         {
             int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
             settingsMap.get(id).setRepeatSelected(ScheduleSettingsRepeat.DONT);
+            schedulerForAWeekRadioButton.setDisable(true);
+            schedulerForAMonthRadioButton.setDisable(true);
+            schedulerForAYearRadioButton.setDisable(true);
+            schedulerForAWeekRadioButton.setSelected(false);
+            schedulerForAMonthRadioButton.setSelected(false);
+            schedulerForAYearRadioButton.setSelected(false);
         });
 
         scheduleDayRepeatRadioButton.setOnAction(event->
         {
             int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
             settingsMap.get(id).setRepeatSelected(ScheduleSettingsRepeat.DAY);
+            schedulerForAWeekRadioButton.setDisable(false);
+            schedulerForAMonthRadioButton.setDisable(false);
+            schedulerForAYearRadioButton.setDisable(true);
+            schedulerForAYearRadioButton.setSelected(false);
         });
 
         scheduleWeekRepeatRadioButton.setOnAction(event->
         {
             int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
             settingsMap.get(id).setRepeatSelected(ScheduleSettingsRepeat.WEEK);
+            schedulerForAWeekRadioButton.setDisable(true);
+            schedulerForAMonthRadioButton.setDisable(false);
+            schedulerForAYearRadioButton.setDisable(false);
+            schedulerForAWeekRadioButton.setSelected(false);
         });
 
         scheduleMonthRepeatRadioButton.setOnAction(event->
         {
             int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
             settingsMap.get(id).setRepeatSelected(ScheduleSettingsRepeat.MONTH);
+            schedulerForAWeekRadioButton.setDisable(true);
+            schedulerForAMonthRadioButton.setDisable(true);
+            schedulerForAYearRadioButton.setDisable(false);
+            schedulerForAWeekRadioButton.setSelected(false);
+            schedulerForAMonthRadioButton.setSelected(false);
         });
 
         scheduleYearRepeatRadioButton.setOnAction(event->
         {
             int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
             settingsMap.get(id).setRepeatSelected(ScheduleSettingsRepeat.YEAR);
+            settingsMap.get(id).setPeriodSelected(ScheduleSettingsPeriod.DONT);
+            schedulerForAWeekRadioButton.setDisable(true);
+            schedulerForAMonthRadioButton.setDisable(true);
+            schedulerForAYearRadioButton.setDisable(true);
+            schedulerForAWeekRadioButton.setSelected(false);
+            schedulerForAMonthRadioButton.setSelected(false);
+            schedulerForAYearRadioButton.setSelected(false);
         });
 
 
         schedulerForAWeekRadioButton.setOnAction(event->
         {
-            int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
-            settingsMap.get(id).setPeriodSelected(ScheduleSettingsPeriod.FOR_A_WEEK);
+            if (scheduleDayRepeatRadioButton.isSelected())
+            {
+                int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
+                settingsMap.get(id).setPeriodSelected(ScheduleSettingsPeriod.FOR_A_WEEK);
+            }
+            else
+            {
+                schedulerForAWeekRadioButton.setSelected(false);
+                event.consume();
+            }
         });
 
-        schedulerForAWeekRadioButton.setOnAction(event->
+        schedulerForAMonthRadioButton.setOnAction(event->
         {
-            int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
-            settingsMap.get(id).setPeriodSelected(ScheduleSettingsPeriod.FOR_A_MONTH);
+            if (scheduleDayRepeatRadioButton.isSelected() || scheduleWeekRepeatRadioButton.isSelected())
+            {
+                int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
+                settingsMap.get(id).setPeriodSelected(ScheduleSettingsPeriod.FOR_A_MONTH);
+            }
+            else
+            {
+                schedulerForAMonthRadioButton.setSelected(false);
+                event.consume();
+            }
+
         });
 
-        schedulerForAWeekRadioButton.setOnAction(event->
+        schedulerForAYearRadioButton.setOnAction(event->
         {
-            int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
-            settingsMap.get(id).setPeriodSelected(ScheduleSettingsPeriod.FOR_A_YEAR);
+            if (scheduleWeekRepeatRadioButton.isSelected() || scheduleMonthRepeatRadioButton.isSelected() )
+            {
+                int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
+                settingsMap.get(id).setPeriodSelected(ScheduleSettingsPeriod.FOR_A_YEAR);
+            }
+            else
+            {
+                schedulerForAYearRadioButton.setSelected(false);
+                event.consume();
+            }
         });
     }
 

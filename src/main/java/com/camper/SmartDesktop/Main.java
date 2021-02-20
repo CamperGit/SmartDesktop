@@ -103,6 +103,16 @@ public class Main extends Application implements Initializable
         CalendarSD.clearLastInfo();
     }
 
+    public static int returnAnchorId(Node parent)
+    {
+        while (!(parent instanceof AnchorPane))
+        {
+            parent=parent.getParent();
+        }
+        var pane = (AnchorPane)parent;
+        return Integer.parseInt(pane.getAccessibleHelp());
+    }
+
     private static void clearTab()
     {
         for (int i = 1;i<(tabs.size()+1);i++) { tabs.get(i).clear(); }
@@ -401,16 +411,6 @@ public class Main extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(calendar);
         }));
-    }
-
-    public static int returnAnchorId(Node parent)
-    {
-        while (!(parent instanceof AnchorPane))
-        {
-            parent=parent.getParent();
-        }
-        var pane = (AnchorPane)parent;
-        return Integer.parseInt(pane.getAccessibleHelp());
     }
 }
 
