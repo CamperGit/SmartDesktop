@@ -78,8 +78,9 @@ public class ScheduleSD extends Application implements Initializable
     public void setId(int id) { this.id = id; }
 
     public SchedulerCopySettings getCopySettings() { return copySettings; }
-    public void setCopySettings(SchedulerCopySettings copySettings) { this.copySettings = copySettings;
-   }
+    public void setCopySettings(SchedulerCopySettings copySettings) { this.copySettings = copySettings; }
+
+    private VBox getScheduleContentVbox() {return scheduleContentVbox;}
 
     private AnchorPane getScheduleRoot() {return ScheduleRoot;}
 
@@ -101,6 +102,11 @@ public class ScheduleSD extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(ScheduleRoot);
         }
+
+       /* if (schedules.get(this.id).getScheduleContentVbox().getChildren().size()<2)
+        {
+            createNewLine(scheduleContentVbox.getChildren(),null,null,false,null);
+        }*/
     }
 
     @Override
@@ -129,10 +135,6 @@ public class ScheduleSD extends Application implements Initializable
         }
 
         scheduleContentVbox.setSpacing(10);
-        if (scheduleContentVbox.getChildren().size()==0)
-        {
-            createNewLine(scheduleContentVbox.getChildren(),null,null,false,null);
-        }
 
         scheduleCloseButton.setOnAction(event ->
         {
@@ -144,6 +146,12 @@ public class ScheduleSD extends Application implements Initializable
         scheduleToolBar.setOnMouseDragged(event ->
         {
             selectedSchedule = (AnchorPane) (((ToolBar) event.getSource()).getParent());
+            int id = Integer.parseInt(selectedSchedule.getAccessibleHelp());
+            var settings = schedules.get(id).getCopySettings();
+            if (settings!=null)
+            {
+                Main.root.getChildren().remove(settings.getCopySettingsRoot());
+            }
             NodeDragger.addDraggingProperty(selectedSchedule,event);
         });
 
@@ -210,10 +218,9 @@ public class ScheduleSD extends Application implements Initializable
             }
             else
             {
-
                 var settings = scheduleSD.getCopySettings();
                 Main.root.getChildren().remove(settings.getCopySettingsRoot());
-                settings.showSettings(settings.getCopySettingsRoot());
+                settings.showSettings(settings.getCopySettingsRoot(),event);
             }
         });
     }
@@ -423,6 +430,22 @@ public class ScheduleSD extends Application implements Initializable
                 var layoutYValue = doc.createTextNode(String.valueOf((int)(schedule.getLayoutY())));
                 layoutY.appendChild(layoutYValue);
 
+                var copySettingsElement = doc.createElement("copySettings");
+                scheduleElement.appendChild(copySettingsElement);
+                if (scheduleSD.getCopySettings()!=null)
+                {
+                    var settings = scheduleSD.getCopySettings();
+                    var repeatElement = doc.createElement("repeat");
+                    copySettingsElement.appendChild(repeatElement);
+                    var repeatElementValue = doc.createTextNode(settings.getRepeatSelected().name());
+                    repeatElement.appendChild(repeatElementValue);
+
+                    var periodElement = doc.createElement("period");
+                    copySettingsElement.appendChild(periodElement);
+                    var periodElementValue = doc.createTextNode(settings.getPeriodSelected().name());
+                    periodElement.appendChild(periodElementValue);
+                }
+
                 var dateElement = doc.createElement("date");
                 scheduleElement.appendChild(dateElement);
                 var dateElementValue = doc.createTextNode(String.valueOf(scheduleSD.getDate()));
@@ -548,6 +571,15 @@ public class ScheduleSD extends Application implements Initializable
             rootOfLoadingSchedule.setLayoutX(layoutX);
             rootOfLoadingSchedule.setLayoutY(layoutY);
 
+            if (Integer.parseInt(xPath.evaluate("count(/save/schedules/schedule"+id+"/copySettings/*)",doc))!=0)
+            {
+                String repeat = xPath.evaluate("save/schedules/schedule"+id+"/copySettings/repeat/text()",doc);
+                String period = xPath.evaluate("save/schedules/schedule"+id+"/copySettings/period/text()",doc);
+                var settings = new SchedulerCopySettings(repeat,period,true);
+                settings.start(Main.Stage);
+                loadingSchedule.setCopySettings(settings);
+            }
+
             VBox content = null;
             for (Node node : rootOfLoadingSchedule.getChildren())
             {
@@ -566,7 +598,6 @@ public class ScheduleSD extends Application implements Initializable
                     content = (VBox)(((ScrollPane) node).getContent());
                 }
             }
-
 
             int numberOfLines = xPath.evaluateExpression("count(/save/schedules/schedule" + id+"/lines/*)",doc,Integer.class);
             for (int numberOfLine = 1; numberOfLine < numberOfLines+1; numberOfLine++)
