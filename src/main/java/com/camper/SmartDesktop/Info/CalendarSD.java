@@ -486,7 +486,7 @@ public class CalendarSD extends Application implements Initializable
 
     /**
      * @param date дата для проверки существования такой даты в списке дней с событиями
-     * @return null, если такая дата ещё не использовалась, day - если есть день с такой датой
+     * @return null, если такая дата ещё не использовалась, day - если есть день с такой датой в списке daysWithEvents
      */
     public static Day checkUsingOfThisDate(LocalDate date)
     {
@@ -534,7 +534,7 @@ public class CalendarSD extends Application implements Initializable
 
         if (goal)
         {
-            goalIcons.get(day).setImage(new Image("Images/goal14Active.png"));
+            goalIcons.get(day).setImage(new Image("Images/goal14OnProcess.png"));
         } else
         {
             goalIcons.get(day).setImage(null);
@@ -565,7 +565,7 @@ public class CalendarSD extends Application implements Initializable
 
             if (goal)
             {
-                goalIcons.get(day).setImage(new Image("Images/goal14Active.png"));
+                goalIcons.get(day).setImage(new Image("Images/goal14OnProcess.png"));
             } else
             {
                 goalIcons.get(day).setImage(null);

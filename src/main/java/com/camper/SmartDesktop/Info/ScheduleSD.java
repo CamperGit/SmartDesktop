@@ -33,7 +33,6 @@ import java.util.stream.Stream;
 
 import static com.camper.SmartDesktop.Info.CalendarSD.checkUsingOfThisDate;
 import static com.camper.SmartDesktop.Info.CalendarSD.updateDayIcons;
-import static com.camper.SmartDesktop.Info.Day.addEventOfDay;
 import static com.camper.SmartDesktop.Main.*;
 
 public class ScheduleSD extends Application implements Initializable
@@ -214,7 +213,6 @@ public class ScheduleSD extends Application implements Initializable
                     if (day == null)
                     {
                         day = new Day(date);
-                        CalendarSD.getDaysWithEvents().add(day);
                     }
                     for (var entry : mapWithEvents.entrySet())
                     {
@@ -225,20 +223,26 @@ public class ScheduleSD extends Application implements Initializable
                             day.addEvent(eventOfDay);
                         }
                     }
-                    var listOfDaysWithSchedules = new ArrayList<Day>();
-                    listOfDaysWithSchedules.add(day);
 
-                    if (scheduleSD.getCopySettings() != null)
+                    if (day.getEvents().size()!=0)
                     {
-                        var repeat = scheduleSD.getCopySettings().getRepeatSelected();
-                        var period = scheduleSD.getCopySettings().getPeriodSelected();
-                        listOfDaysWithSchedules.addAll(copySchedule(day, repeat, period));
-                    }
+                        CalendarSD.getDaysWithEvents().add(day);
 
-                    UpcomingEvent.loadEventsToQueue(listOfDaysWithSchedules);
-                    for (var dayFromList : listOfDaysWithSchedules)
-                    {
-                        updateDayIcons(dayFromList.getDate(), dayFromList.isHaveNotification(), dayFromList.isHaveGoal(), dayFromList.isHaveSchedule());
+                        var listOfDaysWithSchedules = new ArrayList<Day>();
+                        listOfDaysWithSchedules.add(day);
+
+                        if (scheduleSD.getCopySettings() != null)
+                        {
+                            var repeat = scheduleSD.getCopySettings().getRepeatSelected();
+                            var period = scheduleSD.getCopySettings().getPeriodSelected();
+                            listOfDaysWithSchedules.addAll(copySchedule(day, repeat, period));
+                        }
+
+                        UpcomingEvent.loadEventsToQueue(listOfDaysWithSchedules);
+                        for (var dayFromList : listOfDaysWithSchedules)
+                        {
+                            updateDayIcons(dayFromList.getDate(), dayFromList.isHaveNotification(), dayFromList.isHaveGoal(), dayFromList.isHaveSchedule());
+                        }
                     }
                 }
             } else

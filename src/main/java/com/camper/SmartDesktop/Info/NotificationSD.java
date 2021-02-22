@@ -19,7 +19,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.camper.SmartDesktop.Info.CalendarSD.*;
-import static com.camper.SmartDesktop.Info.Day.addEventOfDay;
 import static com.camper.SmartDesktop.Main.*;
 
 
@@ -187,19 +186,21 @@ public class NotificationSD extends Application implements Initializable
             {
                 var day = checkUsingOfThisDate(dateOfEvent);
                 {
-                    if (day != null)
+                    if (day == null)
                     {
-                        var eventOfDay = new EventOfDay(timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
-                        day.addEvent(eventOfDay);
-                        UpcomingEvent.addEventToQueue(day.getDate(), eventOfDay);
-                    } else
-                    {
-                        day = addEventOfDay(dateOfEvent, timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
+                        day = new Day(dateOfEvent);
                         daysWithEvents.add(day);
-                        var eventOfDay = day.getEvents().get(0);//День с событием только создан и первый элемент и есть искомая нами ссылка на событие
-                        UpcomingEvent.addEventToQueue(day.getDate(), eventOfDay);
                     }
-                    updateDayIcons(day.getDate(), day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
+                    var eventOfDay = new EventOfDay(timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
+                    if (day.addEvent(eventOfDay))
+                    {
+                        UpcomingEvent.addEventToQueue(day.getDate(), eventOfDay);
+                        updateDayIcons(day.getDate(), day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
+                    } else if (day.getEvents().size() == 0)
+                    {
+                        daysWithEvents.remove(day);
+                    }
+
                     selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
                     Main.root.getChildren().remove(selectedNotification);
                 }

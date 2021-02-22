@@ -1,13 +1,7 @@
 package com.camper.SmartDesktop.Info;
 
-import com.camper.SmartDesktop.Main;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TabPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -76,24 +70,33 @@ public class Day
         return events;
     }
 
-    public void addEvent(LocalTime time, EventType type, String info)
+    public boolean addEvent(LocalTime time, EventType type, String info)
     {
         var event = new EventOfDay(time, type, info);
-        this.addEvent(event);
+        return this.addEvent(event);
     }
 
-    public void addEvent(EventOfDay event)
+    /**
+     * @param event событие для добавления
+     * @return true, если удалось добавить событие и false, если такое уже существует
+     */
+    public boolean addEvent(EventOfDay event)
     {
         for (var eventOfDay : events)
         {
-            if (eventOfDay.getType() == event.getType() && eventOfDay.getTime() == event.getTime() && eventOfDay.getInfo().equals(event.getInfo()))
+            if (eventOfDay.getType().equals(event.getType()) && eventOfDay.getTime() == event.getTime() && eventOfDay.getInfo().equals(event.getInfo()))
             {
-                if (event.getType() == EventType.Notification)
+                if (event.getType().equals(EventType.Notification))
                 {
                     var alert = new Alert(Alert.AlertType.WARNING, "Данное напоминание уже существует. Выберите другую дату, время или текст", ButtonType.OK);
                     alert.showAndWait();
                 }
-                return;
+                if (event.getType().equals(EventType.Task))
+                {
+                    var alert = new Alert(Alert.AlertType.WARNING, "Задача с такими же данными уже существует. Выберите другую дату, время или текст", ButtonType.OK);
+                    alert.showAndWait();
+                }
+                return false;
             }
         }
         if (event.getType() == EventType.Notification)
@@ -109,13 +112,7 @@ public class Day
             this.setHaveSchedule(true);
         }
         this.getEvents().add(event);
-    }
-
-    public static Day addEventOfDay(LocalDate date, LocalTime time, EventType type, String info)
-    {
-        var day = new Day(date);
-        day.addEvent(time, type, info);
-        return day;
+        return true;
     }
 
     /**

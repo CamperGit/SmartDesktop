@@ -13,7 +13,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -27,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.camper.SmartDesktop.Info.CalendarSD.updateDayIcons;
 import static com.camper.SmartDesktop.Main.*;
 
 public class GoalSD extends Application implements Initializable
@@ -107,6 +107,8 @@ public class GoalSD extends Application implements Initializable
         return tasksOfDay;
     }
 
+    //public static Map<Integer,GoalSD> getGoals() {return goals;}
+
     private AnchorPane getGoalRoot()
     {
         return GoalRoot;
@@ -180,50 +182,144 @@ public class GoalSD extends Application implements Initializable
             var goal = (AnchorPane) (((Button) event.getSource()).getParent());
             var goalSD = goals.get(Integer.parseInt(goal.getAccessibleHelp()));
             var startDate = goalSD.getStartDate();
-            if (startDate != null && goalSD.getEndDate() != null && goalSD.getNameOfGoal() != null)
+            var nameOfGoal = goalSD.getNameOfGoal();
+            if (startDate != null && goalSD.getEndDate() != null && nameOfGoal != null)
             {
-                int days = (int) ChronoUnit.DAYS.between(goalSD.getStartDate(), goalSD.getEndDate());
-                if (days > 0)
+                if (checkGoalName(goalSD))
                 {
-                    for (var node : goal.getChildren())
+                    int days = (int) ChronoUnit.DAYS.between(goalSD.getStartDate(), goalSD.getEndDate());
+                    if (days > 0)
                     {
-                        if (node instanceof Separator && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("goalSaveButtonSeparator"))
+                        for (var node : goal.getChildren())
                         {
-                            goal.getChildren().removeAll(goalSaveButton, node);
-                            break;
+                            if (node instanceof Separator && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("goalSaveButtonSeparator"))
+                            {
+                                goal.getChildren().removeAll(goalSaveButton, node);
+                                break;
+                            }
                         }
-                    }
-                    var content = new VBox(6);
-                    content.setPadding(new Insets(8,0,0,0));
-                    var scrollPane = new ScrollPane(content);
-                    scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-                    scrollPane.setLayoutY(94);
-                    scrollPane.setMinWidth(460);
-                    scrollPane.setPrefWidth(460);
-                    scrollPane.setMaxWidth(460);
-                    scrollPane.setPrefHeight(226);
-                    scrollPane.maxHeight(226);
+                        var content = new VBox(6);
+                        content.setPadding(new Insets(8,0,0,0));
+                        var scrollPane = new ScrollPane(content);
+                        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+                        scrollPane.setLayoutY(94);
+                        scrollPane.setMinWidth(460);
+                        scrollPane.setPrefWidth(460);
+                        scrollPane.setMaxWidth(460);
+                        scrollPane.setPrefHeight(226);
+                        scrollPane.maxHeight(226);
 
-                    var contentList = content.getChildren();
-                    for (int i=0;i<days;i++)
+                        var contentList = content.getChildren();
+                        for (int i=0;i<days+1;i++)
+                        {
+                            var date = startDate.plusDays(i);
+                            var line = createNewLine(date,false);
+                            goalSD.getTasksOfDay().put(date,line);
+                            contentList.add(line);
+
+                            var timeOfEvent = LocalTime.of(23,59);
+                            var day = CalendarSD.checkUsingOfThisDate(date);
+                            if (day==null)
+                            {
+                                day = new Day(date);
+                                CalendarSD.getDaysWithEvents().add(day);
+                            }
+                            var eventOfDay = new EventOfDay(timeOfEvent, Day.EventType.Goal,nameOfGoal);
+                            day.addEvent(eventOfDay);
+                            UpcomingEvent.addEventToQueue(date,eventOfDay);
+                            updateDayIcons(day.getDate(), day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
+                        }
+
+                        goal.getChildren().add(scrollPane);
+                    } else
                     {
-                        var line = createNewLine(startDate.plusDays(i),false);
-                        goalSD.getTasksOfDay().put(startDate.plusDays(i),line);
-                        contentList.add(line);
+                        //Для локализации
+                        String alertText = "Конечная дата должна быть больше начальной!";
+                        var alert = new Alert(Alert.AlertType.WARNING, alertText, ButtonType.OK);
+                        alert.showAndWait();
                     }
-
-                    goal.getChildren().add(scrollPane);
                 } else
                 {
-                    //Для локализации
-                    String alertText = "Конечная дата должна быть больше начальной!";
+                    String alertText = "Имя цели обязано быть уникальным!";
                     var alert = new Alert(Alert.AlertType.WARNING, alertText, ButtonType.OK);
                     alert.showAndWait();
                 }
+
             }
         });
 
 
+    }
+
+    public static CheckBox getCheckBoxOfTask(LocalDate date, EventOfDay event)
+    {
+        for (var goalSD : goals.values())
+        {
+            var vbox = goalSD.getTasksOfDay().get(date);
+            for (var vboxes : vbox.getChildren())
+            {
+                if (vboxes instanceof VBox)
+                {
+                    String text = null;
+                    Integer hour=null;
+                    Integer minute=null;
+                    CheckBox tempCheckBox=null;
+
+                    for (var hboxes : ((VBox) vboxes).getChildren())
+                    {
+                        if (hboxes instanceof HBox)
+                        {
+                            for (var node : ((HBox) hboxes).getChildren())
+                            {
+                                if (node instanceof TextField)
+                                {
+                                    text=((TextField) node).getText();
+                                }
+                                if (node instanceof ComboBox && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("hours"))
+                                {
+                                    hour = Integer.parseInt(((ComboBox<String>) node).getValue());
+                                }
+                                if (node instanceof ComboBox && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("minutes"))
+                                {
+                                    minute = Integer.parseInt(((ComboBox<String>) node).getValue());
+                                }
+                                if (node instanceof CheckBox)
+                                {
+                                    tempCheckBox= (CheckBox) node;
+                                }
+                            }
+                        }
+                    }
+                    if (text != null && hour != null && minute != null && tempCheckBox !=null && text.equals(event.getInfo()) && LocalTime.of(hour,minute).equals(event.getTime()))
+                    {
+                        return tempCheckBox;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Проверяет уникальность имени для цели. Это обязательное условие для работы программы
+     * @param goalSD объект, который не должен учавствовать в переборе
+     * @return true - если имя уникально, false - если нет
+     */
+    private static boolean checkGoalName(GoalSD goalSD)
+    {
+        for (var goal : goals.values())
+        {
+            if (goal == goalSD)
+            {
+                continue;
+            }
+            if (goal.getNameOfGoal().equals(goalSD.getNameOfGoal())) //Мы можем быть уверены, что nameOfGoal != null
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static VBox createNewLine(LocalDate date, boolean checkBoxState)
@@ -254,13 +350,13 @@ public class GoalSD extends Application implements Initializable
 
         addNewTaskButton.setOnAction(event ->
         {
-            createNewTaskLine(vbox,completeAllCheckBox,date,null,null,false);
+            createNewTaskLine(vbox,date,null,null,false);
         });
 
         return vbox;
     }
 
-    private static void createNewTaskLine(VBox line,CheckBox completeAllCheckBox,LocalDate date, LocalTime time, String text, boolean completeState)
+    private static void createNewTaskLine(VBox line,LocalDate date, LocalTime time, String text, boolean completeState)
     {
         var hoursValues = new ArrayList<String>()
         {{
@@ -280,6 +376,8 @@ public class GoalSD extends Application implements Initializable
         Main.setRegion(minutes, 55, 25);
         hours.getItems().addAll(hoursValues);
         minutes.getItems().addAll(minutesValues);
+        hours.setAccessibleHelp("hours");
+        minutes.setAccessibleHelp("minutes");
         if (time == null)
         {
             hours.setValue("00");
@@ -359,9 +457,11 @@ public class GoalSD extends Application implements Initializable
                 day = new Day(date);
                 CalendarSD.getDaysWithEvents().add(day);
             }
-            var eventOfDay = new EventOfDay(timeOfEvent, Day.EventType.Task,textOfEvent);
-            day.addEvent(eventOfDay);
-            UpcomingEvent.addEventToQueue(date,eventOfDay);
+            var task = new EventOfDay(timeOfEvent, Day.EventType.Task,textOfEvent);
+            if (day.addEvent(task))
+            {
+                UpcomingEvent.addEventToQueue(date,task);
+            }
         });
     }
 }
