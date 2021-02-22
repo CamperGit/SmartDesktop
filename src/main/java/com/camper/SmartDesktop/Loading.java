@@ -25,22 +25,24 @@ import static com.camper.SmartDesktop.Saving.createEmptyXML;
 public class Loading
 {
     /**
-     *
      * @param saves - choicebox with saves
      * @return loading save name
      * @throws Exception
      */
     public static String loadSave(ChoiceBox<String> saves) throws Exception
     {
-        String saveNameFromChoiceBox=null;
-        if (saves!=null) { saveNameFromChoiceBox = saves.getValue(); }
-        String filename="";
+        String saveNameFromChoiceBox = null;
+        if (saves != null)
+        {
+            saveNameFromChoiceBox = saves.getValue();
+        }
+        String filename = "";
         var folderWithSaves = new File(DIRPATH + "\\Resources\\Saves");
 
         File[] contents = folderWithSaves.listFiles();
-        if (contents!=null && contents.length!=0 )
+        if (contents != null && contents.length != 0)
         {
-            int countOfSaves=0;
+            int countOfSaves = 0;
             for (File file : contents)
             {
                 if (file.getAbsolutePath().endsWith(".xml"))
@@ -49,23 +51,22 @@ public class Loading
                     break;
                 }
             }
-            if (countOfSaves!=0)
+            if (countOfSaves != 0)
             {
                 var factory = DocumentBuilderFactory.newInstance();
                 var builder = factory.newDocumentBuilder();
                 var xPathFactory = XPathFactory.newInstance();
                 var xPath = xPathFactory.newXPath();
 
-                if (saveNameFromChoiceBox==null)
+                if (saveNameFromChoiceBox == null)
                 {
-                    if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\"+saveInfo.getProperty("lastSaveName"))))
+                    if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\" + saveInfo.getProperty("lastSaveName"))))
                     {
                         filename = saveInfo.getProperty("lastSaveName");
                     }
-                }
-                else
+                } else
                 {
-                    if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\"+saveNameFromChoiceBox)))
+                    if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\" + saveNameFromChoiceBox)))
                     {
                         filename = saveNameFromChoiceBox;
                     }
@@ -78,12 +79,12 @@ public class Loading
                 }
                 //Проверка проходит, если у нас при попытке загрузки из сейвлиста оказывается, что выбранного сохранения нет.
                 //Тогда мы загружаем старое сохранение, которое точно будет, потому что мы его только что создали
-                else if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\"+saveInfo.getProperty("lastSaveName"))))
+                else if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\" + saveInfo.getProperty("lastSaveName"))))
                 {
                     var alert = new Alert(Alert.AlertType.WARNING, "Выбранное сохранение было удалено или переименовано. Загрузка прервана", ButtonType.OK);
                     alert.showAndWait();
 
-                    filename=saveInfo.getProperty("lastSaveName");
+                    filename = saveInfo.getProperty("lastSaveName");
                     assert saves != null;
                     saves.getItems().remove(saveNameFromChoiceBox);
 
@@ -96,27 +97,27 @@ public class Loading
                     var alert = new Alert(Alert.AlertType.WARNING, "Выбранное сохранение было удалено или переименовано. Загрузка прервана", ButtonType.OK);
                     alert.showAndWait();
 
-                    filename=addNewSaveFile();
+                    filename = addNewSaveFile();
 
                     doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + filename);
-                    saveInfo.setProperty("lastSaveName",filename);
-                    saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+                    saveInfo.setProperty("lastSaveName", filename);
+                    saveInfo.store(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"), "Info of latest save");
                 }
 
-                NoteSD.loadNotesFromXML(doc,xPath);
-                ScheduleSD.loadSchedulesFromXML(doc,xPath);
+                NoteSD.loadNotesFromXML(doc, xPath);
+                ScheduleSD.loadSchedulesFromXML(doc, xPath);
                 //Календарь всегда должен грузиться последним!!!
-                CalendarSD.loadCalendarFromXML(doc,xPath);
+                CalendarSD.loadCalendarFromXML(doc, xPath);
 
-                idOfSelectedTab = Integer.parseInt(xPath.evaluate("save/lastTab/@tab",doc));
+                idOfSelectedTab = Integer.parseInt(xPath.evaluate("save/lastTab/@tab", doc));
             }
             //Создание пустого файла сохранения при самом первом запуске или в папке есть файл properties, но нет сейвов вообще
             else
             {
-                filename="save1.xml";
+                filename = "save1.xml";
                 createEmptyXML(filename);
-                saveInfo.setProperty("lastSaveName",filename);
-                saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+                saveInfo.setProperty("lastSaveName", filename);
+                saveInfo.store(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"), "Info of latest save");
                 runEventTask();
             }
             currencySaveName = filename;
@@ -130,7 +131,7 @@ public class Loading
         saves.getItems().clear();
         var folderWithSaves = new File(DIRPATH + "\\Resources\\Saves");
         File[] contents = folderWithSaves.listFiles();
-        if (contents!=null && contents.length!=0 )
+        if (contents != null && contents.length != 0)
         {
             for (File file : contents)
             {
@@ -154,6 +155,6 @@ public class Loading
         {
             node.setVisible(true);
         }
-        idOfSelectedTab=numberOfTab;
+        idOfSelectedTab = numberOfTab;
     }
 }

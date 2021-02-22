@@ -21,67 +21,105 @@ import static com.camper.SmartDesktop.Main.*;
 
 public class SchedulerCopySettings extends Application implements Initializable
 {
-    @FXML private RadioButton scheduleDontRepeatRadioButton;
-    @FXML private RadioButton scheduleDayRepeatRadioButton;
-    @FXML private RadioButton scheduleWeekRepeatRadioButton;
-    @FXML private RadioButton scheduleMonthRepeatRadioButton;
-    @FXML private RadioButton scheduleYearRepeatRadioButton;
+    @FXML
+    private RadioButton scheduleDontRepeatRadioButton;
+    @FXML
+    private RadioButton scheduleDayRepeatRadioButton;
+    @FXML
+    private RadioButton scheduleWeekRepeatRadioButton;
+    @FXML
+    private RadioButton scheduleMonthRepeatRadioButton;
+    @FXML
+    private RadioButton scheduleYearRepeatRadioButton;
 
-    @FXML private RadioButton schedulerForAWeekRadioButton;
-    @FXML private RadioButton schedulerForAMonthRadioButton;
-    @FXML private RadioButton schedulerForAYearRadioButton;
+    @FXML
+    private RadioButton schedulerForAWeekRadioButton;
+    @FXML
+    private RadioButton schedulerForAMonthRadioButton;
+    @FXML
+    private RadioButton schedulerForAYearRadioButton;
 
-    public ScheduleSettingsRepeat getRepeatSelected() { return repeatSelected; }
-    public void setRepeatSelected(ScheduleSettingsRepeat repeatSelected) { this.repeatSelected = repeatSelected; }
+    public ScheduleSettingsRepeat getRepeatSelected()
+    {
+        return repeatSelected;
+    }
 
-    public ScheduleSettingsPeriod getPeriodSelected() { return periodSelected; }
-    public void setPeriodSelected(ScheduleSettingsPeriod periodSelected) { this.periodSelected = periodSelected; }
+    public void setRepeatSelected(ScheduleSettingsRepeat repeatSelected)
+    {
+        this.repeatSelected = repeatSelected;
+    }
 
-    public void setEntered(boolean entered) {this.entered=entered;}
-    public boolean isEntered() { return entered; }
+    public ScheduleSettingsPeriod getPeriodSelected()
+    {
+        return periodSelected;
+    }
 
-    public enum ScheduleSettingsRepeat{DONT, DAY, WEEK, MONTH, YEAR}
-    public enum ScheduleSettingsPeriod{DONT, FOR_A_WEEK, FOR_A_MONTH, FOR_A_YEAR}
+    public void setPeriodSelected(ScheduleSettingsPeriod periodSelected)
+    {
+        this.periodSelected = periodSelected;
+    }
+
+    public void setEntered(boolean entered)
+    {
+        this.entered = entered;
+    }
+
+    public boolean isEntered()
+    {
+        return entered;
+    }
+
+    public enum ScheduleSettingsRepeat
+    {DONT, DAY, WEEK, MONTH, YEAR}
+
+    public enum ScheduleSettingsPeriod
+    {DONT, FOR_A_WEEK, FOR_A_MONTH, FOR_A_YEAR}
 
     private AnchorPane CopySettingsRoot;
     private MouseEvent mouseEvent;
-    private ScheduleSettingsRepeat repeatSelected=ScheduleSettingsRepeat.DONT;
-    private ScheduleSettingsPeriod periodSelected=ScheduleSettingsPeriod.DONT;//=ScheduleSettingsPeriod.FOR_A_WEEK;
-    private boolean entered=false;
+    private ScheduleSettingsRepeat repeatSelected = ScheduleSettingsRepeat.DONT;
+    private ScheduleSettingsPeriod periodSelected = ScheduleSettingsPeriod.DONT;//=ScheduleSettingsPeriod.FOR_A_WEEK;
+    private boolean entered = false;
     private boolean load = false;
     private int id;
-    private static final Map<Integer,SchedulerCopySettings> settingsMap = new HashMap<>();
+    private static final Map<Integer, SchedulerCopySettings> settingsMap = new HashMap<>();
 
-    public SchedulerCopySettings(){}
+    public SchedulerCopySettings()
+    {
+    }
+
     public SchedulerCopySettings(MouseEvent mouseEvent, int idOfSchedule)
     {
-        this.mouseEvent=mouseEvent;
-        this.id=idOfSchedule;
-    }
-    public SchedulerCopySettings(String repeat, String period, boolean load)
-    {
-        repeatSelected=SchedulerCopySettings.ScheduleSettingsRepeat.valueOf(repeat);
-        periodSelected=SchedulerCopySettings.ScheduleSettingsPeriod.valueOf(period);
-        this.load=load;
+        this.mouseEvent = mouseEvent;
+        this.id = idOfSchedule;
     }
 
-    public AnchorPane getCopySettingsRoot() {return CopySettingsRoot;}
+    public SchedulerCopySettings(String repeat, String period, boolean load)
+    {
+        repeatSelected = SchedulerCopySettings.ScheduleSettingsRepeat.valueOf(repeat);
+        periodSelected = SchedulerCopySettings.ScheduleSettingsPeriod.valueOf(period);
+        this.load = load;
+    }
+
+    public AnchorPane getCopySettingsRoot()
+    {
+        return CopySettingsRoot;
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
         CopySettingsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleSettingsRu.fxml")));
         CopySettingsRoot.setAccessibleHelp(String.valueOf(id));
-        settingsMap.put(id,this);
+        settingsMap.put(id, this);
 
-        CopySettingsRoot.setOnMouseEntered(event->
+        CopySettingsRoot.setOnMouseEntered(event ->
         {
             int id;
             if (event.getSource() instanceof AnchorPane)
             {
-               id=Integer.parseInt(((AnchorPane)event.getSource()).getAccessibleHelp());
-            }
-            else
+                id = Integer.parseInt(((AnchorPane) event.getSource()).getAccessibleHelp());
+            } else
             {
                 id = Main.returnAnchorId(((Node) event.getSource()).getParent());
             }
@@ -92,9 +130,8 @@ public class SchedulerCopySettings extends Application implements Initializable
             int id;
             if (event.getSource() instanceof AnchorPane)
             {
-                id=Integer.parseInt(((AnchorPane)event.getSource()).getAccessibleHelp());
-            }
-            else
+                id = Integer.parseInt(((AnchorPane) event.getSource()).getAccessibleHelp());
+            } else
             {
                 id = Main.returnAnchorId(((Node) event.getSource()).getParent());
             }
@@ -106,7 +143,10 @@ public class SchedulerCopySettings extends Application implements Initializable
             }
         });
 
-        if (!load) { showSettings(CopySettingsRoot,mouseEvent); }
+        if (!load)
+        {
+            showSettings(CopySettingsRoot, mouseEvent);
+        }
     }
 
     @Override
@@ -134,7 +174,7 @@ public class SchedulerCopySettings extends Application implements Initializable
         schedulerForAMonthRadioButton.setAccessibleText("FOR_A_MONTH");
         schedulerForAYearRadioButton.setAccessibleText("FOR_A_YEAR");
 
-        scheduleDontRepeatRadioButton.setOnAction(event->
+        scheduleDontRepeatRadioButton.setOnAction(event ->
         {
             int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
             settingsMap.get(id).setRepeatSelected(ScheduleSettingsRepeat.DONT);
@@ -146,7 +186,7 @@ public class SchedulerCopySettings extends Application implements Initializable
             schedulerForAYearRadioButton.setSelected(false);
         });
 
-        scheduleDayRepeatRadioButton.setOnAction(event->
+        scheduleDayRepeatRadioButton.setOnAction(event ->
         {
             int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
             settingsMap.get(id).setRepeatSelected(ScheduleSettingsRepeat.DAY);
@@ -156,7 +196,7 @@ public class SchedulerCopySettings extends Application implements Initializable
             schedulerForAYearRadioButton.setSelected(false);
         });
 
-        scheduleWeekRepeatRadioButton.setOnAction(event->
+        scheduleWeekRepeatRadioButton.setOnAction(event ->
         {
             int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
             settingsMap.get(id).setRepeatSelected(ScheduleSettingsRepeat.WEEK);
@@ -166,7 +206,7 @@ public class SchedulerCopySettings extends Application implements Initializable
             schedulerForAWeekRadioButton.setSelected(false);
         });
 
-        scheduleMonthRepeatRadioButton.setOnAction(event->
+        scheduleMonthRepeatRadioButton.setOnAction(event ->
         {
             int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
             settingsMap.get(id).setRepeatSelected(ScheduleSettingsRepeat.MONTH);
@@ -177,7 +217,7 @@ public class SchedulerCopySettings extends Application implements Initializable
             schedulerForAMonthRadioButton.setSelected(false);
         });
 
-        scheduleYearRepeatRadioButton.setOnAction(event->
+        scheduleYearRepeatRadioButton.setOnAction(event ->
         {
             int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
             settingsMap.get(id).setRepeatSelected(ScheduleSettingsRepeat.YEAR);
@@ -191,28 +231,26 @@ public class SchedulerCopySettings extends Application implements Initializable
         });
 
 
-        schedulerForAWeekRadioButton.setOnAction(event->
+        schedulerForAWeekRadioButton.setOnAction(event ->
         {
             if (scheduleDayRepeatRadioButton.isSelected())
             {
                 int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
                 settingsMap.get(id).setPeriodSelected(ScheduleSettingsPeriod.FOR_A_WEEK);
-            }
-            else
+            } else
             {
                 schedulerForAWeekRadioButton.setSelected(false);
                 event.consume();
             }
         });
 
-        schedulerForAMonthRadioButton.setOnAction(event->
+        schedulerForAMonthRadioButton.setOnAction(event ->
         {
             if (scheduleDayRepeatRadioButton.isSelected() || scheduleWeekRepeatRadioButton.isSelected())
             {
                 int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
                 settingsMap.get(id).setPeriodSelected(ScheduleSettingsPeriod.FOR_A_MONTH);
-            }
-            else
+            } else
             {
                 schedulerForAMonthRadioButton.setSelected(false);
                 event.consume();
@@ -220,14 +258,13 @@ public class SchedulerCopySettings extends Application implements Initializable
 
         });
 
-        schedulerForAYearRadioButton.setOnAction(event->
+        schedulerForAYearRadioButton.setOnAction(event ->
         {
-            if (scheduleWeekRepeatRadioButton.isSelected() || scheduleMonthRepeatRadioButton.isSelected() )
+            if (scheduleWeekRepeatRadioButton.isSelected() || scheduleMonthRepeatRadioButton.isSelected())
             {
                 int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
                 settingsMap.get(id).setPeriodSelected(ScheduleSettingsPeriod.FOR_A_YEAR);
-            }
-            else
+            } else
             {
                 schedulerForAYearRadioButton.setSelected(false);
                 event.consume();
@@ -237,14 +274,14 @@ public class SchedulerCopySettings extends Application implements Initializable
 
     public void showSettings(AnchorPane root, MouseEvent mouseEvent)
     {
-        int leftUpperCornerX = (int) (mouseEvent.getSceneX()-mouseEvent.getX())-314;//314 - Расстояние от края кнопки до края элемента
-        int leftUpperCornerY = (int) (mouseEvent.getSceneY()-mouseEvent.getY());
-        int layoutX=leftUpperCornerX+460;
+        int leftUpperCornerX = (int) (mouseEvent.getSceneX() - mouseEvent.getX()) - 314;//314 - Расстояние от края кнопки до края элемента
+        int leftUpperCornerY = (int) (mouseEvent.getSceneY() - mouseEvent.getY());
+        int layoutX = leftUpperCornerX + 460;
         int width = 246;
 
-        if (layoutX+width>DEFAULT_WIDTH)
+        if (layoutX + width > DEFAULT_WIDTH)
         {
-            layoutX=layoutX-460-width;
+            layoutX = layoutX - 460 - width;
         }
         root.setLayoutX(layoutX);
         root.setLayoutY(leftUpperCornerY);
@@ -266,11 +303,11 @@ public class SchedulerCopySettings extends Application implements Initializable
                 {
                     if (button instanceof RadioButton && button.getAccessibleText().equals(repeat))
                     {
-                        ((RadioButton)button).setSelected(true);
+                        ((RadioButton) button).setSelected(true);
                     }
                     if (button instanceof RadioButton && button.getAccessibleText().equals(period))
                     {
-                        ((RadioButton)button).setSelected(true);
+                        ((RadioButton) button).setSelected(true);
                     }
                 }
             }

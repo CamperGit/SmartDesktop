@@ -28,35 +28,48 @@ import static com.camper.SmartDesktop.Main.*;
 
 public class EventsOfDayInfo extends Application implements Initializable
 {
-    @FXML private CheckBox notificationCheckBox;
-    @FXML private CheckBox goalsCheckBox;
-    @FXML private CheckBox schedulerCheckBox;
-    @FXML private CheckBox allTypesCheckBox;
-    @FXML private Button addNotificationButton;
-    @FXML private Button addGoalsButton;
-    @FXML private Button addScheduleButton;
-    @FXML private ImageView addNotificationButtonIV;
-    @FXML private ImageView addGoalsButtonIV;
-    @FXML private ImageView addScheduleButtonIV;
+    @FXML
+    private CheckBox notificationCheckBox;
+    @FXML
+    private CheckBox goalsCheckBox;
+    @FXML
+    private CheckBox schedulerCheckBox;
+    @FXML
+    private CheckBox allTypesCheckBox;
+    @FXML
+    private Button addNotificationButton;
+    @FXML
+    private Button addGoalsButton;
+    @FXML
+    private Button addScheduleButton;
+    @FXML
+    private ImageView addNotificationButtonIV;
+    @FXML
+    private ImageView addGoalsButtonIV;
+    @FXML
+    private ImageView addScheduleButtonIV;
     private static AnchorPane paneOfInfoRoot;
     private static List<EventOfDay> events;
-    private static boolean entered=false;
-    private static LocalDate date=null;
+    private static boolean entered = false;
+    private static LocalDate date = null;
     private MouseEvent mouseEvent;
 
 
-    public EventsOfDayInfo(){}
-    public EventsOfDayInfo(MouseEvent mouseEvent, Day dayWithEvents )
+    public EventsOfDayInfo()
     {
-        if (paneOfInfoRoot!=null)
+    }
+
+    public EventsOfDayInfo(MouseEvent mouseEvent, Day dayWithEvents)
+    {
+        if (paneOfInfoRoot != null)
         {
             events.clear();
             Main.root.getChildren().remove(paneOfInfoRoot);
-            paneOfInfoRoot=null;
-            date=null;
+            paneOfInfoRoot = null;
+            date = null;
         }
         events = new ArrayList<>(dayWithEvents.getEvents());
-        this.mouseEvent=mouseEvent;
+        this.mouseEvent = mouseEvent;
         date = dayWithEvents.getDate();
     }
 
@@ -64,47 +77,47 @@ public class EventsOfDayInfo extends Application implements Initializable
     public void start(Stage primaryStage) throws Exception
     {
         paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfoRu.fxml")));
-        int leftDownCornerX = (int) (mouseEvent.getSceneX()-mouseEvent.getX());
-        int leftDownCornerY = (int) (mouseEvent.getSceneY()-mouseEvent.getY())+38+4;//38 - высота кнопки
-        int layoutX=leftDownCornerX;
-        int layoutY=leftDownCornerY;
+        int leftDownCornerX = (int) (mouseEvent.getSceneX() - mouseEvent.getX());
+        int leftDownCornerY = (int) (mouseEvent.getSceneY() - mouseEvent.getY()) + 38 + 4;//38 - высота кнопки
+        int layoutX = leftDownCornerX;
+        int layoutY = leftDownCornerY;
         int width = 460;
         int height = 280;
 
-        if (leftDownCornerX+width>DEFAULT_WIDTH)
+        if (leftDownCornerX + width > DEFAULT_WIDTH)
         {
-            layoutX=leftDownCornerX-width;
+            layoutX = leftDownCornerX - width;
         }
-        if (leftDownCornerY+height>DEFAULT_HEIGHT)
+        if (leftDownCornerY + height > DEFAULT_HEIGHT)
         {
-            layoutY=leftDownCornerY-height-38;
+            layoutY = leftDownCornerY - height - 38;
         }
         paneOfInfoRoot.setLayoutX(layoutX);
         paneOfInfoRoot.setLayoutY(layoutY);
-        updateScrollArea(true,true,true);
+        updateScrollArea(true, true, true);
 
-        paneOfInfoRoot.setOnMouseEntered(event-> entered=true);
+        paneOfInfoRoot.setOnMouseEntered(event -> entered = true);
         paneOfInfoRoot.setOnMouseExited(event ->
         {
             if (entered)
             {
-                entered=false;
+                entered = false;
                 events.clear();
                 Main.root.getChildren().remove(paneOfInfoRoot);
-                paneOfInfoRoot=null;
-                date=null;
+                paneOfInfoRoot = null;
+                date = null;
             }
         });
-        Main.root.setOnMouseClicked(event->
+        Main.root.setOnMouseClicked(event ->
         {
-            if (paneOfInfoRoot!=null && Main.root.getChildren().contains(paneOfInfoRoot))
+            if (paneOfInfoRoot != null && Main.root.getChildren().contains(paneOfInfoRoot))
             {
-                if (!(paneOfInfoRoot.contains(event.getX(),event.getY())))
+                if (!(paneOfInfoRoot.contains(event.getX(), event.getY())))
                 {
                     events.clear();
                     Main.root.getChildren().remove(paneOfInfoRoot);
-                    paneOfInfoRoot=null;
-                    date=null;
+                    paneOfInfoRoot = null;
+                    date = null;
                 }
             }
         });
@@ -120,57 +133,79 @@ public class EventsOfDayInfo extends Application implements Initializable
 
         addNotificationButton.setOnAction(event ->
         {
-            try { new NotificationSD(date).start(Stage); }
-            catch (Exception e)
-            { e.printStackTrace(); }
+            try
+            {
+                new NotificationSD(date).start(Stage);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         });
 
         addScheduleButton.setOnAction(event ->
         {
-            try { new ScheduleSD(date).start(Stage); }
-            catch (Exception e)
-            { e.printStackTrace(); }
+            try
+            {
+                new ScheduleSD(date).start(Stage);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         });
 
-        notificationCheckBox.setOnAction(event->
+        notificationCheckBox.setOnAction(event ->
         {
-            updateScrollArea(notificationCheckBox.isSelected(),goalsCheckBox.isSelected(),schedulerCheckBox.isSelected());
-            if (!notificationCheckBox.isSelected()){allTypesCheckBox.setSelected(false);}
-            if (notificationCheckBox.isSelected()&&goalsCheckBox.isSelected()&&schedulerCheckBox.isSelected())
-            { allTypesCheckBox.setSelected(true); }
+            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            if (!notificationCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(false);
+            }
+            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(true);
+            }
         });
 
-        goalsCheckBox.setOnAction(event->
+        goalsCheckBox.setOnAction(event ->
         {
-            updateScrollArea(notificationCheckBox.isSelected(),goalsCheckBox.isSelected(),schedulerCheckBox.isSelected());
-            if (!goalsCheckBox.isSelected()){allTypesCheckBox.setSelected(false);}
-            if (notificationCheckBox.isSelected()&&goalsCheckBox.isSelected()&&schedulerCheckBox.isSelected())
-            { allTypesCheckBox.setSelected(true); }
+            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            if (!goalsCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(false);
+            }
+            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(true);
+            }
         });
 
-        schedulerCheckBox.setOnAction(event->
+        schedulerCheckBox.setOnAction(event ->
         {
-            updateScrollArea(notificationCheckBox.isSelected(),goalsCheckBox.isSelected(),schedulerCheckBox.isSelected());
-            if (!schedulerCheckBox.isSelected()){allTypesCheckBox.setSelected(false);}
-            if (notificationCheckBox.isSelected()&&goalsCheckBox.isSelected()&&schedulerCheckBox.isSelected())
-            { allTypesCheckBox.setSelected(true); }
+            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            if (!schedulerCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(false);
+            }
+            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(true);
+            }
         });
 
-        allTypesCheckBox.setOnAction(event->
+        allTypesCheckBox.setOnAction(event ->
         {
             if (allTypesCheckBox.isSelected())
             {
                 notificationCheckBox.setSelected(true);
                 goalsCheckBox.setSelected(true);
                 schedulerCheckBox.setSelected(true);
-            }
-            else
+            } else
             {
                 notificationCheckBox.setSelected(false);
                 goalsCheckBox.setSelected(false);
                 schedulerCheckBox.setSelected(false);
             }
-            updateScrollArea(notificationCheckBox.isSelected(),goalsCheckBox.isSelected(),schedulerCheckBox.isSelected());
+            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
         });
         allTypesCheckBox.setSelected(true);
         notificationCheckBox.setSelected(true);
@@ -178,7 +213,7 @@ public class EventsOfDayInfo extends Application implements Initializable
         schedulerCheckBox.setSelected(true);
     }
 
-    private void updateScrollArea(boolean notification, boolean goal, boolean schedule)
+    private static void updateScrollArea(boolean notification, boolean goal, boolean schedule)
     {
         var content = new VBox(8);
         content.setMaxWidth(459);
@@ -187,7 +222,7 @@ public class EventsOfDayInfo extends Application implements Initializable
         content.setPrefHeight(252);
         content.setMinWidth(459);
 
-        if (events.size()!=0)
+        if (events != null && events.size() != 0)
         {
             events.sort(Comparator.comparing(EventOfDay::getTime));
             for (var event : events)
@@ -199,22 +234,22 @@ public class EventsOfDayInfo extends Application implements Initializable
                 icon.setFitHeight(35);
                 icon.setLayoutX(2);
                 HBox hbox = null;
-                if (type==Day.EventType.Notification && notification)
+                if (type == Day.EventType.Notification && notification)
                 {
                     icon.setImage(new Image("Images/notification42.png"));
-                    hbox = addInfoOfEvent(event,icon);
+                    hbox = addInfoOfEvent(event, icon);
                 }
-                if (type==Day.EventType.Goal && goal)
+                if (type == Day.EventType.Goal && goal)
                 {
                     icon.setImage(new Image("Images/goal42.png"));
-                    hbox = addInfoOfEvent(event,icon);
+                    hbox = addInfoOfEvent(event, icon);
                 }
-                if (type==Day.EventType.Schedule && schedule)
+                if (type == Day.EventType.Schedule && schedule)
                 {
                     icon.setImage(new Image("Images/schedule42.png"));
-                    hbox = addInfoOfEvent(event,icon);
+                    hbox = addInfoOfEvent(event, icon);
                 }
-                if (hbox!=null)
+                if (hbox != null)
                 {
                     content.getChildren().add(hbox);
                 }
@@ -225,7 +260,7 @@ public class EventsOfDayInfo extends Application implements Initializable
         scroller.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scroller.setLayoutY(40);
         var childList = paneOfInfoRoot.getChildren();
-        for(var node : childList)
+        for (var node : childList)
         {
             if (node instanceof ScrollPane)
             {
@@ -237,7 +272,7 @@ public class EventsOfDayInfo extends Application implements Initializable
         childList.add(scroller);
     }
 
-    private HBox addInfoOfEvent(EventOfDay event, ImageView icon)
+    private static HBox addInfoOfEvent(EventOfDay event, ImageView icon)
     {
         var hSeparator = new Separator(Orientation.VERTICAL);
 
@@ -252,8 +287,8 @@ public class EventsOfDayInfo extends Application implements Initializable
         info.setEditable(false);
         info.setWrapText(true);
 
-        var hbox = new HBox(4,icon,hSeparator,time,info);
-        Main.setRegion(hbox,456,42);
+        var hbox = new HBox(4, icon, hSeparator, time, info);
+        Main.setRegion(hbox, 456, 42);
         hbox.setAlignment(Pos.CENTER);
         hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 

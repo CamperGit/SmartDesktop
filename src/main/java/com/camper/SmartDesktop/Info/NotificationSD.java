@@ -25,45 +25,70 @@ import static com.camper.SmartDesktop.Main.*;
 
 public class NotificationSD extends Application implements Initializable
 {
-    @FXML private Button notificationAddButton;
-    @FXML private Button notificationCancelButton;
-    @FXML private Button notificationCloseButton;
-    @FXML private DatePicker notificationDatePicker;
-    @FXML private ComboBox<String> notificationComboBoxHours;
-    @FXML private ComboBox<String> notificationComboBoxMinutes;
-    @FXML private TextArea notificationTextArea;
-    @FXML private ToolBar notificationToolBar;
+    @FXML
+    private Button notificationAddButton;
+    @FXML
+    private Button notificationCancelButton;
+    @FXML
+    private Button notificationCloseButton;
+    @FXML
+    private DatePicker notificationDatePicker;
+    @FXML
+    private ComboBox<String> notificationComboBoxHours;
+    @FXML
+    private ComboBox<String> notificationComboBoxMinutes;
+    @FXML
+    private TextArea notificationTextArea;
+    @FXML
+    private ToolBar notificationToolBar;
 
     private AnchorPane NotificationRoot;
     private int id;
-    private static LocalDate date=null;
+    private static LocalDate date = null;
     private static AnchorPane selectedNotification;
     private static Map<Integer, NotificationSD> notifications = new HashMap<>();
-    private static int nextId=1;
+    private static int nextId = 1;
 
-    public NotificationSD(){}
-    public NotificationSD(LocalDate date)
+    public NotificationSD()
     {
-        NotificationSD.date=date;
     }
 
-    private AnchorPane getNotificationRoot() { return NotificationRoot; }
+    public NotificationSD(LocalDate date)
+    {
+        NotificationSD.date = date;
+    }
 
-    public static void clearSaveList() { notifications.clear(); nextId=1;}
+    private AnchorPane getNotificationRoot()
+    {
+        return NotificationRoot;
+    }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public static void clearSaveList()
+    {
+        notifications.clear();
+        nextId = 1;
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        NotificationRoot= FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/notificationRu.fxml")));
-        NotificationRoot.setLayoutX(DEFAULT_WIDTH/2-340/2);
-        NotificationRoot.setLayoutY(DEFAULT_HEIGHT/2-248/2);
+        NotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/notificationRu.fxml")));
+        NotificationRoot.setLayoutX(DEFAULT_WIDTH / 2 - 340 / 2);
+        NotificationRoot.setLayoutY(DEFAULT_HEIGHT / 2 - 248 / 2);
 
-        this.id=nextId;
+        this.id = nextId;
         nextId++;
-        notifications.put(this.id,this);
+        notifications.put(this.id, this);
         NotificationRoot.setAccessibleHelp(String.valueOf(this.id));
 
         addChild(NotificationRoot);
@@ -72,13 +97,24 @@ public class NotificationSD extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        var hoursValues = new ArrayList<String>()
+        {{
+            addAll(Stream.iterate(0, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
+            addAll(IntStream.iterate(10, n -> n < 24, n -> ++n).mapToObj(Integer::toString).collect(Collectors.toList()));
+        }};
+        var minutesValues = new ArrayList<String>()
+        {{
+            addAll(Stream.iterate(0, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
+            addAll(IntStream.iterate(10, n -> n < 60, n -> ++n).mapToObj(Integer::toString).collect(Collectors.toList()));
+        }};
+
         notificationToolBar.setOnMouseDragged(event ->
         {
             selectedNotification = (AnchorPane) (((ToolBar) event.getSource()).getParent());
-            NodeDragger.addDraggingProperty(selectedNotification,event);
+            NodeDragger.addDraggingProperty(selectedNotification, event);
         });
 
-        notificationCloseButton.setOnAction(event->
+        notificationCloseButton.setOnAction(event ->
         {
             selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
             notifications.remove(Integer.parseInt(selectedNotification.getAccessibleHelp()));
@@ -87,54 +123,57 @@ public class NotificationSD extends Application implements Initializable
 
         notificationCancelButton.setOnAction(notificationCloseButton.getOnAction());
 
-        for (int i =0;i<=9;i++)
-        {
-            notificationComboBoxHours.getItems().add("0"+i);
-        }
-        notificationComboBoxHours.getItems().addAll(IntStream.iterate(10,n->n<=24, n->++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        String hour = LocalTime.now().getHour() <10 ? "0" + LocalTime.now().getHour() : String.valueOf(LocalTime.now().getHour());
+        notificationComboBoxHours.getItems().addAll(hoursValues);
+        String hour = LocalTime.now().getHour() < 10 ? "0" + LocalTime.now().getHour() : String.valueOf(LocalTime.now().getHour());
         notificationComboBoxHours.setValue(hour);
         notificationComboBoxHours.setVisibleRowCount(6);
 
         notificationComboBoxHours.setOnScroll(event ->
         {
-            int deltaY = (int) event.getDeltaY()/25;
-            int result = Integer.parseInt(notificationComboBoxHours.getValue())+deltaY;
-            if (result<0) {result=0;}
-            if (result>23) {result=23;}
-            String resultString=String.valueOf(result);
-            if (result<10)
+            int deltaY = (int) event.getDeltaY() / 25;
+            int result = Integer.parseInt(notificationComboBoxHours.getValue()) + deltaY;
+            if (result < 0)
             {
-                resultString = "0"+result;
+                result = 0;
+            }
+            if (result > 23)
+            {
+                result = 23;
+            }
+            String resultString = String.valueOf(result);
+            if (result < 10)
+            {
+                resultString = "0" + result;
             }
             notificationComboBoxHours.setValue(resultString);
         });
 
-
-        for (int i =0;i<=9;i++)
-        {
-            notificationComboBoxMinutes.getItems().add("0"+i);
-        }
-        notificationComboBoxMinutes.getItems().addAll(IntStream.iterate(10,n->n<60, n->++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        String minute = LocalTime.now().getMinute() <10 ? "0" + LocalTime.now().getMinute() : String.valueOf(LocalTime.now().getMinute());
+        notificationComboBoxMinutes.getItems().addAll(minutesValues);
+        String minute = LocalTime.now().getMinute() < 10 ? "0" + LocalTime.now().getMinute() : String.valueOf(LocalTime.now().getMinute());
         notificationComboBoxMinutes.setValue(minute);
         notificationComboBoxMinutes.setVisibleRowCount(6);
 
         notificationComboBoxMinutes.setOnScroll(event ->
         {
-            int deltaY = (int) event.getDeltaY()/25;
-            int result = Integer.parseInt(notificationComboBoxMinutes.getValue())+deltaY;
-            if (result<0) {result=0;}
-            if (result>59) {result=59;}
-            String resultString=String.valueOf(result);
-            if (result<10)
+            int deltaY = (int) event.getDeltaY() / 25;
+            int result = Integer.parseInt(notificationComboBoxMinutes.getValue()) + deltaY;
+            if (result < 0)
             {
-                resultString = "0"+result;
+                result = 0;
+            }
+            if (result > 59)
+            {
+                result = 59;
+            }
+            String resultString = String.valueOf(result);
+            if (result < 10)
+            {
+                resultString = "0" + result;
             }
             notificationComboBoxMinutes.setValue(resultString);
         });
 
-        if (date!=null)
+        if (date != null)
         {
             notificationDatePicker.setValue(date);
         }
@@ -142,26 +181,25 @@ public class NotificationSD extends Application implements Initializable
         notificationAddButton.setOnAction(event ->
         {
             var dateOfEvent = notificationDatePicker.getValue();
-            var timeOfEvent = LocalTime.of(Integer.parseInt(notificationComboBoxHours.getValue()),Integer.parseInt(notificationComboBoxMinutes.getValue()));
+            var timeOfEvent = LocalTime.of(Integer.parseInt(notificationComboBoxHours.getValue()), Integer.parseInt(notificationComboBoxMinutes.getValue()));
             var daysWithEvents = getDaysWithEvents();
-            if (dateOfEvent!=null)
+            if (dateOfEvent != null)
             {
                 var day = checkUsingOfThisDate(dateOfEvent);
                 {
-                    if (day!=null)
+                    if (day != null)
                     {
-                        var eventOfDay = new EventOfDay(timeOfEvent,Day.EventType.Notification, notificationTextArea.getText()) ;
+                        var eventOfDay = new EventOfDay(timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
                         day.addEvent(eventOfDay);
-                        UpcomingEvent.addEventToQueue(day.getDate(),eventOfDay);
-                    }
-                    else
+                        UpcomingEvent.addEventToQueue(day.getDate(), eventOfDay);
+                    } else
                     {
-                        day = addEventOfDay(dateOfEvent, timeOfEvent, Day.EventType.Notification,notificationTextArea.getText());
+                        day = addEventOfDay(dateOfEvent, timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
                         daysWithEvents.add(day);
                         var eventOfDay = day.getEvents().get(0);//День с событием только создан и первый элемент и есть искомая нами ссылка на событие
-                        UpcomingEvent.addEventToQueue(day.getDate(),eventOfDay);
+                        UpcomingEvent.addEventToQueue(day.getDate(), eventOfDay);
                     }
-                    updateDayIcons(day.getDate(),day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
+                    updateDayIcons(day.getDate(), day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
                     selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
                     Main.root.getChildren().remove(selectedNotification);
                 }

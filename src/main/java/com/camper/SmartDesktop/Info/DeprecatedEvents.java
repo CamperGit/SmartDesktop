@@ -26,30 +26,37 @@ import static com.camper.SmartDesktop.Main.*;
 
 public class DeprecatedEvents extends Application implements Initializable
 {
-    @FXML private CheckBox notificationCheckBox;
-    @FXML private CheckBox goalsCheckBox;
-    @FXML private CheckBox schedulerCheckBox;
-    @FXML private CheckBox allTypesCheckBox;
+    @FXML
+    private CheckBox notificationCheckBox;
+    @FXML
+    private CheckBox goalsCheckBox;
+    @FXML
+    private CheckBox schedulerCheckBox;
+    @FXML
+    private CheckBox allTypesCheckBox;
     private static AnchorPane checkDeprecatedEventsRoot;
     private static List<Day> daysWithDeprecatedEvents = new ArrayList<>();
-    private static boolean entered=false;
+    private static boolean entered = false;
 
-    public static List<Day> getDaysWithDeprecatedEvents() { return daysWithDeprecatedEvents; }
+    public static List<Day> getDaysWithDeprecatedEvents()
+    {
+        return daysWithDeprecatedEvents;
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
         checkDeprecatedEventsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/deprecatedEvents.fxml")));
-        checkDeprecatedEventsRoot.setLayoutX(DEFAULT_WIDTH-512);
+        checkDeprecatedEventsRoot.setLayoutX(DEFAULT_WIDTH - 512);
         checkDeprecatedEventsRoot.setLayoutY(25);
-        updateScrollArea(true,true,true);
+        updateScrollArea(true, true, true);
 
-        checkDeprecatedEventsRoot.setOnMouseEntered(event-> entered=true);
+        checkDeprecatedEventsRoot.setOnMouseEntered(event -> entered = true);
         checkDeprecatedEventsRoot.setOnMouseExited(event ->
         {
             if (entered)
             {
-                entered=false;
+                entered = false;
                 daysWithDeprecatedEvents.clear();
                 Main.root.getChildren().remove(checkDeprecatedEventsRoot);
                 updateBellIcon();
@@ -63,45 +70,59 @@ public class DeprecatedEvents extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        notificationCheckBox.setOnAction(event->
+        notificationCheckBox.setOnAction(event ->
         {
-            updateScrollArea(notificationCheckBox.isSelected(),goalsCheckBox.isSelected(),schedulerCheckBox.isSelected());
-            if (!notificationCheckBox.isSelected()){allTypesCheckBox.setSelected(false);}
-            if (notificationCheckBox.isSelected()&&goalsCheckBox.isSelected()&&schedulerCheckBox.isSelected())
-            { allTypesCheckBox.setSelected(true); }
+            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            if (!notificationCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(false);
+            }
+            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(true);
+            }
         });
 
-        goalsCheckBox.setOnAction(event->
+        goalsCheckBox.setOnAction(event ->
         {
-            updateScrollArea(notificationCheckBox.isSelected(),goalsCheckBox.isSelected(),schedulerCheckBox.isSelected());
-            if (!goalsCheckBox.isSelected()){allTypesCheckBox.setSelected(false);}
-            if (notificationCheckBox.isSelected()&&goalsCheckBox.isSelected()&&schedulerCheckBox.isSelected())
-            { allTypesCheckBox.setSelected(true); }
+            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            if (!goalsCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(false);
+            }
+            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(true);
+            }
         });
 
-        schedulerCheckBox.setOnAction(event->
+        schedulerCheckBox.setOnAction(event ->
         {
-            updateScrollArea(notificationCheckBox.isSelected(),goalsCheckBox.isSelected(),schedulerCheckBox.isSelected());
-            if (!schedulerCheckBox.isSelected()){allTypesCheckBox.setSelected(false);}
-            if (notificationCheckBox.isSelected()&&goalsCheckBox.isSelected()&&schedulerCheckBox.isSelected())
-            { allTypesCheckBox.setSelected(true); }
+            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            if (!schedulerCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(false);
+            }
+            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected())
+            {
+                allTypesCheckBox.setSelected(true);
+            }
         });
 
-        allTypesCheckBox.setOnAction(event->
+        allTypesCheckBox.setOnAction(event ->
         {
             if (allTypesCheckBox.isSelected())
             {
                 notificationCheckBox.setSelected(true);
                 goalsCheckBox.setSelected(true);
                 schedulerCheckBox.setSelected(true);
-            }
-            else
+            } else
             {
                 notificationCheckBox.setSelected(false);
                 goalsCheckBox.setSelected(false);
                 schedulerCheckBox.setSelected(false);
             }
-            updateScrollArea(notificationCheckBox.isSelected(),goalsCheckBox.isSelected(),schedulerCheckBox.isSelected());
+            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
         });
         allTypesCheckBox.setSelected(true);
         notificationCheckBox.setSelected(true);
@@ -113,14 +134,13 @@ public class DeprecatedEvents extends Application implements Initializable
     {
         for (Node node : Main.root.getChildren())
         {
-            if (node instanceof Button && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("deprecatedEventsBell"))
+            if (node instanceof Button && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("deprecatedEventsBell"))
             {
-                var button = (Button)node;
-                if (daysWithDeprecatedEvents.size()!=0)
+                var button = (Button) node;
+                if (daysWithDeprecatedEvents.size() != 0)
                 {
                     button.setGraphic(new ImageView(new Image("Images/bell25Active.png")));
-                }
-                else
+                } else
                 {
                     button.setGraphic(new ImageView(new Image("Images/bell25.png")));
                 }
@@ -144,9 +164,9 @@ public class DeprecatedEvents extends Application implements Initializable
             date.setAlignment(Pos.CENTER);
             var hSeparatorUnderDate = new Separator();
 
-            VBox vbox=new VBox();
+            VBox vbox = new VBox();
             var events = day.getEvents();
-            if (events.size()!=0)
+            if (events.size() != 0)
             {
                 events.sort(Comparator.comparing(EventOfDay::getTime));
                 for (var event : events)
@@ -158,29 +178,31 @@ public class DeprecatedEvents extends Application implements Initializable
                     icon.setFitHeight(25);
                     icon.setLayoutX(0);
                     HBox hbox = null;
-                    if (type==Day.EventType.Notification && notification)
+                    if (type == Day.EventType.Notification && notification)
                     {
                         icon.setImage(new Image("Images/notification42.png"));
-                        hbox = addInfoOfEvent(event,icon);
+                        hbox = addInfoOfEvent(event, icon);
                     }
-                    if (type==Day.EventType.Goal && goal)
+                    if (type == Day.EventType.Goal && goal)
                     {
                         icon.setImage(new Image("Images/goal42.png"));
-                        hbox = addInfoOfEvent(event,icon);
+                        hbox = addInfoOfEvent(event, icon);
                     }
-                    if (type==Day.EventType.Schedule && schedule)
+                    if (type == Day.EventType.Schedule && schedule)
                     {
                         icon.setImage(new Image("Images/schedule42.png"));
-                        hbox = addInfoOfEvent(event,icon);
+                        hbox = addInfoOfEvent(event, icon);
                     }
-                    if (hbox!=null)
+                    if (hbox != null)
                     {
                         var hSeparator = new Separator();
                         if (!(vbox.getChildren().contains(date) && vbox.getChildren().contains(hSeparatorUnderDate)))
                         {
                             vbox.getChildren().addAll(date, hSeparatorUnderDate, hbox, hSeparator);
+                        } else
+                        {
+                            vbox.getChildren().addAll(hbox, hSeparator);
                         }
-                        else {vbox.getChildren().addAll(hbox, hSeparator);}
                         vbox.setMaxWidth(477);
                         vbox.setPrefWidth(477);
                         vbox.setMinWidth(477);
@@ -195,7 +217,7 @@ public class DeprecatedEvents extends Application implements Initializable
         scroller.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scroller.setLayoutY(65);
         var childList = checkDeprecatedEventsRoot.getChildren();
-        for(var node : childList)
+        for (var node : childList)
         {
             if (node instanceof ScrollPane)
             {
@@ -224,8 +246,8 @@ public class DeprecatedEvents extends Application implements Initializable
         info.setEditable(false);
         info.setWrapText(true);
 
-        var hbox = new HBox(4,icon,hSeparator,time,info);
-        Main.setRegion(hbox,479,42);
+        var hbox = new HBox(4, icon, hSeparator, time, info);
+        Main.setRegion(hbox, 479, 42);
         hbox.setAlignment(Pos.CENTER);
         hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 

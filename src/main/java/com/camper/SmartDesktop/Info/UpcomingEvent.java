@@ -22,12 +22,12 @@ import static com.camper.SmartDesktop.Info.CalendarSD.updateDayIcons;
 
 public class UpcomingEvent extends Application implements Initializable
 {
-    private static PriorityBlockingQueue<LocalDateTime> eventsOnQueue = new PriorityBlockingQueue<>(5,LocalDateTime::compareTo);
-    private static Map<LocalDateTime,EventOfDay> infoOfEvents = new HashMap<>();
+    private static PriorityBlockingQueue<LocalDateTime> eventsOnQueue = new PriorityBlockingQueue<>(5, LocalDateTime::compareTo);
+    private static Map<LocalDateTime, EventOfDay> infoOfEvents = new HashMap<>();
     private static ExecutorService executorService = Executors.newCachedThreadPool();
     private static Task<Integer> task;
     private static LocalDateTime upcomingEvent;
-    private static boolean alreadyShowing=false;
+    private static boolean alreadyShowing = false;
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -49,41 +49,39 @@ public class UpcomingEvent extends Application implements Initializable
             protected Integer call() throws Exception
             {
                 var now = LocalDateTime.now();
-                while (eventsOnQueue.size()==0)
+                while (eventsOnQueue.size() == 0)
                 {
                     Thread.onSpinWait();
                 }
-                upcomingEvent=eventsOnQueue.peek();
+                upcomingEvent = eventsOnQueue.peek();
                 while (now.isBefore(upcomingEvent))
                 {
-                    now=LocalDateTime.now();
+                    now = LocalDateTime.now();
                     try
                     {
                         Thread.sleep(100);
-                    }
-                    catch (InterruptedException e)
+                    } catch (InterruptedException e)
                     {
                         e.printStackTrace();
                     }
                 }
-                Platform.runLater(()->
+                Platform.runLater(() ->
                 {
                     if (!alreadyShowing)
                     {
                         var otherInfoOfEvent = infoOfEvents.get(upcomingEvent);
                         var date = upcomingEvent.toLocalDate();
-                        var day = Day.removeEventFromDay(date,otherInfoOfEvent);
-                        if (day==null)
+                        var day = Day.removeEventFromDay(date, otherInfoOfEvent);
+                        if (day == null)
                         {
-                            updateDayIcons(date,false,false,false);
-                        }
-                        else
+                            updateDayIcons(date, false, false, false);
+                        } else
                         {
-                            updateDayIcons(date,day.isHaveNotification(),day.isHaveGoal(),day.isHaveSchedule());
+                            updateDayIcons(date, day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
                         }
 
-                        alreadyShowing=true;
-                        var alert = new Alert(Alert.AlertType.WARNING, otherInfoOfEvent.getType().toString()+": " + otherInfoOfEvent.getInfo(), ButtonType.OK);
+                        alreadyShowing = true;
+                        var alert = new Alert(Alert.AlertType.WARNING, otherInfoOfEvent.getType().toString() + ": " + otherInfoOfEvent.getInfo(), ButtonType.OK);
                         alert.showAndWait();
                     }
                 });
@@ -91,11 +89,11 @@ public class UpcomingEvent extends Application implements Initializable
             }
         };
 
-        task.setOnSucceeded(event->
+        task.setOnSucceeded(event ->
         {
-            alreadyShowing=false;
+            alreadyShowing = false;
             eventsOnQueue.remove();
-            if (task.getValue()!=0)
+            if (task.getValue() != 0)
             {
                 executorService.execute(returnTask());
             }
@@ -106,7 +104,7 @@ public class UpcomingEvent extends Application implements Initializable
 
     public static void loadEventsToQueue(List<Day> daysWithEvents)
     {
-        if (daysWithEvents.size()!=0)
+        if (daysWithEvents.size() != 0)
         {
             for (var day : daysWithEvents)
             {
@@ -115,11 +113,11 @@ public class UpcomingEvent extends Application implements Initializable
 
                 for (var event : events)
                 {
-                    addEventToQueue(date,event);
+                    addEventToQueue(date, event);
                 }
             }
         }
-        if (task==null && upcomingEvent==null)
+        if (task == null && upcomingEvent == null)
         {
             runEventTask();
         }
@@ -127,10 +125,10 @@ public class UpcomingEvent extends Application implements Initializable
 
     public static void addEventToQueue(LocalDate date, EventOfDay event)
     {
-        var dateAndTime = LocalDateTime.of(date,event.getTime());
+        var dateAndTime = LocalDateTime.of(date, event.getTime());
         eventsOnQueue.add(dateAndTime);
-        infoOfEvents.put(dateAndTime,event);
-        if (task!=null && upcomingEvent!=null && dateAndTime.isBefore(upcomingEvent))
+        infoOfEvents.put(dateAndTime, event);
+        if (task != null && upcomingEvent != null && dateAndTime.isBefore(upcomingEvent))
         {
             task.cancel();
             runEventTask();
@@ -139,7 +137,12 @@ public class UpcomingEvent extends Application implements Initializable
 
     public static void disableEventQueue(boolean exit) throws InterruptedException
     {
-        if (task!=null) { task.cancel(); task=null; upcomingEvent=null; }
+        if (task != null)
+        {
+            task.cancel();
+            task = null;
+            upcomingEvent = null;
+        }
         if (exit)
         {
             executorService.shutdownNow();
@@ -147,8 +150,7 @@ public class UpcomingEvent extends Application implements Initializable
             {
                 System.exit(0);
             }
-        }
-        else
+        } else
         {
             eventsOnQueue.clear();
             infoOfEvents.clear();

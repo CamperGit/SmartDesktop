@@ -42,35 +42,65 @@ import static com.camper.SmartDesktop.Saving.saveAll;
 
 public class Main extends Application implements Initializable
 {
-    public static void main(String[] args) { launch(args); }
+    public static void main(String[] args)
+    {
+        launch(args);
+    }
 
-    @FXML private ChoiceBox<String> savesChoiceBox;
-    @FXML private TabPane mainTabPane;
-    @FXML private Tab tab1;
-    @FXML private Tab tab2;
-    @FXML private Tab tab3;
-    @FXML private Tab tab4;
-    @FXML private Tab tab5;
-    @FXML private ImageView imageViewer;
-    @FXML private MediaView videoViewer;
-    @FXML private Button addNewPresetButton;
-    @FXML private Button imageFileChooserButton;
-    @FXML private Button videoFileChooserButton;
-    @FXML private Button note;
-    @FXML private Button schedule;
-    @FXML private Button calendar;
-    @FXML private Button autorizeButton;
-    @FXML private Button checkDeprecatedEventsButton;
-    @FXML private ImageView noteIV;
-    @FXML private ImageView scheduleIV;
-    @FXML private ImageView imagePlayerIV;
-    @FXML private ImageView mediaPlayerIV;
-    @FXML private ImageView calendarIV;
-    @FXML private ImageView deprecatedEventsIV;
+    @FXML
+    private ChoiceBox<String> savesChoiceBox;
+    @FXML
+    private TabPane mainTabPane;
+    @FXML
+    private Tab tab1;
+    @FXML
+    private Tab tab2;
+    @FXML
+    private Tab tab3;
+    @FXML
+    private Tab tab4;
+    @FXML
+    private Tab tab5;
+    @FXML
+    private ImageView imageViewer;
+    @FXML
+    private MediaView videoViewer;
+    @FXML
+    private Button addNewPresetButton;
+    @FXML
+    private Button imageFileChooserButton;
+    @FXML
+    private Button videoFileChooserButton;
+    @FXML
+    private Button note;
+    @FXML
+    private Button schedule;
+    @FXML
+    private Button goal;
+    @FXML
+    private Button calendar;
+    @FXML
+    private Button autorizeButton;
+    @FXML
+    private Button checkDeprecatedEventsButton;
+    @FXML
+    private ImageView noteIV;
+    @FXML
+    private ImageView scheduleIV;
+    @FXML
+    private ImageView goalIV;
+    @FXML
+    private ImageView imagePlayerIV;
+    @FXML
+    private ImageView mediaPlayerIV;
+    @FXML
+    private ImageView calendarIV;
+    @FXML
+    private ImageView deprecatedEventsIV;
 
     private static MediaPlayer mediaPlayer;
     private static int numberOfImmutableElements;
-    public static int idOfSelectedTab=1;
+    public static int idOfSelectedTab = 1;
     public static Map<Integer, List<Node>> tabs = new HashMap<>();
     public static Pane root;
     public static String currencySaveName;
@@ -81,7 +111,10 @@ public class Main extends Application implements Initializable
     public static final ClassLoader mainCL = Main.class.getClassLoader();
     public static final String DIRPATH = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
 
-    public static void addChild(Parent node) { root.getChildren().add(node); }
+    public static void addChild(Parent node)
+    {
+        root.getChildren().add(node);
+    }
 
     public static void setRegion(Region node, int width, int height)
     {
@@ -96,10 +129,11 @@ public class Main extends Application implements Initializable
     private static void deleteAllNewElements()
     {
         var list = root.getChildren();
-        list.remove(numberOfImmutableElements,list.size());
+        list.remove(numberOfImmutableElements, list.size());
         NoteSD.clearSaveList();
         NotificationSD.clearSaveList();
         ScheduleSD.clearSaveList();
+        GoalSD.clearSaveList();
         CalendarSD.clearLastInfo();
     }
 
@@ -107,66 +141,83 @@ public class Main extends Application implements Initializable
     {
         while (!(parent instanceof AnchorPane))
         {
-            parent=parent.getParent();
+            parent = parent.getParent();
         }
-        var pane = (AnchorPane)parent;
+        var pane = (AnchorPane) parent;
         return Integer.parseInt(pane.getAccessibleHelp());
     }
 
     private static void clearTab()
     {
-        for (int i = 1;i<(tabs.size()+1);i++) { tabs.get(i).clear(); }
+        for (int i = 1; i < (tabs.size() + 1); i++)
+        {
+            tabs.get(i).clear();
+        }
     }
 
     @Override
     public void start(Stage stage) throws Exception
     {
-        stage.setOnCloseRequest((event)->
+        stage.setOnCloseRequest((event) ->
         {
-            try { saveAll(event); }
-            catch (ParserConfigurationException | TransformerException | IOException | InterruptedException e)
-            { e.printStackTrace(); }
+            try
+            {
+                saveAll(event);
+            } catch (ParserConfigurationException | TransformerException | IOException | InterruptedException e)
+            {
+                e.printStackTrace();
+            }
         });
 
-        if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources"))&&Files.exists(Paths.get(DIRPATH+"\\Resources"))))
-        { Files.createDirectory(Paths.get(DIRPATH+"\\Resources")); }
+        if (!(Files.isDirectory(Paths.get(DIRPATH + "\\Resources")) && Files.exists(Paths.get(DIRPATH + "\\Resources"))))
+        {
+            Files.createDirectory(Paths.get(DIRPATH + "\\Resources"));
+        }
 
-        if (!(Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Saves"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Saves"))))
-        { Files.createDirectory(Paths.get(DIRPATH+"\\Resources\\Saves")); }
+        if (!(Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Saves")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves"))))
+        {
+            Files.createDirectory(Paths.get(DIRPATH + "\\Resources\\Saves"));
+        }
 
         if (!Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\saveInfo.properties")))
         {
-            saveInfo.setProperty("lastSaveName","save1.xml");
-            saveInfo.store(new FileOutputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"),"Info of latest save");
+            saveInfo.setProperty("lastSaveName", "save1.xml");
+            saveInfo.store(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"), "Info of latest save");
         }
-        try(FileInputStream io = new FileInputStream(DIRPATH+"\\Resources\\Saves\\saveInfo.properties"))
-        { saveInfo.load(io); }
+        try (FileInputStream io = new FileInputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"))
+        {
+            saveInfo.load(io);
+        }
 
         var elementsOfTab1 = new ArrayList<Node>();
         var elementsOfTab2 = new ArrayList<Node>();
         var elementsOfTab3 = new ArrayList<Node>();
         var elementsOfTab4 = new ArrayList<Node>();
         var elementsOfTab5 = new ArrayList<Node>();
-        tabs.put(1,elementsOfTab1);
-        tabs.put(2,elementsOfTab2);
-        tabs.put(3,elementsOfTab3);
-        tabs.put(4,elementsOfTab4);
-        tabs.put(5,elementsOfTab5);
+        tabs.put(1, elementsOfTab1);
+        tabs.put(2, elementsOfTab2);
+        tabs.put(3, elementsOfTab3);
+        tabs.put(4, elementsOfTab4);
+        tabs.put(5, elementsOfTab5);
 
         Stage = stage;
 
         root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreenRu.fxml")));
-        var scene = new Scene(root,DEFAULT_WIDTH,DEFAULT_HEIGHT-66);
+        var scene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT - 66);
 
         numberOfImmutableElements = root.getChildren().size();
 
         currencySaveName = loadSave(null);
 
-        if (CalendarSD.getRoot()==null)
+        if (CalendarSD.getRoot() == null)
         {
-            try { new CalendarSD().start(stage); }
-            catch (Exception e)
-            { e.printStackTrace(); }
+            try
+            {
+                new CalendarSD().start(stage);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
 
         //После загрузки находит таб с пресетами и устанавливает ему пресет равный числу в сохранённом файле
@@ -174,8 +225,8 @@ public class Main extends Application implements Initializable
         {
             if (node instanceof TabPane && node.getAccessibleHelp().equals("Presaves tab pane"))
             {
-                var selectionModel = ((TabPane)node).getSelectionModel();
-                selectionModel.select(idOfSelectedTab-1);
+                var selectionModel = ((TabPane) node).getSelectionModel();
+                selectionModel.select(idOfSelectedTab - 1);
                 break;
             }
         }
@@ -190,33 +241,35 @@ public class Main extends Application implements Initializable
     {
         noteIV.setImage(new Image("Images/note35.png"));
         scheduleIV.setImage(new Image("Images/schedule35.png"));
+        goalIV.setImage(new Image("Images/goal42.png"));
         imagePlayerIV.setImage(new Image("Images/imageViewer35.png"));
         mediaPlayerIV.setImage(new Image("Images/videoPlayer35.png"));
         calendarIV.setImage(new Image("Images/calendar35.png"));
         deprecatedEventsIV.setImage(new Image("Images/bell25.png"));
 
 
-        autorizeButton.setLayoutX(DEFAULT_WIDTH-120);
-        savesChoiceBox.setLayoutX(DEFAULT_WIDTH-320);
-        addNewPresetButton.setLayoutX(DEFAULT_WIDTH-345);
-        checkDeprecatedEventsButton.setLayoutX(DEFAULT_WIDTH-512);
+        autorizeButton.setLayoutX(DEFAULT_WIDTH - 120);
+        savesChoiceBox.setLayoutX(DEFAULT_WIDTH - 320);
+        addNewPresetButton.setLayoutX(DEFAULT_WIDTH - 345);
+        checkDeprecatedEventsButton.setLayoutX(DEFAULT_WIDTH - 512);
 
-        checkDeprecatedEventsButton.setOnMouseClicked(event->
+        checkDeprecatedEventsButton.setOnMouseClicked(event ->
         {
             try
             {
                 new DeprecatedEvents().start(Stage);
                 DeprecatedEvents.updateBellIcon();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
             }
-            catch (Exception e)
-            { e.printStackTrace(); }
         });
 
-        var selectionModel=mainTabPane.getSelectionModel();
+        var selectionModel = mainTabPane.getSelectionModel();
         loadSavesToSavesList(savesChoiceBox);
         //Устанавливаем значение пресета в загрузочном списке
         savesChoiceBox.setValue(saveInfo.getProperty("lastSaveName"));
-        addNewPresetButton.setOnAction((event)->
+        addNewPresetButton.setOnAction((event) ->
         {
             try
             {
@@ -226,9 +279,11 @@ public class Main extends Application implements Initializable
                 //Даже при устанавлении значения в выплывающем списке программно срабатывает обработчик событий для него.
                 savesChoiceBox.setValue(nameNewSave);
             } catch (Exception e)
-            { e.printStackTrace(); }
+            {
+                e.printStackTrace();
+            }
         });
-        savesChoiceBox.setOnAction(event->
+        savesChoiceBox.setOnAction(event ->
         {
             try
             {
@@ -238,32 +293,73 @@ public class Main extends Application implements Initializable
                 clearTab();
                 loadSave(savesChoiceBox);
 
-                selectionModel.select(idOfSelectedTab-1);
+                selectionModel.select(idOfSelectedTab - 1);
             } catch (Exception e)
-            { e.printStackTrace(); }
+            {
+                e.printStackTrace();
+            }
         });
-        tab1.setOnSelectionChanged((event)-> { if(tab1.isSelected()) {updateElementsVisibility(1);} });
-        tab2.setOnSelectionChanged((event)-> { if(tab2.isSelected()) {updateElementsVisibility(2);} });
-        tab3.setOnSelectionChanged((event)-> { if(tab3.isSelected()) {updateElementsVisibility(3);} });
-        tab4.setOnSelectionChanged((event)-> { if(tab4.isSelected()) {updateElementsVisibility(4);} });
-        tab5.setOnSelectionChanged((event)-> { if(tab5.isSelected()) {updateElementsVisibility(5);} });
+        tab1.setOnSelectionChanged((event) ->
+        {
+            if (tab1.isSelected())
+            {
+                updateElementsVisibility(1);
+            }
+        });
+        tab2.setOnSelectionChanged((event) ->
+        {
+            if (tab2.isSelected())
+            {
+                updateElementsVisibility(2);
+            }
+        });
+        tab3.setOnSelectionChanged((event) ->
+        {
+            if (tab3.isSelected())
+            {
+                updateElementsVisibility(3);
+            }
+        });
+        tab4.setOnSelectionChanged((event) ->
+        {
+            if (tab4.isSelected())
+            {
+                updateElementsVisibility(4);
+            }
+        });
+        tab5.setOnSelectionChanged((event) ->
+        {
+            if (tab5.isSelected())
+            {
+                updateElementsVisibility(5);
+            }
+        });
 
         imageViewer.setFitWidth(DEFAULT_WIDTH);
         imageViewer.setFitHeight(DEFAULT_HEIGHT);
-        String extensionOnReloading=null;
-        if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Images\\image.jpg"))) { extensionOnReloading=".jpg";}
-        else if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Images\\image.png"))) { extensionOnReloading=".png";}
-        else if (Files.exists(Paths.get(DIRPATH+"\\Resources\\Images\\image.gif"))) {extensionOnReloading=".gif";}
-        if (extensionOnReloading!=null)
+        String extensionOnReloading = null;
+        if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Images\\image.jpg")))
         {
-            imageViewer.setImage(new Image("file:/"+DIRPATH + "\\Resources\\Images\\image"+extensionOnReloading,DEFAULT_WIDTH,DEFAULT_HEIGHT,false,false));
+            extensionOnReloading = ".jpg";
+        } else if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Images\\image.png")))
+        {
+            extensionOnReloading = ".png";
+        } else if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Images\\image.gif")))
+        {
+            extensionOnReloading = ".gif";
+        }
+        if (extensionOnReloading != null)
+        {
+            imageViewer.setImage(new Image("file:/" + DIRPATH + "\\Resources\\Images\\image" + extensionOnReloading, DEFAULT_WIDTH, DEFAULT_HEIGHT, false, false));
         }
 
         videoViewer.setFitWidth(DEFAULT_WIDTH);
         videoViewer.setFitHeight(DEFAULT_HEIGHT);
         String VUrl = null;
-        if(Files.exists(Paths.get(DIRPATH+"\\Resources\\Videos\\video.mp4")))
-        { VUrl ="file:/"+DIRPATH.replace("\\","/") + "/Resources/Videos/video.mp4";}
+        if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Videos\\video.mp4")))
+        {
+            VUrl = "file:/" + DIRPATH.replace("\\", "/") + "/Resources/Videos/video.mp4";
+        }
         if (VUrl != null)
         {
             var mediaFromLoadLaunch = new Media(VUrl);
@@ -280,7 +376,7 @@ public class Main extends Application implements Initializable
             var imageFilters = new FileChooser.ExtensionFilter("Video filters", "*.mp4");
             fileChooser.getExtensionFilters().add(imageFilters);
             var result = fileChooser.showOpenDialog(Stage);
-            if (result!=null)
+            if (result != null)
             {
                 try
                 {
@@ -289,33 +385,41 @@ public class Main extends Application implements Initializable
                         mediaPlayer.stop();
                         mediaPlayer.dispose();
                     }
-                    if (Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Images"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Images")))
+                    if (Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Images")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Images")))
                     {
                         var folderWithImages = new File(DIRPATH + "\\Resources\\Images");
                         File[] contents = folderWithImages.listFiles();
                         if (contents != null)
-                        { for (File f : contents) { f.delete(); } }
+                        {
+                            for (File f : contents)
+                            {
+                                f.delete();
+                            }
+                        }
                     }
-                    if (Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Videos"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Videos")))
+                    if (Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Videos")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Videos")))
                     {
                         var folderWithVideo = new File(DIRPATH + "\\Resources\\Videos");
                         File[] contents = folderWithVideo.listFiles();
                         if (contents != null)
-                        { for (File f : contents) { f.delete(); } }
-                        Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH+"\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
-                    }
-                    else
+                        {
+                            for (File f : contents)
+                            {
+                                f.delete();
+                            }
+                        }
+                        Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH + "\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
+                    } else
                     {
-                        Files.createDirectory(Paths.get(DIRPATH+"\\Resources\\Videos"));
-                        Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH+"\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
+                        Files.createDirectory(Paths.get(DIRPATH + "\\Resources\\Videos"));
+                        Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH + "\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
                     }
-                    var mediaFromFirstLaunch = new Media("file:/" + result.getAbsolutePath().replace("\\","/"));
+                    var mediaFromFirstLaunch = new Media("file:/" + result.getAbsolutePath().replace("\\", "/"));
                     mediaPlayer = new MediaPlayer(mediaFromFirstLaunch);
                     videoViewer.setMediaPlayer(mediaPlayer);
                     mediaPlayer.setAutoPlay(true);
                     mediaPlayer.setCycleCount(Integer.MAX_VALUE);
-                }
-                catch (IOException e)
+                } catch (IOException e)
                 {
                     e.printStackTrace();
                 }
@@ -325,18 +429,25 @@ public class Main extends Application implements Initializable
         imageFileChooserButton.setOnAction(event ->
         {
             var fileChooser = new FileChooser();
-            var imageFilters = new FileChooser.ExtensionFilter("Image filters", "*.jpg","*.png","*.gif");
+            var imageFilters = new FileChooser.ExtensionFilter("Image filters", "*.jpg", "*.png", "*.gif");
             fileChooser.getExtensionFilters().add(imageFilters);
             var result = fileChooser.showOpenDialog(Stage);
             String extensionOnFirstLaunch;
-            if (result!=null)
+            if (result != null)
             {
-                if (result.getName().endsWith(".jpg")) { extensionOnFirstLaunch=".jpg";}
-                else if (result.getName().endsWith(".png")) { extensionOnFirstLaunch=".png";}
-                else { extensionOnFirstLaunch=".gif";}
+                if (result.getName().endsWith(".jpg"))
+                {
+                    extensionOnFirstLaunch = ".jpg";
+                } else if (result.getName().endsWith(".png"))
+                {
+                    extensionOnFirstLaunch = ".png";
+                } else
+                {
+                    extensionOnFirstLaunch = ".gif";
+                }
                 try
                 {
-                    if (Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Images"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Images")))
+                    if (Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Images")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Images")))
                     {
                         /**
                          * Чтобы иметь только один файл фона и не хранить несколько изображений в разном расширении, что
@@ -347,13 +458,17 @@ public class Main extends Application implements Initializable
                         var folderWithImages = new File(DIRPATH + "\\Resources\\Images");
                         File[] contents = folderWithImages.listFiles();
                         if (contents != null)
-                        { for (File f : contents) { f.delete(); } }
-                        Files.copy(Paths.get(result.getAbsolutePath()), Paths.get(DIRPATH+"\\Resources\\Images\\image"+extensionOnFirstLaunch), StandardCopyOption.REPLACE_EXISTING);
-                    }
-                    else
+                        {
+                            for (File f : contents)
+                            {
+                                f.delete();
+                            }
+                        }
+                        Files.copy(Paths.get(result.getAbsolutePath()), Paths.get(DIRPATH + "\\Resources\\Images\\image" + extensionOnFirstLaunch), StandardCopyOption.REPLACE_EXISTING);
+                    } else
                     {
-                        Files.createDirectory(Paths.get(DIRPATH+"\\Resources\\Images"));
-                        Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH+"\\Resources\\Images\\image"+extensionOnFirstLaunch), StandardCopyOption.REPLACE_EXISTING);
+                        Files.createDirectory(Paths.get(DIRPATH + "\\Resources\\Images"));
+                        Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH + "\\Resources\\Images\\image" + extensionOnFirstLaunch), StandardCopyOption.REPLACE_EXISTING);
                     }
                     if (mediaPlayer != null && mediaPlayer.isAutoPlay())
                     {
@@ -363,36 +478,59 @@ public class Main extends Application implements Initializable
                      * Привыборе фотки, очищаем папку с видео, чтобы при последующем запуске у нас открывалась именно фотка
                      */
 
-                    if (Files.isDirectory(Paths.get(DIRPATH+"\\Resources\\Videos"))&&Files.exists(Paths.get(DIRPATH+"\\Resources\\Videos")))
+                    if (Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Videos")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Videos")))
                     {
                         var folderWithVideo = new File(DIRPATH + "\\Resources\\Videos");
                         File[] contents = folderWithVideo.listFiles();
                         if (contents != null)
-                        { for (File f : contents) { f.delete(); } }
+                        {
+                            for (File f : contents)
+                            {
+                                f.delete();
+                            }
+                        }
                     }
 
-                    var image = new Image("file:/" + result.getAbsolutePath(),DEFAULT_WIDTH,DEFAULT_HEIGHT,false,false);
+                    var image = new Image("file:/" + result.getAbsolutePath(), DEFAULT_WIDTH, DEFAULT_HEIGHT, false, false);
                     imageViewer.setImage(image);
-                }
-                catch (IOException e)
+                } catch (IOException e)
                 {
                     e.printStackTrace();
                 }
             }
         });
 
-        note.setOnAction(event->
+        note.setOnAction(event ->
         {
-            try { new NoteSD().start(Stage); }
-            catch (Exception e)
-            { e.printStackTrace(); }
+            try
+            {
+                new NoteSD().start(Stage);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         });
 
-        schedule.setOnAction(event->
+        schedule.setOnAction(event ->
         {
-            try { new ScheduleSD().start(Stage); }
-            catch (Exception e)
-            { e.printStackTrace(); }
+            try
+            {
+                new ScheduleSD().start(Stage);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
+
+        goal.setOnAction(event ->
+        {
+            try
+            {
+                new GoalSD().start(Stage);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         });
 
         calendar.setOnAction((event ->
@@ -401,7 +539,7 @@ public class Main extends Application implements Initializable
             calendar.setVisible(true);
 
             int tabNumber = Integer.parseInt(calendar.getAccessibleText());
-            if (tabNumber!=-1)
+            if (tabNumber != -1)
             {
                 var oldTab = tabs.get(tabNumber);
                 oldTab.remove(calendar);
