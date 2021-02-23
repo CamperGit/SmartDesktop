@@ -76,24 +76,7 @@ public class UpcomingEvent extends Application implements Initializable
                             alreadyShowing = true;
                             var alert = new Alert(Alert.AlertType.WARNING, otherInfoOfEvent.getType().toString() + ": " + otherInfoOfEvent.getInfo(), ButtonType.YES, ButtonType.NO);
                             var alertResult = alert.showAndWait();
-                            /*var checkBox = GoalSD.getCheckBoxOfTask(date,otherInfoOfEvent);
-                            assert checkBox != null;
-                            if (alertResult.orElse(ButtonType.NO) == ButtonType.YES)
-                            {
-                                checkBox.setSelected(true);
-                            }
-                            else
-                            {
-                                checkBox.setSelected(false);
-                            }*/
-                            if (alertResult.orElse(ButtonType.NO) == ButtonType.YES)
-                            {
-                                GoalSD.updateStateOfGoalCheckBoxes(otherInfoOfEvent,true);
-                            }
-                            else
-                            {
-                                GoalSD.updateStateOfGoalCheckBoxes(otherInfoOfEvent,false);
-                            }
+                            GoalSD.updateStateOfGoalCheckBoxes(otherInfoOfEvent, alertResult.orElse(ButtonType.NO) == ButtonType.YES);
                         }
 
                         if (otherInfoOfEvent.getType() != Day.EventType.Task && otherInfoOfEvent.getType() != Day.EventType.Goal)
@@ -183,6 +166,13 @@ public class UpcomingEvent extends Application implements Initializable
             eventsOnQueue.clear();
             infoOfEvents.clear();
         }
+    }
+
+    public static void removeEventFromQueue(LocalDate date, EventOfDay eventOfDay)
+    {
+        var localDateTime = LocalDateTime.of(date,eventOfDay.getTime());
+        eventsOnQueue.remove(localDateTime);
+        infoOfEvents.remove(localDateTime);
     }
 
     public static void runEventTask()

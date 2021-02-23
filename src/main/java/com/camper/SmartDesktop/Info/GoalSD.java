@@ -307,6 +307,23 @@ public class GoalSD extends Application implements Initializable
         }
     }
 
+    public void removeTaskFromGoal(LocalDate date, CheckBox completeCheckBox)
+    {
+        for (var entry : this.getCheckBoxes().entrySet())
+        {
+            if (entry.getKey() != null && entry.getValue() != null)
+            {
+                var task = entry.getKey();
+                if (entry.getValue().equals(completeCheckBox))
+                {
+                    UpcomingEvent.removeEventFromQueue(date, task);
+                    Day.removeEventFromDay(date, task);
+                    this.getCheckBoxes().remove(task,completeCheckBox);
+                }
+            }
+        }
+    }
+
     /**
      * ѕровер€ет уникальность имени дл€ цели. Ёто об€зательное условие дл€ работы программы
      *
@@ -456,11 +473,17 @@ public class GoalSD extends Application implements Initializable
 
         });
 
-        deleteButton.setOnAction(event -> line.getChildren().removeAll(vbox, hSeparator));
+        deleteButton.setOnAction(event ->
+        {
+            line.getChildren().removeAll(vbox, hSeparator);
+            this.removeTaskFromGoal(date, completeCheckBox);
+        });
 
         saveButton.setOnAction(event ->
         {
+            this.removeTaskFromGoal(date, completeCheckBox);
             completeCheckBox.setDisable(false);
+
             var timeOfEvent = LocalTime.of(Integer.parseInt(hours.getValue()), Integer.parseInt(minutes.getValue()));
             String textOfEvent = textField.getText();
             var daysWithEvents = CalendarSD.getDaysWithEvents();
@@ -510,11 +533,8 @@ public class GoalSD extends Application implements Initializable
             }
         });
 
-        hours.setOnAction(event->
-        {
-            saveButton.setDisable(false);
-        });
+        hours.setOnAction(event -> saveButton.setDisable(false));
         minutes.setOnAction(hours.getOnAction());
-        textField.setOnKeyTyped(event->saveButton.setDisable(false));
+        textField.setOnKeyTyped(event -> saveButton.setDisable(false));
     }
 }
