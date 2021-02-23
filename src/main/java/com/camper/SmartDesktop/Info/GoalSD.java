@@ -4,8 +4,6 @@ import com.camper.SmartDesktop.Main;
 import com.camper.SmartDesktop.NodeDragger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,7 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -123,7 +120,7 @@ public class GoalSD extends Application implements Initializable
         return groupOfMainCheckBox;
     }
 
-    //public static Map<Integer,GoalSD> getGoals() {return goals;}
+    public static Map<Integer,GoalSD> getGoals() {return goals;}
 
     private AnchorPane getGoalRoot()
     {
@@ -240,7 +237,7 @@ public class GoalSD extends Application implements Initializable
                             var eventOfDay = new EventOfDay(timeOfEvent, Day.EventType.Goal, nameOfGoal);
                             day.addEvent(eventOfDay);
 
-                            var line = goalSD.createNewLine(date, false);
+                            var line = goalSD.createNewLine(date, false, eventOfDay);
                             goalSD.getTasksOfDay().put(date, line);
                             contentList.add(line);
 
@@ -265,8 +262,6 @@ public class GoalSD extends Application implements Initializable
 
             }
         });
-
-
     }
 
     public static void updateStateOfGoalCheckBoxes(EventOfDay eventOfDay, boolean newState)
@@ -324,6 +319,18 @@ public class GoalSD extends Application implements Initializable
         }
     }
 
+    public static String getGoalNameOfEventTask(EventOfDay eventOfDay)
+    {
+        for (var goalSD : goals.values())
+        {
+            if (goalSD.getCheckBoxes().containsKey(eventOfDay))
+            {
+                return goalSD.getNameOfGoal();
+            }
+        }
+        return null;
+    }
+
     /**
      * Проверяет уникальность имени для цели. Это обязательное условие для работы программы
      *
@@ -346,7 +353,7 @@ public class GoalSD extends Application implements Initializable
         return true;
     }
 
-    public VBox createNewLine(LocalDate date, boolean checkBoxState)
+    public VBox createNewLine(LocalDate date, boolean checkBoxState, EventOfDay goal)
     {
         var vbox = new VBox(4);
 
@@ -372,17 +379,31 @@ public class GoalSD extends Application implements Initializable
         Main.setRegion(hSeparator, 460, 6);
         vbox.getChildren().addAll(hbox, hSeparator);
 
+        this.getCheckBoxes().put(goal,completeAllCheckBox);
         this.getGroupOfMainCheckBox().put(completeAllCheckBox, new ArrayList<>());
 
         addNewTaskButton.setOnAction(event ->
         {
-            createNewTaskLine(vbox, completeAllCheckBox, date, null, null, false);
+            createNewTaskLine(vbox, completeAllCheckBox, date, null, null, false, null);
         });
 
         return vbox;
     }
 
-    private void createNewTaskLine(VBox line, CheckBox mainCheckBox, LocalDate date, LocalTime time, String text, boolean completeState)
+    /**
+     *
+     * @param line - контейнер, куда будут добавляться элементы
+     * @param mainCheckBox - главный чекбокс группы задач, на который крепятся пару обработчиков. Если null, то он вызывается
+     *                     из scrollPane и данные привязки не нужны.
+     * @param date - дата для создания ивента
+     * @param time - время для установки значений пользовательского интерфейса и создания ивента
+     * @param text - текст для установки значений пользовательского интерфейса и создания ивента
+     * @param completeState - состояние чекбокса для установки значений пользовательского интерфейса и создания ивента
+     * @param parentEvent - родительское событие, которое отвечает за полное окно элемента цели. Если null, то линия
+     *                    обязана создаваться в элементе goalSD. Если сюда передаётся какое-либо событие, то подразумевается,
+     *                    что линия создаётся в scrollPane и для неё немного меняются обработчики
+     */
+    private void createNewTaskLine(VBox line, CheckBox mainCheckBox, LocalDate date, LocalTime time, String text, boolean completeState, EventOfDay parentEvent)
     {
         var hoursValues = new ArrayList<String>()
         {{
@@ -505,18 +526,21 @@ public class GoalSD extends Application implements Initializable
             saveButton.setDisable(true);
         });
 
-        mainCheckBox.addEventHandler(ActionEvent.ACTION, event ->
+        if (mainCheckBox!=null)
         {
-            if (mainCheckBox.isSelected())
+            mainCheckBox.addEventHandler(ActionEvent.ACTION, event ->
             {
-                completeCheckBox.setSelected(true);
-            } else
-            {
-                completeCheckBox.setSelected(false);
-            }
-        });
+                if (mainCheckBox.isSelected())
+                {
+                    completeCheckBox.setSelected(true);
+                } else
+                {
+                    completeCheckBox.setSelected(false);
+                }
+            });
 
-        this.getGroupOfMainCheckBox().get(mainCheckBox).add(completeCheckBox);
+            this.getGroupOfMainCheckBox().get(mainCheckBox).add(completeCheckBox);
+        }
 
         completeCheckBox.setOnAction(e ->
         {

@@ -534,7 +534,7 @@ public class CalendarSD extends Application implements Initializable
 
         if (goal)
         {
-            goalIcons.get(day).setImage(new Image("Images/goal14OnProcess.png"));
+            goalIcons.get(day).setImage(new Image("Images/goal14Active.png"));
         } else
         {
             goalIcons.get(day).setImage(null);
@@ -565,7 +565,7 @@ public class CalendarSD extends Application implements Initializable
 
             if (goal)
             {
-                goalIcons.get(day).setImage(new Image("Images/goal14OnProcess.png"));
+                goalIcons.get(day).setImage(new Image("Images/goal14Active.png"));
             } else
             {
                 goalIcons.get(day).setImage(null);

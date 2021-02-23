@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -16,6 +17,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import javax.swing.*;
@@ -222,6 +225,8 @@ public class EventsOfDayInfo extends Application implements Initializable
         content.setPrefHeight(252);
         content.setMinWidth(459);
 
+        var goalsWithTask = new HashMap<String, List<EventOfDay>>();
+
         if (events != null && events.size() != 0)
         {
             events.sort(Comparator.comparing(EventOfDay::getTime));
@@ -239,15 +244,24 @@ public class EventsOfDayInfo extends Application implements Initializable
                     icon.setImage(new Image("Images/notification42.png"));
                     hbox = addInfoOfEvent(event, icon);
                 }
-                if (type == Day.EventType.Goal && goal)
+                /*if (type == Day.EventType.Goal && goal)
                 {
                     icon.setImage(new Image("Images/goal42.png"));
                     hbox = addInfoOfEvent(event, icon);
-                }
+                }*/
                 if (type == Day.EventType.Schedule && schedule)
                 {
                     icon.setImage(new Image("Images/schedule42.png"));
                     hbox = addInfoOfEvent(event, icon);
+                }
+                if (type == Day.EventType.Task)
+                {
+                    String goalName = GoalSD.getGoalNameOfEventTask(event);
+                    if (!(goalsWithTask.containsKey(goalName)))
+                    {
+                        goalsWithTask.put(goalName, new ArrayList<>());
+                    }
+                    goalsWithTask.get(goalName).add(event);
                 }
                 if (hbox != null)
                 {
@@ -255,6 +269,29 @@ public class EventsOfDayInfo extends Application implements Initializable
                 }
             }
         }
+
+        if (goal && goalsWithTask.size() != 0)
+        {
+            for (var entry : goalsWithTask.entrySet())
+            {
+                GoalSD goalSD = null;
+                for (var g : GoalSD.getGoals().values())
+                {
+                    if (g.getNameOfGoal().equals(entry.getKey()))
+                    {
+                        goalSD = g;
+                        break;
+                    }
+                }
+                if (goalSD != null)
+                {
+                    var oldLine = goalSD.getTasksOfDay().get(date);
+                    var line = addGoalOnScrollPane(entry.getKey(), entry.getValue(), date);
+                    content.getChildren().add(line);
+                }
+            }
+        }
+
         var scroller = new ScrollPane(content);
         scroller.setVisible(true);
         scroller.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -293,5 +330,77 @@ public class EventsOfDayInfo extends Application implements Initializable
         hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 
         return hbox;
+    }
+
+    private static VBox addGoalOnScrollPane(String nameOfGoal, List<EventOfDay> tasks, LocalDate date)
+    {
+        var line = new VBox(3);
+        line.setPadding(new Insets(4,0,0,0));
+        var childList = line.getChildren();
+
+        var nameOfGoalLabel = new Label(nameOfGoal);
+        Main.setRegion(nameOfGoalLabel, 348, 25);
+        nameOfGoalLabel.setFont(Font.font(null, FontWeight.BOLD, 16));
+
+        var icon = new ImageView(new Image("images/target25.png"));
+        icon.setFitWidth(25);
+        icon.setFitHeight(25);
+
+        var addButton = new Button();
+        Main.setRegion(addButton, 25, 25);
+        addButton.setGraphic(new ImageView(new Image("Images/add28.png")));
+
+        var showButton = new Button();
+        Main.setRegion(showButton, 25, 25);
+        showButton.setGraphic(new ImageView(new Image("Images/show35.png")));
+
+        var hbox1 = new HBox(6, icon, nameOfGoalLabel, addButton, showButton);
+        Main.setRegion(hbox1, 460, 25);
+        hbox1.setPadding(new Insets(0, 8, 0, 8));
+
+        var hSeparator = new Separator(Orientation.HORIZONTAL);
+        Main.setRegion(hSeparator, 460, 4);
+
+        childList.addAll(hbox1, hSeparator);
+
+        for (var task : tasks)
+        {
+            var time = new TextField(task.getTime().toString());
+            Main.setRegion(time, 45, 25);
+            time.setEditable(false);
+
+            var vSeparator = new Separator(Orientation.VERTICAL);
+            Main.setRegion(vSeparator, 4, 25);
+
+            var info = new TextField(task.getInfo());
+            Main.setRegion(info, 287, 25);
+            info.setEditable(false);
+
+            var deleteButton = new Button();
+            Main.setRegion(deleteButton, 25, 25);
+            deleteButton.setGraphic(new ImageView(new Image("Images/delete35.png")));
+            deleteButton.setStyle("-fx-background-color: #f4f4f4");
+
+            var checkBox = new CheckBox();
+            checkBox.getStylesheets().add(Objects.requireNonNull(mainCL.getResource("FXMLs/mediumCheckBox.css")).toExternalForm());
+            Main.setRegion(checkBox, 25, 25);
+
+            var editButton = new Button();
+            Main.setRegion(editButton, 25, 25);
+            editButton.setGraphic(new ImageView(new Image("Images/edit25.png")));
+            editButton.setStyle("-fx-background-color: #f4f4f4");
+
+            var taskInfo = new HBox(6, time, vSeparator, info, checkBox, deleteButton, editButton);
+            Main.setRegion(taskInfo, 460, 25);
+            taskInfo.setPadding(new Insets(0, 8, 0, 8));
+
+            childList.add(taskInfo);
+        }
+
+        var endHSeparator = new Separator(Orientation.HORIZONTAL);
+        Main.setRegion(endHSeparator, 460, 4);
+        childList.add(endHSeparator);
+
+        return line;
     }
 }
