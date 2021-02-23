@@ -269,56 +269,6 @@ public class GoalSD extends Application implements Initializable
 
     }
 
-    public static CheckBox getCheckBoxOfTask(LocalDate date, EventOfDay event)
-    {
-        for (var goalSD : goals.values())
-        {
-            var vbox = goalSD.getTasksOfDay().get(date);
-            for (var vboxes : vbox.getChildren())
-            {
-                if (vboxes instanceof VBox)
-                {
-                    String text = null;
-                    Integer hour = null;
-                    Integer minute = null;
-                    CheckBox tempCheckBox = null;
-
-                    for (var hboxes : ((VBox) vboxes).getChildren())
-                    {
-                        if (hboxes instanceof HBox)
-                        {
-                            for (var node : ((HBox) hboxes).getChildren())
-                            {
-                                if (node instanceof TextField)
-                                {
-                                    text = ((TextField) node).getText();
-                                }
-                                if (node instanceof ComboBox && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("hours"))
-                                {
-                                    hour = Integer.parseInt(((ComboBox<String>) node).getValue());
-                                }
-                                if (node instanceof ComboBox && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("minutes"))
-                                {
-                                    minute = Integer.parseInt(((ComboBox<String>) node).getValue());
-                                }
-                                if (node instanceof CheckBox)
-                                {
-                                    tempCheckBox = (CheckBox) node;
-                                }
-                            }
-                        }
-                    }
-                    if (text != null && hour != null && minute != null && tempCheckBox != null && text.equals(event.getInfo()) && LocalTime.of(hour, minute).equals(event.getTime()))
-                    {
-                        return tempCheckBox;
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
     public static void updateStateOfGoalCheckBoxes(EventOfDay eventOfDay, boolean newState)
     {
         for (var goalSD : goals.values())
