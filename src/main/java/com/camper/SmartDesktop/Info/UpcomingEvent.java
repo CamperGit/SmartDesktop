@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
@@ -71,15 +72,39 @@ public class UpcomingEvent extends Application implements Initializable
                     {
                         var otherInfoOfEvent = infoOfEvents.get(upcomingEvent);
                         var date = upcomingEvent.toLocalDate();
-                        if (otherInfoOfEvent.getType() == Day.EventType.Task)
+                        if (otherInfoOfEvent.getType().equals(Day.EventType.Task))
                         {
                             alreadyShowing = true;
                             var alert = new Alert(Alert.AlertType.WARNING, otherInfoOfEvent.getType().toString() + ": " + otherInfoOfEvent.getInfo(), ButtonType.YES, ButtonType.NO);
                             var alertResult = alert.showAndWait();
                             GoalSD.updateStateOfGoalCheckBoxes(otherInfoOfEvent, alertResult.orElse(ButtonType.NO) == ButtonType.YES);
                         }
+                        if (otherInfoOfEvent.getType().equals(Day.EventType.Goal))
+                        {
+                            var day = Day.removeEventFromDay(date, otherInfoOfEvent);
+                            if (day == null)
+                            {
+                                updateDayIcons(date, false, false, false);
+                            } else
+                            {
+                                updateDayIcons(date, day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
+                            }
 
-                        if (otherInfoOfEvent.getType() != Day.EventType.Task && otherInfoOfEvent.getType() != Day.EventType.Goal)
+                            var goalSD = GoalSD.getGoalFromGoalName(otherInfoOfEvent.getInfo());
+                            if (goalSD!=null)
+                            {
+                                for (var node : goalSD.getTasksOfDay().get(date).getChildren())
+                                {
+                                    if (node instanceof Button && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("addNewTaskButton"))
+                                    {
+                                        node.setDisable(true);
+                                    }
+                                }
+                            }
+
+                            alreadyShowing = true;
+                        }
+                        if (!(otherInfoOfEvent.getType().equals(Day.EventType.Task)) && !(otherInfoOfEvent.getType().equals(Day.EventType.Goal)))
                         {
                             var day = Day.removeEventFromDay(date, otherInfoOfEvent);
                             if (day == null)

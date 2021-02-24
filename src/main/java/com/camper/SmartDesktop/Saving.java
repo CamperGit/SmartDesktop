@@ -1,6 +1,7 @@
 package com.camper.SmartDesktop;
 
 import com.camper.SmartDesktop.Info.CalendarSD;
+import com.camper.SmartDesktop.Info.GoalSD;
 import com.camper.SmartDesktop.Info.NoteSD;
 import com.camper.SmartDesktop.Info.ScheduleSD;
 import javafx.scene.control.Alert;
@@ -46,6 +47,7 @@ public class Saving
 
         NoteSD.addNotesToXML(doc, false);
         ScheduleSD.addSchedulesToXML(doc, false);
+        GoalSD.addGoalsToXML(doc,false);
         CalendarSD.addCalendarToXML(doc, false);
 
         var t = TransformerFactory.newInstance().newTransformer();
@@ -106,6 +108,7 @@ public class Saving
 
         NoteSD.addNotesToXML(doc, true);
         CalendarSD.addCalendarToXML(doc, true);
+        GoalSD.addGoalsToXML(doc,true);
         ScheduleSD.addSchedulesToXML(doc, true);
 
         var rootElement = doc.getFirstChild();

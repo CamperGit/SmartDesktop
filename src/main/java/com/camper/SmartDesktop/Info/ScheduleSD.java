@@ -563,7 +563,8 @@ public class ScheduleSD extends Application implements Initializable
             int id = 1;
             for (var entry : schedules.entrySet())
             {
-                var scheduleSD = schedules.get(entry.getKey());
+                //var scheduleSD = schedules.get(entry.getKey());
+                var scheduleSD = entry.getValue();
                 var schedule = scheduleSD.getScheduleRoot();
                 var scheduleElement = doc.createElement("schedule" + id);
                 scheduleElement.setAttribute("tab", schedule.getAccessibleText());
@@ -681,7 +682,6 @@ public class ScheduleSD extends Application implements Initializable
                                     if (node instanceof TextArea)
                                     {
                                         text = ((TextArea) node).getText();
-                                        continue;
                                     }
                                 }
                             }

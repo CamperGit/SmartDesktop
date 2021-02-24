@@ -1,6 +1,7 @@
 package com.camper.SmartDesktop;
 
 import com.camper.SmartDesktop.Info.CalendarSD;
+import com.camper.SmartDesktop.Info.GoalSD;
 import com.camper.SmartDesktop.Info.NoteSD;
 import com.camper.SmartDesktop.Info.ScheduleSD;
 import javafx.scene.Node;
@@ -106,6 +107,7 @@ public class Loading
 
                 NoteSD.loadNotesFromXML(doc, xPath);
                 ScheduleSD.loadSchedulesFromXML(doc, xPath);
+                GoalSD.loadGoalsFromXML(doc,xPath);
                 // алендарь всегда должен грузитьс€ последним!!!
                 CalendarSD.loadCalendarFromXML(doc, xPath);
 

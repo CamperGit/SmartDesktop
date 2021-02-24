@@ -22,7 +22,7 @@
       </HBox>
       <TextField fx:id="goalNameTextField" alignment="CENTER" layoutY="25.0" prefHeight="25.0" prefWidth="460.0" promptText="Название цели" />
       <Separator layoutY="50.0" prefHeight="0.0" prefWidth="460.0" />
-      <Label alignment="CENTER_RIGHT" layoutX="171.0" layoutY="60.0" maxHeight="25.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="32.0" text="По">
+      <Label alignment="CENTER_RIGHT" layoutX="171.0" layoutY="60.0" maxHeight="25.0" minHeight="25.0" minWidth="24.0" prefHeight="25.0" prefWidth="32.0" text="По">
          <font>
             <Font name="Times New Roman" size="16.0" />
          </font>
@@ -35,7 +35,7 @@
       <DatePicker fx:id="goalStartDatePicker" layoutX="31.0" layoutY="60.0" maxHeight="25.0" maxWidth="140.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="140.0" />
       <DatePicker fx:id="goalEndDatePicker" layoutX="210.0" layoutY="60.0" maxHeight="25.0" maxWidth="140.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="140.0" />
       <Button fx:id="goalProgressButton" layoutX="363.0" layoutY="60.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Прогресс" />
-      <Button fx:id="goalSaveButton" layoutY="94.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="460.0" text="Сохранить" />
+      <Button fx:id="goalSaveButton" accessibleHelp="goalSaveButton" layoutY="94.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="460.0" text="Сохранить" />
       <Separator accessibleHelp="goalSaveButtonSeparator" layoutY="119.0" prefHeight="0.0" prefWidth="460.0" />
       <Separator layoutY="94.0" prefHeight="0.0" prefWidth="460.0" />
    </children>
