@@ -354,8 +354,6 @@ public class EventsOfDayInfo extends Application implements Initializable
                     {
                         goalsWithTask.put(event.getInfo(), new ArrayList<>());
                     }
-                    /*icon.setImage(new Image("Images/goal42.png"));
-                    hbox = addInfoOfEvent(event, icon);*/
                 }
                 if (type == Day.EventType.Schedule && schedule)
                 {
@@ -499,11 +497,10 @@ public class EventsOfDayInfo extends Application implements Initializable
             checkBox.getStylesheets().add(Objects.requireNonNull(mainCL.getResource("FXMLs/mediumCheckBox.css")).toExternalForm());
             Main.setRegion(checkBox, 25, 25);
             var goalSD = GoalSD.getGoalFromGoalName(nameOfGoal);
-            if (goalSD!=null)
+            if (goalSD != null)
             {
                 checkBox.setSelected(goalSD.getCheckBoxes().get(task).isSelected());
-            }
-            else
+            } else
             {
                 checkBox.setSelected(false);
             }
@@ -520,16 +517,16 @@ public class EventsOfDayInfo extends Application implements Initializable
 
             childList.add(taskInfo);
 
-            checkBox.setOnAction(event -> GoalSD.updateStateOfGoalCheckBoxes(task,checkBox.isSelected()));
-            deleteButton.setOnAction(event->
+            checkBox.setOnAction(event -> GoalSD.updateStateOfGoalCheckBoxes(task, checkBox.isSelected()));
+            deleteButton.setOnAction(event ->
             {
-                if (goalSD!=null)
+                if (goalSD != null)
                 {
                     childList.remove(taskInfo);
                     var checkBoxInGoalRoot = goalSD.getCheckBoxes().get(task);
-                    for (var node : ((HBox)(checkBoxInGoalRoot.getParent())).getChildren())
+                    for (var node : ((HBox) (checkBoxInGoalRoot.getParent())).getChildren())
                     {
-                        if (node instanceof Button && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("taskDeleteButton"))
+                        if (node instanceof Button && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("taskDeleteButton"))
                         {
                             ((Button) node).fire();
                         }

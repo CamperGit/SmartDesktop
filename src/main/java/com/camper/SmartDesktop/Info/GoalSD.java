@@ -126,7 +126,10 @@ public class GoalSD extends Application implements Initializable
         return groupOfMainCheckBox;
     }
 
-    public static Map<Integer,GoalSD> getGoals() {return goals;}
+    public static Map<Integer, GoalSD> getGoals()
+    {
+        return goals;
+    }
 
     private AnchorPane getGoalRoot()
     {
@@ -295,6 +298,7 @@ public class GoalSD extends Application implements Initializable
 
     /**
      * Получая имя цели возвращает объект цели, если такой объект существует
+     *
      * @param nameOfGoal - имя искомого объекта
      * @return возвращает объект goalSD, который соответсвует параметру nameOfGoal, если такой существует, или null, если
      * такой не был найден
@@ -360,7 +364,8 @@ public class GoalSD extends Application implements Initializable
                 {
                     UpcomingEvent.removeEventFromQueue(date, task);
                     Day.removeEventFromDay(date, task);
-                    this.getCheckBoxes().remove(task,completeCheckBox);
+                    this.getCheckBoxes().remove(task, completeCheckBox);
+                    return;
                 }
             }
         }
@@ -376,6 +381,24 @@ public class GoalSD extends Application implements Initializable
             }
         }
         return null;
+    }
+
+    public static void addTaskOnTaskMap(EventOfDay event)
+    {
+        for (var goalSD : goals.values())
+        {
+            var checkBoxes = goalSD.getCheckBoxes();
+            for (var keyEvent : checkBoxes.keySet())
+            {
+                if (keyEvent.getType().equals(event.getType()) && keyEvent.getInfo().equals(event.getInfo()) && keyEvent.getTime().equals(event.getTime()))
+                {
+                    var checkBox = checkBoxes.get(keyEvent);
+                    checkBoxes.remove(keyEvent);
+                    checkBoxes.put(event, checkBox);
+                    return;
+                }
+            }
+        }
     }
 
     /**
@@ -432,25 +455,24 @@ public class GoalSD extends Application implements Initializable
         Main.setRegion(hSeparator, 460, 6);
         vbox.getChildren().addAll(hbox, hSeparator);
 
-        this.getCheckBoxes().put(goal,completeAllCheckBox);
+        this.getCheckBoxes().put(goal, completeAllCheckBox);
         this.getGroupOfMainCheckBox().put(completeAllCheckBox, new ArrayList<>());
 
-        addNewTaskButton.setOnAction(event -> createNewTaskLine(vbox, completeAllCheckBox, date, null, null, false));
+        addNewTaskButton.setOnAction(event -> createNewTaskLine(vbox, completeAllCheckBox, date, null, null, null));
 
         return vbox;
     }
 
     /**
-     *
-     * @param line - контейнер, куда будут добавляться элементы
-     * @param mainCheckBox - главный чекбокс группы задач, на который крепятся пару обработчиков. Если null, то он вызывается
-     *                     из scrollPane и данные привязки не нужны.
-     * @param date - дата для создания ивента
-     * @param time - время для установки значений пользовательского интерфейса и создания ивента
-     * @param text - текст для установки значений пользовательского интерфейса и создания ивента
+     * @param line          - контейнер, куда будут добавляться элементы
+     * @param mainCheckBox  - главный чекбокс группы задач, на который крепятся пару обработчиков. Если null, то он вызывается
+     *                      из scrollPane и данные привязки не нужны.
+     * @param date          - дата для создания ивента
+     * @param time          - время для установки значений пользовательского интерфейса и создания ивента
+     * @param text          - текст для установки значений пользовательского интерфейса и создания ивента
      * @param completeState - состояние чекбокса для установки значений пользовательского интерфейса и создания ивента
      */
-    private void createNewTaskLine(VBox line, CheckBox mainCheckBox, LocalDate date, LocalTime time, String text, boolean completeState)
+    private void createNewTaskLine(VBox line, CheckBox mainCheckBox, LocalDate date, LocalTime time, String text, Boolean completeState)
     {
         var hoursValues = new ArrayList<String>()
         {{
@@ -496,9 +518,7 @@ public class GoalSD extends Application implements Initializable
         var completeCheckBox = new CheckBox();
         completeCheckBox.setText(completeText);
         completeCheckBox.getStylesheets().add(Objects.requireNonNull(mainCL.getResource("FXMLs/mediumCheckBox.css")).toExternalForm());
-        completeCheckBox.setSelected(completeState);
         completeCheckBox.setPadding(new Insets(0, 13, 0, 0));
-        completeCheckBox.setDisable(true);
         completeCheckBox.setAccessibleHelp("completeCheckBox");
 
         var deleteButton = new Button();
@@ -524,6 +544,16 @@ public class GoalSD extends Application implements Initializable
         Main.setRegion(saveButton, 25, 25);
         saveButton.setGraphic(new ImageView(new Image("Images/save25.png")));
         saveButton.setStyle("-fx-background-color: #f4f4f4");
+        if (completeState==null)
+        {
+            completeCheckBox.setDisable(true);
+        }
+        else
+        {
+            completeCheckBox.setSelected(completeState);
+            saveButton.setDisable(true);
+        }
+
 
         var hbox2 = new HBox(6, textField, saveButton);
         Main.setRegion(hbox2, 460, 25);
@@ -531,7 +561,7 @@ public class GoalSD extends Application implements Initializable
 
         var hSeparator = new Separator(Orientation.HORIZONTAL);
         Main.setRegion(hSeparator, 460, 4);
-        hSeparator.setPadding(new Insets(8,0,8,0));
+        hSeparator.setPadding(new Insets(8, 0, 8, 0));
 
         var vbox = new VBox(5, hbox1, hbox2, hSeparator);
         Main.setRegion(vbox, 460, 64);
@@ -557,7 +587,7 @@ public class GoalSD extends Application implements Initializable
         var key = new EventOfDay(timeOfKey, Day.EventType.Task, textOfKey);
         this.getCheckBoxes().put(key, completeCheckBox);
 
-        saveButton.setOnAction(event ->
+        saveButton.setOnMouseClicked(event ->
         {
             if (date.isAfter(LocalDate.now()) || date.equals(LocalDate.now()))
             {
@@ -582,8 +612,7 @@ public class GoalSD extends Application implements Initializable
                 {
                     daysWithEvents.remove(day);
                 }
-            }
-            else
+            } else
             {
                 String alertText = "Нельзя сохранять изменения в прошедшем событии!";
                 var alert = new Alert(Alert.AlertType.WARNING, alertText, ButtonType.OK);
@@ -625,8 +654,7 @@ public class GoalSD extends Application implements Initializable
                     if (date.isBefore(LocalDate.now()))
                     {
                         saveButton.setDisable(true);
-                    }
-                    else
+                    } else
                     {
                         saveButton.setDisable(false);
                     }
@@ -638,8 +666,7 @@ public class GoalSD extends Application implements Initializable
             if (date.isBefore(LocalDate.now()))
             {
                 saveButton.setDisable(true);
-            }
-            else
+            } else
             {
                 saveButton.setDisable(false);
             }
@@ -654,7 +681,7 @@ public class GoalSD extends Application implements Initializable
         rootElement.appendChild(goalsElement);
         if (!createEmptyXML)
         {
-            int id=1;
+            int id = 1;
             for (var entry : goals.entrySet())
             {
                 var goalSD = entry.getValue();
@@ -710,7 +737,7 @@ public class GoalSD extends Application implements Initializable
 
                     var completeAllCheckBoxStateElement = doc.createElement("completeAllCheckBoxState");
                     lineElement.appendChild(completeAllCheckBoxStateElement);
-                    Boolean completeAllCheckBoxState=null;
+                    Boolean completeAllCheckBoxState = null;
 
                     var tasksElement = doc.createElement("tasks");
                     lineElement.appendChild(tasksElement);
@@ -718,11 +745,11 @@ public class GoalSD extends Application implements Initializable
                     int numberOfTask = 1;
                     for (var tasks : line.getChildren())
                     {
-                        if (completeAllCheckBoxState==null && tasks instanceof HBox)
+                        if (completeAllCheckBoxState == null && tasks instanceof HBox)
                         {
                             for (var goalHBoxElements : ((HBox) tasks).getChildren())
                             {
-                                if (goalHBoxElements instanceof CheckBox && goalHBoxElements.getAccessibleHelp()!=null && goalHBoxElements.getAccessibleHelp().equals("completeAllCheckBox"))
+                                if (goalHBoxElements instanceof CheckBox && goalHBoxElements.getAccessibleHelp() != null && goalHBoxElements.getAccessibleHelp().equals("completeAllCheckBox"))
                                 {
                                     completeAllCheckBoxState = ((CheckBox) goalHBoxElements).isSelected();
                                     break;
@@ -737,7 +764,8 @@ public class GoalSD extends Application implements Initializable
 
                             var timeElement = doc.createElement("time");
                             taskElement.appendChild(timeElement);
-                            int hour = 0; int minute = 0;
+                            int hour = 0;
+                            int minute = 0;
 
                             var textElement = doc.createElement("text");
                             taskElement.appendChild(textElement);
@@ -753,26 +781,26 @@ public class GoalSD extends Application implements Initializable
                                 {
                                     for (var hboxElement : ((HBox) hboxesOfTask).getChildren())
                                     {
-                                        if (hboxElement.getAccessibleHelp()!=null)
+                                        if (hboxElement.getAccessibleHelp() != null)
                                         {
                                             if (hboxElement instanceof ComboBox && hboxElement.getAccessibleHelp().equals("hours"))
                                             {
-                                                hour=Integer.parseInt(((ComboBox<String>) hboxElement).getValue());
+                                                hour = Integer.parseInt(((ComboBox<String>) hboxElement).getValue());
                                                 continue;
                                             }
                                             if (hboxElement instanceof ComboBox && hboxElement.getAccessibleHelp().equals("minutes"))
                                             {
-                                                minute=Integer.parseInt(((ComboBox<String>) hboxElement).getValue());
+                                                minute = Integer.parseInt(((ComboBox<String>) hboxElement).getValue());
                                                 continue;
                                             }
                                             if (hboxElement instanceof TextField && hboxElement.getAccessibleHelp().equals("textField"))
                                             {
-                                                text=((TextField) hboxElement).getText();
+                                                text = ((TextField) hboxElement).getText();
                                                 continue;
                                             }
                                             if (hboxElement instanceof CheckBox && hboxElement.getAccessibleHelp().equals("completeCheckBox"))
                                             {
-                                                complete=((CheckBox) hboxElement).isSelected();
+                                                complete = ((CheckBox) hboxElement).isSelected();
                                             }
                                         }
                                     }
@@ -802,7 +830,7 @@ public class GoalSD extends Application implements Initializable
     public static void loadGoalsFromXML(Document doc, XPath xPath) throws Exception
     {
         int numberOfGoals = xPath.evaluateExpression("count(/save/goals/*)", doc, Integer.class);
-        for (int id = 1; id<numberOfGoals + 1;id++)
+        for (int id = 1; id < numberOfGoals + 1; id++)
         {
             var loadingGoal = new GoalSD(true);
             loadingGoal.start(Main.Stage);
@@ -829,8 +857,8 @@ public class GoalSD extends Application implements Initializable
             loadingGoal.setEndDate(endDate);
             loadingGoal.setNameOfGoal(nameOfGoal);
 
-            int numberOfLines = xPath.evaluateExpression("count(/save/goals/goal"+ id +"/lines/*)", doc, Integer.class);
-            if (numberOfLines!=0)
+            int numberOfLines = xPath.evaluateExpression("count(/save/goals/goal" + id + "/lines/*)", doc, Integer.class);
+            if (numberOfLines != 0)
             {
                 var content = new VBox(6);
                 content.setPadding(new Insets(8, 0, 0, 0));
@@ -852,7 +880,7 @@ public class GoalSD extends Application implements Initializable
                 {
                     boolean completeAllCheckBoxState = Boolean.parseBoolean(xPath.evaluate("/save/goals/goal" + id + "/lines/line" + numberOfLine + "/completeAllCheckBoxState/text()", doc));
 
-                    var date = startDate.plusDays(numberOfLine-1);
+                    var date = startDate.plusDays(numberOfLine - 1);
                     var timeOfEvent = LocalTime.of(23, 59);
                     /*var day = CalendarSD.checkUsingOfThisDate(date);
                     if (day == null)
@@ -871,12 +899,12 @@ public class GoalSD extends Application implements Initializable
                     //updateDayIcons(day.getDate(), day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
 
                     var checkBoxes = loadingGoal.getCheckBoxes();
-                    int numberOfTasks = xPath.evaluateExpression("count(/save/goals/goal" + id + "/lines/line"+numberOfLine+"/tasks/*)", doc, Integer.class);
+                    int numberOfTasks = xPath.evaluateExpression("count(/save/goals/goal" + id + "/lines/line" + numberOfLine + "/tasks/*)", doc, Integer.class);
                     for (int numberOfTask = 1; numberOfTask < numberOfTasks + 1; numberOfTask++)
                     {
-                        var time = LocalTime.parse(xPath.evaluate("/save/goals/goal" + id + "/lines/line" + numberOfLine + "/tasks/task"+numberOfTask+"/time/text()", doc));
-                        String text = xPath.evaluate("/save/goals/goal" + id + "/lines/line" + numberOfLine + "/tasks/task"+numberOfTask+"/text/text()", doc);
-                        boolean complete = Boolean.parseBoolean(xPath.evaluate("/save/goals/goal" + id + "/lines/line" + numberOfLine + "/tasks/task"+numberOfTask+"/complete/text()", doc));
+                        var time = LocalTime.parse(xPath.evaluate("/save/goals/goal" + id + "/lines/line" + numberOfLine + "/tasks/task" + numberOfTask + "/time/text()", doc));
+                        String text = xPath.evaluate("/save/goals/goal" + id + "/lines/line" + numberOfLine + "/tasks/task" + numberOfTask + "/text/text()", doc);
+                        boolean complete = Boolean.parseBoolean(xPath.evaluate("/save/goals/goal" + id + "/lines/line" + numberOfLine + "/tasks/task" + numberOfTask + "/complete/text()", doc));
                         var completeAllCheckBox = checkBoxes.get(eventOfDay);
                         loadingGoal.createNewTaskLine(line, completeAllCheckBox, date, time, text, complete);
                     }

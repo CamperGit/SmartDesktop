@@ -303,7 +303,12 @@ public class CalendarSD extends Application implements Initializable
                 var type = Enum.valueOf(Day.EventType.class, xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/events/event" + numberOfEvent + "/type/text()", doc));
                 var info = xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/events/event" + numberOfEvent + "/info/text()", doc);
 
-                day.addEvent(time, type, info);
+                var event = new EventOfDay(time, type, info);
+                if (type.equals(Day.EventType.Task))
+                {
+                    GoalSD.addTaskOnTaskMap(event);
+                }
+                day.addEvent(event);
             }
 
             var haveEvents = Day.checkOfDeprecatedEvents(day);
