@@ -149,81 +149,6 @@ public class EventsOfDayInfo extends Application implements Initializable
 
         addGoalsButton.setOnAction(event ->
         {
-            /*var content = returnContentFromScrollPane();
-            if (content != null)
-            {
-                var startSeparator = new Separator(Orientation.HORIZONTAL);
-                Main.setRegion(startSeparator, 460, 2);
-
-                var startDatePicker = new DatePicker();
-                var endDatePicker = new DatePicker();
-                Main.setRegion(startDatePicker, 120, 25);
-                Main.setRegion(endDatePicker, 120, 25);
-
-                String startLabelText = "C";
-                var label1 = new Label(startLabelText);
-                label1.setFont(Font.font("Times New Roman", FontPosture.REGULAR, 16));
-                Main.setRegion(label1, 22, 25);
-                label1.setAlignment(Pos.CENTER);
-
-                var vSeparator = new Separator(Orientation.VERTICAL);
-                Main.setRegion(vSeparator, 6, 25);
-                vSeparator.setVisible(false);
-
-                String endLabelText = "По";
-                var label2 = new Label(endLabelText);
-                label2.setFont(Font.font("Times New Roman", FontPosture.REGULAR, 16));
-                Main.setRegion(label2, 22, 25);
-                label2.setAlignment(Pos.CENTER_RIGHT);
-
-                var goalName = new TextField();
-                Main.setRegion(goalName, 380, 25);
-                goalName.setPromptText("Название цели");
-
-                var saveButton = new Button();
-                Main.setRegion(saveButton, 25, 25);
-                saveButton.setGraphic(new ImageView(new Image("Images/save25.png")));
-                saveButton.setStyle("-fx-background-color: #f4f4f4");
-
-                var cancelButton = new Button();
-                Main.setRegion(cancelButton, 25, 25);
-                cancelButton.setGraphic(new ImageView(new Image("Images/close35.png")));
-                cancelButton.setStyle("-fx-background-color: #f4f4f4");
-
-                var endSeparator = new Separator(Orientation.HORIZONTAL);
-                Main.setRegion(endSeparator, 460, 2);
-
-                var hbox1 = new HBox(6, goalName, saveButton, cancelButton);
-                var hbox2 = new HBox(6, label1, startDatePicker, vSeparator, label2, endDatePicker);
-                hbox1.setPadding(new Insets(0, 8, 0, 8));
-                hbox2.setPadding(new Insets(0, 8, 0, 8));
-
-                var vbox = new VBox(3, startSeparator, hbox1, hbox2, endSeparator);
-                Main.setRegion(vbox, 460, 55);
-                vbox.setPadding(new Insets(4, 0, 4, 0));
-
-                content.getChildren().add(vbox);
-
-                cancelButton.setOnAction(e -> content.getChildren().remove(vbox));
-                saveButton.setOnAction(e ->
-                {
-                    try
-                    {
-                        var goalSD = new GoalSD();
-                        goalSD.setStartDate(startDatePicker.getValue());
-                        goalSD.setEndDate(endDatePicker.getValue());
-                        goalSD.setNameOfGoal(goalName.getText());
-                        goalSD.start(Main.Stage);
-                        GoalSD.fireSaveButton(goalSD);
-                        GoalSD.hideGoal(goalSD);
-                    } catch (Exception exception)
-                    {
-                        exception.printStackTrace();
-                    }
-                    content.getChildren().remove(vbox);
-                    updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
-                });
-            }*/
             try
             {
                 new GoalSD().start(Stage);
@@ -304,21 +229,6 @@ public class EventsOfDayInfo extends Application implements Initializable
         goalsCheckBox.setSelected(true);
         schedulerCheckBox.setSelected(true);
     }
-
-    /*private static VBox returnContentFromScrollPane()
-    {
-        if (paneOfInfoRoot != null)
-        {
-            for (var node : paneOfInfoRoot.getChildren())
-            {
-                if (node instanceof ScrollPane)
-                {
-                    return (VBox) ((ScrollPane) node).getContent();
-                }
-            }
-        }
-        return null;
-    }*/
 
     private static void updateScrollArea(boolean notification, boolean goal, boolean schedule)
     {
@@ -457,15 +367,6 @@ public class EventsOfDayInfo extends Application implements Initializable
         Main.setRegion(leftOffset, 4, 25);
         leftOffset.setVisible(false);
 
-        /*var addButton = new Button();
-        Main.setRegion(addButton, 25, 25);
-        addButton.setGraphic(new ImageView(new Image("Images/add28.png")));
-
-        var showButton = new Button();
-        Main.setRegion(showButton, 25, 25);
-        showButton.setGraphic(new ImageView(new Image("Images/show35.png")));
-
-        var hbox1 = new HBox(6, icon, nameOfGoalLabel, addButton, showButton);*/
         var hbox1 = new HBox(6, leftOffset, icon, nameOfGoalLabel);
         Main.setRegion(hbox1, 460, 25);
         hbox1.setPadding(new Insets(0, 8, 0, 8));
@@ -505,12 +406,6 @@ public class EventsOfDayInfo extends Application implements Initializable
                 checkBox.setSelected(false);
             }
 
-            /*var editButton = new Button();
-            Main.setRegion(editButton, 25, 25);
-            editButton.setGraphic(new ImageView(new Image("Images/edit25.png")));
-            editButton.setStyle("-fx-background-color: #f4f4f4");
-
-            var taskInfo = new HBox(6, time, vSeparator, info, checkBox, deleteButton, editButton);*/
             var taskInfo = new HBox(6, time, vSeparator, info, checkBox, deleteButton);
             Main.setRegion(taskInfo, 460, 25);
             taskInfo.setPadding(new Insets(0, 8, 0, 8));

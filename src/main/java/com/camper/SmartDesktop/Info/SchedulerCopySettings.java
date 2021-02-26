@@ -277,7 +277,7 @@ public class SchedulerCopySettings extends Application implements Initializable
         int leftUpperCornerX = (int) (mouseEvent.getSceneX() - mouseEvent.getX()) - 314;//314 - Расстояние от края кнопки до края элемента
         int leftUpperCornerY = (int) (mouseEvent.getSceneY() - mouseEvent.getY());
         int layoutX = leftUpperCornerX + 460;
-        int width = 246;
+        int width = 246;//Ширина элемента
 
         if (layoutX + width > DEFAULT_WIDTH)
         {
