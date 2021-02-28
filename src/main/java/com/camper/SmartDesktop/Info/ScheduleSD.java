@@ -318,7 +318,6 @@ public class ScheduleSD extends Application implements Initializable
         if (repeat == SchedulerCopySettings.ScheduleSettingsRepeat.WEEK && period == SchedulerCopySettings.ScheduleSettingsPeriod.FOR_A_YEAR)
         {
             var limit = date.plusYears(1).minusWeeks(1);
-            date = date.plusWeeks(1);
             while (date.isBefore(limit))
             {
                 date = date.plusWeeks(1);

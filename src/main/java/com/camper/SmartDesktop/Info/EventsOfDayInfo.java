@@ -302,7 +302,7 @@ public class EventsOfDayInfo extends Application implements Initializable
                 if (goalSD != null)
                 {
                     var oldLine = goalSD.getTasksOfDay().get(date);
-                    var line = addGoalOnScrollPane(entry.getKey(), entry.getValue(), date);
+                    var line = addGoalOnScrollPane(entry.getKey(), entry.getValue());
                     content.getChildren().add(line);
                 }
             }
@@ -323,6 +323,7 @@ public class EventsOfDayInfo extends Application implements Initializable
             }
         }
         childList.add(scroller);
+        return;
     }
 
     private static HBox addInfoOfEvent(EventOfDay event, ImageView icon)
@@ -348,7 +349,7 @@ public class EventsOfDayInfo extends Application implements Initializable
         return hbox;
     }
 
-    private static VBox addGoalOnScrollPane(String nameOfGoal, List<EventOfDay> tasks, LocalDate date)
+    private static VBox addGoalOnScrollPane(String nameOfGoal, List<EventOfDay> tasks)
     {
         var line = new VBox(3);
         line.setPadding(new Insets(4, 0, 0, 0));
@@ -356,18 +357,18 @@ public class EventsOfDayInfo extends Application implements Initializable
 
         var nameOfGoalLabel = new Label(nameOfGoal);
         Main.setRegion(nameOfGoalLabel, 379, 25);
-        nameOfGoalLabel.setFont(Font.font(null, FontWeight.BOLD, 16));
+        nameOfGoalLabel.setFont(Font.font("Times New Roman", FontWeight.BOLD, 16));
         nameOfGoalLabel.setAlignment(Pos.CENTER);
 
-        var icon = new ImageView(new Image("images/target25.png"));
+        /*var icon = new ImageView(new Image("images/target25.png"));
         icon.setFitWidth(25);
-        icon.setFitHeight(25);
+        icon.setFitHeight(25);*/
 
         var leftOffset = new Separator(Orientation.VERTICAL);
         Main.setRegion(leftOffset, 4, 25);
         leftOffset.setVisible(false);
 
-        var hbox1 = new HBox(6, leftOffset, icon, nameOfGoalLabel);
+        var hbox1 = new HBox(6, leftOffset/*, icon*/, nameOfGoalLabel);
         Main.setRegion(hbox1, 460, 25);
         hbox1.setPadding(new Insets(0, 8, 0, 8));
 

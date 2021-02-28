@@ -23,8 +23,6 @@ import static com.camper.SmartDesktop.Main.*;
 public class GoalSDProgressInfo extends Application
 {
     private AnchorPane goalProgressRoot;
-    private Map<CheckBox, List<CheckBox>> groupOfGoalCheckBox;
-    private Map<EventOfDay, CheckBox> eventsOfCheckBoxes;
     private MouseEvent mouseEvent;
     private boolean entered = false;
     private int id;
@@ -33,12 +31,12 @@ public class GoalSDProgressInfo extends Application
     private int notDone;
     private static Map<Integer, GoalSDProgressInfo> progressInfoMap = new HashMap<>();
 
-    public GoalSDProgressInfo(int idOfGoal, Map<CheckBox, List<CheckBox>> groupOfGoalCheckBox, Map<EventOfDay, CheckBox> eventsOfCheckBoxes, MouseEvent mouseEvent)
+    public GoalSDProgressInfo(int idOfGoal, MouseEvent mouseEvent)
     {
         this.id = idOfGoal;
-        this.groupOfGoalCheckBox = groupOfGoalCheckBox;
-        this.eventsOfCheckBoxes=eventsOfCheckBoxes;
         this.mouseEvent=mouseEvent;
+        goalProgressRoot=new AnchorPane();
+        Main.setRegion(goalProgressRoot,400,320);
     }
 
     public void setEntered(boolean entered)
@@ -51,7 +49,12 @@ public class GoalSDProgressInfo extends Application
         return entered;
     }
 
-    public AnchorPane getGoalProcessRoot()
+    public void setMouseEvent(MouseEvent mouseEvent)
+    {
+        this.mouseEvent = mouseEvent;
+    }
+
+    public AnchorPane getGoalProgressRoot()
     {
         return goalProgressRoot;
     }
@@ -59,32 +62,10 @@ public class GoalSDProgressInfo extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        sortCheckBoxes(groupOfGoalCheckBox,eventsOfCheckBoxes, this);
-        var chart = new PieChart();
-        chart.getData().addAll(
-                new PieChart.Data("Выполнено", notDone),
-                new PieChart.Data("В процессе", onProgress),
-                new PieChart.Data("Не выполнено", done));
-        chart.setTitle("Прогресс выполнения цели");
-        Main.setRegion(chart,400,320);
-        goalProgressRoot = new AnchorPane(chart);
         goalProgressRoot.setAccessibleHelp(String.valueOf(id));
         goalProgressRoot.setStyle("-fx-background-color: #f4f4f4");
         Main.setRegion(goalProgressRoot,400,320);
         progressInfoMap.put(id, this);
-
-        int leftUpperCornerX = (int) (mouseEvent.getSceneX() - mouseEvent.getX()) - 363;
-        int leftUpperCornerY = (int) (mouseEvent.getSceneY() - mouseEvent.getY())-60;
-        int layoutX = leftUpperCornerX + 460;
-        int width = 400;
-
-        if (layoutX + width > DEFAULT_WIDTH)
-        {
-            layoutX = layoutX - 460 - width;
-        }
-        goalProgressRoot.setLayoutX(layoutX);
-        goalProgressRoot.setLayoutY(leftUpperCornerY);
-        addChild(goalProgressRoot);
 
         goalProgressRoot.setOnMouseEntered(event ->
         {
@@ -112,14 +93,43 @@ public class GoalSDProgressInfo extends Application
             if (progressInfo.isEntered())
             {
                 progressInfo.setEntered(false);
-                Main.root.getChildren().remove(progressInfo.getGoalProcessRoot());
-                progressInfoMap.remove(id);
+                Main.root.getChildren().remove(progressInfo.getGoalProgressRoot());
             }
         });
     }
 
+    public void updatePieChart(Map<CheckBox, List<CheckBox>> groupOfGoalCheckBox, Map<EventOfDay, CheckBox> eventsOfCheckBoxes)
+    {
+        sortCheckBoxes(groupOfGoalCheckBox,eventsOfCheckBoxes, this);
+        var chart = new PieChart();
+        chart.getData().addAll(
+                new PieChart.Data("Не выполнено", notDone),
+                new PieChart.Data("В процессе", onProgress),
+                new PieChart.Data("Выполнено", done));
+        chart.setTitle("Прогресс выполнения цели");
+        Main.setRegion(chart,400,320);
+
+        int leftUpperCornerX = (int) (mouseEvent.getSceneX() - mouseEvent.getX()) - 363;
+        int leftUpperCornerY = (int) (mouseEvent.getSceneY() - mouseEvent.getY())-60;
+        int layoutX = leftUpperCornerX + 460;
+        int width = 400;
+
+        if (layoutX + width > DEFAULT_WIDTH)
+        {
+            layoutX = layoutX - 460 - width;
+        }
+        goalProgressRoot.setLayoutX(layoutX);
+        goalProgressRoot.setLayoutY(leftUpperCornerY);
+        goalProgressRoot.getChildren().clear();
+        goalProgressRoot.getChildren().add(chart);
+        addChild(goalProgressRoot);
+    }
+
     private void sortCheckBoxes(Map<CheckBox, List<CheckBox>> groupOfGoalCheckBox, Map<EventOfDay, CheckBox> eventsOfCheckBoxes, GoalSDProgressInfo progressInfo)
     {
+        this.done=0;
+        this.onProgress=0;
+        this.notDone=0;
         var map = new HashMap<CheckBox,EventOfDay>();
         for (var entry : eventsOfCheckBoxes.entrySet())
         {
@@ -148,7 +158,22 @@ public class GoalSDProgressInfo extends Application
             }
             if (entry.getValue().size()==0)
             {
-                progressInfo.notDone++;
+                var selectAllCheckBox = entry.getKey();
+                var time = map.get(selectAllCheckBox).getTime();
+                var date = LocalDate.parse(selectAllCheckBox.getAccessibleText());
+                var dateTime = LocalDateTime.of(date,time);
+                if (!(selectAllCheckBox.isSelected()) && dateTime.isBefore(LocalDateTime.now()))
+                {
+                    progressInfo.notDone++;
+                }
+                if (!(selectAllCheckBox.isSelected()) && dateTime.isAfter(LocalDateTime.now()))
+                {
+                    progressInfo.onProgress++;
+                }
+                if (selectAllCheckBox.isSelected())
+                {
+                    progressInfo.done++;
+                }
             }
         }
     }

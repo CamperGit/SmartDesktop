@@ -47,7 +47,7 @@ public class UpcomingEvent extends Application implements Initializable
         task = new Task<>()
         {
             @Override
-            protected Integer call() throws Exception
+            protected Integer call()
             {
                 var now = LocalDateTime.now();
                 while (eventsOnQueue.size() == 0)
@@ -128,6 +128,7 @@ public class UpcomingEvent extends Application implements Initializable
         task.setOnSucceeded(event ->
         {
             alreadyShowing = false;
+            infoOfEvents.remove(eventsOnQueue.peek());
             eventsOnQueue.remove();
             if (task.getValue() != 0)
             {
@@ -162,9 +163,13 @@ public class UpcomingEvent extends Application implements Initializable
     public static void addEventToQueue(LocalDate date, EventOfDay event)
     {
         var dateAndTime = LocalDateTime.of(date, event.getTime());
+        while (infoOfEvents.containsKey(dateAndTime))
+        {
+            dateAndTime = dateAndTime.plusNanos(1);
+        }
         eventsOnQueue.add(dateAndTime);
         infoOfEvents.put(dateAndTime, event);
-        if (task != null && upcomingEvent != null && dateAndTime.isBefore(upcomingEvent))
+        if (task != null && upcomingEvent != null && (dateAndTime.isBefore(upcomingEvent) || dateAndTime.equals(upcomingEvent)))
         {
             task.cancel();
             runEventTask();

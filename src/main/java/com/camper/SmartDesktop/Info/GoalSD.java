@@ -4,9 +4,6 @@ import com.camper.SmartDesktop.Main;
 import com.camper.SmartDesktop.NodeDragger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventDispatchChain;
-import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,7 +13,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -59,6 +55,7 @@ public class GoalSD extends Application implements Initializable
     private LocalDate endDate = null;
     private String nameOfGoal = null;
     private AnchorPane GoalRoot;
+    private GoalSDProgressInfo progressInfo;
     private Map<LocalDate, VBox> tasksOfDay = new HashMap<>();
     private Map<EventOfDay, CheckBox> checkBoxes = new HashMap<>();
     private Map<CheckBox, List<CheckBox>> groupOfMainCheckBox = new HashMap<>();
@@ -136,6 +133,16 @@ public class GoalSD extends Application implements Initializable
         return GoalRoot;
     }
 
+    private GoalSDProgressInfo getProgressInfo()
+    {
+        return progressInfo;
+    }
+
+    private void setProgressInfo(GoalSDProgressInfo progressInfo)
+    {
+        this.progressInfo = progressInfo;
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception
     {
@@ -170,6 +177,12 @@ public class GoalSD extends Application implements Initializable
         {
             var root = (AnchorPane) (((ToolBar) event.getSource()).getParent());
             NodeDragger.addDraggingProperty(root, event);
+            int id = Integer.parseInt(root.getAccessibleHelp());
+            var progress = goals.get(id).getProgressInfo();
+            if (progress != null)
+            {
+                Main.root.getChildren().remove(progress.getGoalProgressRoot());
+            }
         });
 
         goalStartDatePicker.setOnAction(event ->
@@ -199,13 +212,27 @@ public class GoalSD extends Application implements Initializable
             }
         });
 
-        goalProgressButton.setOnMouseClicked(event->
+        goalProgressButton.setOnMouseClicked(event ->
         {
             var root = (AnchorPane) (((Button) event.getSource()).getParent());
             var goalSD = goals.get(Integer.parseInt(root.getAccessibleHelp()));
             try
             {
-                new GoalSDProgressInfo(goalSD.id, goalSD.groupOfMainCheckBox, goalSD.checkBoxes, event).start(Main.Stage);
+                if (goalSD.getProgressInfo()==null)
+                {
+                    var progress = new GoalSDProgressInfo(goalSD.id, event);
+                    progress.start(Main.Stage);
+                    progress.updatePieChart(goalSD.groupOfMainCheckBox, goalSD.checkBoxes);
+                    goalSD.setProgressInfo(progress);
+                }
+                else
+                {
+                    Main.root.getChildren().remove(goalSD.getProgressInfo().getGoalProgressRoot());
+                    var progress = goalSD.getProgressInfo();
+                    progress.updatePieChart(goalSD.groupOfMainCheckBox, goalSD.checkBoxes);
+                    progress.setMouseEvent(event);
+                }
+
             } catch (Exception e)
             {
                 e.printStackTrace();
@@ -851,30 +878,30 @@ public class GoalSD extends Application implements Initializable
             loadingGoal.setEndDate(endDate);
             loadingGoal.setNameOfGoal(nameOfGoal);
 
-            for(var node : rootOfLoadingGoal.getChildren())
+            for (var node : rootOfLoadingGoal.getChildren())
             {
-                if (node instanceof DatePicker && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("startDatePicker"))
+                if (node instanceof DatePicker && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("startDatePicker"))
                 {
-                    ((DatePicker)node).setValue(startDate);
-                    ((DatePicker)node).setEditable(false);
+                    ((DatePicker) node).setValue(startDate);
+                    ((DatePicker) node).setEditable(false);
                 }
             }
 
-            for(var node : rootOfLoadingGoal.getChildren())
+            for (var node : rootOfLoadingGoal.getChildren())
             {
-                if (node instanceof DatePicker && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("endDatePicker"))
+                if (node instanceof DatePicker && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("endDatePicker"))
                 {
-                    ((DatePicker)node).setValue(endDate);
-                    ((DatePicker)node).setEditable(false);
+                    ((DatePicker) node).setValue(endDate);
+                    ((DatePicker) node).setEditable(false);
                 }
             }
 
-            for(var node : rootOfLoadingGoal.getChildren())
+            for (var node : rootOfLoadingGoal.getChildren())
             {
-                if (node instanceof TextField && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("nameOfGoal"))
+                if (node instanceof TextField && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("nameOfGoal"))
                 {
-                    ((TextField)node).setText(nameOfGoal);
-                    ((TextField)node).setEditable(false);
+                    ((TextField) node).setText(nameOfGoal);
+                    ((TextField) node).setEditable(false);
                 }
             }
 
