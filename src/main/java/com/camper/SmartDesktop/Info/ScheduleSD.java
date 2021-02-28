@@ -3,7 +3,6 @@ package com.camper.SmartDesktop.Info;
 import com.camper.SmartDesktop.Main;
 import com.camper.SmartDesktop.NodeDragger;
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,7 +13,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -22,7 +20,6 @@ import javafx.stage.Stage;
 import org.w3c.dom.Document;
 
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -68,7 +65,6 @@ public class ScheduleSD extends Application implements Initializable
     private static AnchorPane selectedSchedule;
     private static Map<Integer, ScheduleSD> schedules = new HashMap<>();
     private static int nextId = 1;
-
 
     public ScheduleSD()
     {
@@ -125,8 +121,6 @@ public class ScheduleSD extends Application implements Initializable
         this.copySettings = copySettings;
     }
 
-    //private VBox getScheduleContentVbox() {return scheduleContentVbox;}
-
     private AnchorPane getScheduleRoot()
     {
         return ScheduleRoot;
@@ -150,11 +144,6 @@ public class ScheduleSD extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(ScheduleRoot);
         }
-
-       /* if (schedules.get(this.id).getScheduleContentVbox().getChildren().size()<2)
-        {
-            createNewLine(scheduleContentVbox.getChildren(),null,null,false,null);
-        }*/
     }
 
     @Override
@@ -224,7 +213,7 @@ public class ScheduleSD extends Application implements Initializable
                         }
                     }
 
-                    if (day.getEvents().size()!=0)
+                    if (day.getEvents().size() != 0)
                     {
                         CalendarSD.getDaysWithEvents().add(day);
 

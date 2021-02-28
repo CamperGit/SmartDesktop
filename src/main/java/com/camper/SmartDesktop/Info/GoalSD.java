@@ -59,6 +59,7 @@ public class GoalSD extends Application implements Initializable
     private Map<LocalDate, VBox> tasksOfDay = new HashMap<>();
     private Map<EventOfDay, CheckBox> checkBoxes = new HashMap<>();
     private Map<CheckBox, List<CheckBox>> groupOfMainCheckBox = new HashMap<>();
+    private List<Day> daysWithEventsOfGoal = new ArrayList<>();
     private static int nextId = 1;
     private static AnchorPane selectedGoal;
     private static Map<Integer, GoalSD> goals = new HashMap<>();
@@ -218,14 +219,13 @@ public class GoalSD extends Application implements Initializable
             var goalSD = goals.get(Integer.parseInt(root.getAccessibleHelp()));
             try
             {
-                if (goalSD.getProgressInfo()==null)
+                if (goalSD.getProgressInfo() == null)
                 {
                     var progress = new GoalSDProgressInfo(goalSD.id, event);
                     progress.start(Main.Stage);
                     progress.updatePieChart(goalSD.groupOfMainCheckBox, goalSD.checkBoxes);
                     goalSD.setProgressInfo(progress);
-                }
-                else
+                } else
                 {
                     Main.root.getChildren().remove(goalSD.getProgressInfo().getGoalProgressRoot());
                     var progress = goalSD.getProgressInfo();
@@ -412,8 +412,7 @@ public class GoalSD extends Application implements Initializable
             {
                 if (keyEvent.getType().equals(event.getType()) && keyEvent.getInfo().equals(event.getInfo()) && keyEvent.getTime().equals(event.getTime()))
                 {
-                    var checkBox = checkBoxes.get(keyEvent);
-                    checkBoxes.remove(keyEvent);
+                    var checkBox = checkBoxes.remove(keyEvent);
                     checkBoxes.put(event, checkBox);
                     return;
                 }
