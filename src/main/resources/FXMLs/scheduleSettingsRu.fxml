@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="251.0" maxWidth="246.0" minHeight="251.0" minWidth="246.0" prefHeight="251.0" prefWidth="246.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.SchedulerCopySettings">
+   <children>
+      <ToolBar maxHeight="251.0" maxWidth="246.0" minHeight="251.0" minWidth="246.0" prefHeight="251.0" prefWidth="246.0">
+         <items>
+            <VBox alignment="TOP_CENTER" prefHeight="238.0" prefWidth="110.0" spacing="14.0">
+               <children>
+                  <Label text="Повторять:">
+                     <font>
+                        <Font name="Georgia" size="16.0" />
+                     </font>
+                  </Label>
+                  <Separator prefWidth="200.0" />
+                  <RadioButton fx:id="scheduleDontRepeatRadioButton" maxWidth="103.0" minWidth="103.0" mnemonicParsing="false" prefWidth="103.0" stylesheets="@mediumRadioButton.css" text="Не повторять" />
+                  <RadioButton fx:id="scheduleDayRepeatRadioButton" maxWidth="103.0" minWidth="103.0" mnemonicParsing="false" prefWidth="103.0" stylesheets="@mediumRadioButton.css" text="День" />
+                  <RadioButton fx:id="scheduleWeekRepeatRadioButton" maxWidth="103.0" minWidth="103.0" mnemonicParsing="false" prefWidth="103.0" stylesheets="@mediumRadioButton.css" text="Неделю" />
+                  <RadioButton fx:id="scheduleMonthRepeatRadioButton" maxWidth="103.0" minWidth="103.0" mnemonicParsing="false" prefWidth="103.0" stylesheets="@mediumRadioButton.css" text="Месяц" />
+                  <RadioButton fx:id="scheduleYearRepeatRadioButton" maxWidth="103.0" minWidth="103.0" mnemonicParsing="false" prefWidth="103.0" stylesheets="@mediumRadioButton.css" text="Год" />
+               </children>
+            </VBox>
+            <Separator orientation="VERTICAL" prefHeight="200.0" translateX="2.0">
+               <opaqueInsets>
+                  <Insets left="123.0" />
+               </opaqueInsets>
+            </Separator>
+            <VBox alignment="TOP_CENTER" maxWidth="110.0" minWidth="110.0" prefHeight="200.0" prefWidth="110.0" spacing="14.0">
+               <children>
+                  <Label text="В течение:">
+                     <font>
+                        <Font name="Georgia" size="16.0" />
+                     </font>
+                  </Label>
+                  <Separator prefWidth="200.0" />
+                  <RadioButton fx:id="schedulerForAWeekRadioButton" maxWidth="103.0" minWidth="103.0" mnemonicParsing="false" prefWidth="103.0" stylesheets="@mediumRadioButton.css" text="Недели" />
+                  <RadioButton fx:id="schedulerForAMonthRadioButton" maxWidth="103.0" minWidth="103.0" mnemonicParsing="false" prefWidth="103.0" stylesheets="@mediumRadioButton.css" text="Месяца" />
+                  <RadioButton fx:id="schedulerForAYearRadioButton" maxWidth="103.0" minWidth="103.0" mnemonicParsing="false" prefWidth="103.0" stylesheets="@mediumRadioButton.css" text="Года" />
+               </children>
+            </VBox>
+         </items>
+      </ToolBar>
+   </children>
+</AnchorPane>

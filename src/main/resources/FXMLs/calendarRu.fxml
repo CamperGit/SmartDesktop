@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="462.0" prefWidth="356.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.CalendarSD">
+   <children>
+      <VBox layoutX="12.0" layoutY="150.0" maxWidth="330.0" minWidth="330.0" prefHeight="303.0" prefWidth="330.0">
+         <children>
+            <Separator prefHeight="11.0" prefWidth="340.0">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets top="5.0" />
+               </padding>
+            </Separator>
+            <HBox alignment="BOTTOM_LEFT" maxWidth="294.0" prefHeight="56.0" prefWidth="294.0">
+               <children>
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0" style="-fx-background-color: transparent;">
+                           <children>
+                              <ImageView fx:id="CalendarDay1NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay1GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay1ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay1Button" maxHeight="42.0" maxWidth="42.0" minHeight="38.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="32.0" style="-fx-background-color: #f4f4f4;" text="1">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="1.0" prefWidth="0.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay2NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay2GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay2ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay2Button" maxHeight="42.0" maxWidth="42.0" minHeight="38.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="2">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay3NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay3GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay3ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator nodeOrientation="LEFT_TO_RIGHT" prefWidth="200.0" />
+                        <Button fx:id="calendarDay3Button" maxHeight="42.0" maxWidth="42.0" minHeight="38.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="3">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay4NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay4GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay4ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay4Button" maxHeight="42.0" maxWidth="42.0" minHeight="38.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="4">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay5NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay5GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay5ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay5Button" maxHeight="42.0" maxWidth="42.0" minHeight="38.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="5">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay6NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay6GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay6ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay6Button" maxHeight="42.0" maxWidth="42.0" minHeight="38.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="6">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay7NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay7GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay7ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay7Button" maxHeight="42.0" maxWidth="42.0" minHeight="38.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="7">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+            <HBox alignment="BOTTOM_LEFT" maxWidth="294.0" prefHeight="56.0" prefWidth="294.0">
+               <children>
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0" style="-fx-background-color: transparent;">
+                           <children>
+                              <ImageView fx:id="CalendarDay8NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay8GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay8ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay8Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="8">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="1.0" prefWidth="0.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay9NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay9GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay9ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay9Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="9">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay10NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay10GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay10ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay10Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="10">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay11NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay11GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay11ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay11Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="11">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay12NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay12GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay12ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay12Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="12">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay13NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay13GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay13ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay13Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="13">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay14NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay14GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay14ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay14Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="14">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+            <HBox alignment="BOTTOM_LEFT" maxWidth="294.0" prefHeight="56.0" prefWidth="294.0">
+               <children>
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0" style="-fx-background-color: transparent;">
+                           <children>
+                              <ImageView fx:id="CalendarDay15NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay15GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay15ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay15Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="15">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="1.0" prefWidth="0.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay16NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay16GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay16ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay16Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="16">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay17NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay17GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay17ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay17Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="17">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay18NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay18GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay18ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay18Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="18">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay19NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay19GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay19ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay19Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="19">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay20NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay20GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay20ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay20Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="20">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay21NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay21GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay21ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay21Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="21">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+            <HBox alignment="BOTTOM_LEFT" maxWidth="294.0" prefHeight="56.0" prefWidth="294.0">
+               <children>
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0" style="-fx-background-color: transparent;">
+                           <children>
+                              <ImageView fx:id="CalendarDay22NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay22GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay22ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay22Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="22">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="1.0" prefWidth="0.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay23NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay23GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay23ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay23Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="23">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay24NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay24GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay24ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay24Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="24">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay25NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay25GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay25ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay25Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="25">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay26NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay26GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay26ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay26Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="26">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay27NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay27GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay27ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay27Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="27">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator nodeOrientation="RIGHT_TO_LEFT" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay28NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay28GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay28ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator prefWidth="200.0" />
+                        <Button fx:id="calendarDay28Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="28">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+            <HBox alignment="BOTTOM_LEFT" maxWidth="294.0" prefHeight="56.0" prefWidth="294.0">
+               <children>
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0" style="-fx-background-color: transparent;">
+                           <children>
+                              <ImageView fx:id="CalendarDay29NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay29GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay29ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator fx:id="day29UpperSeparator" prefWidth="200.0" />
+                        <Button fx:id="calendarDay29Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="29">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator fx:id="day29RightSeparator" orientation="VERTICAL" prefHeight="1.0" prefWidth="0.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay30NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay30GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay30ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator fx:id="day30UpperSeparator" prefWidth="200.0" />
+                        <Button fx:id="calendarDay30Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="30">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator fx:id="day30RightSeparator" orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox alignment="BOTTOM_LEFT" maxHeight="56.0" maxWidth="42.0" minHeight="56.0" minWidth="42.0" prefHeight="56.0" prefWidth="42.0">
+                     <children>
+                        <HBox maxHeight="14.0" maxWidth="42.0" minHeight="14.0" minWidth="42.0" prefHeight="14.0" prefWidth="42.0">
+                           <children>
+                              <ImageView fx:id="CalendarDay31NotificationIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay31GoalIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="CalendarDay31ScheduleIV" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                        <Separator fx:id="day31UpperSeparator" prefWidth="200.0">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Separator>
+                        <Button fx:id="calendarDay31Button" maxHeight="42.0" maxWidth="42.0" minHeight="42.0" minWidth="42.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="42.0" style="-fx-background-color: #f4f4f4;" text="31">
+                           <font>
+                              <Font name="Times New Roman" size="18.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+                  <Separator fx:id="day31RightSeparator" nodeOrientation="LEFT_TO_RIGHT" orientation="VERTICAL" prefHeight="200.0" />
+               </children>
+            </HBox>
+            <Separator prefWidth="200.0" />
+         </children>
+      </VBox>
+      <Separator layoutX="11.0" layoutY="153.0" orientation="VERTICAL" prefHeight="296.0" prefWidth="6.0" />
+      <Separator layoutX="342.0" layoutY="153.0" orientation="VERTICAL" prefHeight="296.0" prefWidth="6.0" />
+      <ComboBox fx:id="yearComboBox" layoutX="12.0" layoutY="89.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="monthChoiceBox" layoutX="192.0" layoutY="89.0" prefWidth="150.0" />
+      <Label layoutX="12.0" layoutY="32.0" prefHeight="44.0" prefWidth="330.0" text="8 Февраля 2021">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+      <ToolBar fx:id="calendarToolBar" prefHeight="25.0" prefWidth="330.0" />
+      <Button fx:id="calendarCloseButton" layoutX="330.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
+      <HBox alignment="CENTER" layoutX="9.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
+         <children>
+            <Label text="Пн">
+               <font>
+                  <Font name="Times New Roman" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" layoutX="57.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
+         <children>
+            <Label text="Вт">
+               <font>
+                  <Font name="Times New Roman" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" layoutX="105.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
+         <children>
+            <Label text="Ср">
+               <font>
+                  <Font name="Times New Roman" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" layoutX="153.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
+         <children>
+            <Label text="Чт">
+               <font>
+                  <Font name="Times New Roman" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" layoutX="201.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
+         <children>
+            <Label text="Пт">
+               <font>
+                  <Font name="Times New Roman" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" layoutX="297.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
+         <children>
+            <Label text="Вс">
+               <font>
+                  <Font name="Times New Roman" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" layoutX="249.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
+         <children>
+            <Label text="Сб">
+               <font>
+                  <Font name="Times New Roman" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+   </children>
+   <opaqueInsets>
+      <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+   </opaqueInsets>
+   <effect>
+      <DropShadow />
+   </effect>
+</AnchorPane>
