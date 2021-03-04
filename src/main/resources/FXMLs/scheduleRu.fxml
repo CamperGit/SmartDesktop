@@ -37,7 +37,7 @@
          </graphic>
       </Button>
       <Separator layoutY="225.0" prefHeight="3.0" prefWidth="460.0" />
-      <Button fx:id="schedulerSaveButton" layoutY="225.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="460.0" text="Сохранить" />
+      <Button fx:id="schedulerSaveButton" accessibleHelp="scheduleSaveButton" layoutY="225.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="460.0" text="Сохранить" />
       <DatePicker fx:id="schedulerDatePicker" layoutX="339.0" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="96.0">
          <effect>
             <Glow level="0.0" />

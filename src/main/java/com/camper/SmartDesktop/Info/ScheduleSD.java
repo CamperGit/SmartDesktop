@@ -2,6 +2,7 @@ package com.camper.SmartDesktop.Info;
 
 import com.camper.SmartDesktop.Main;
 import com.camper.SmartDesktop.NodeDragger;
+import com.sun.prism.impl.BufferUtil;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -155,15 +156,16 @@ public class ScheduleSD extends Application implements Initializable
 
         scheduleAddNewLineButton.setOnAction(event ->
         {
-            selectedSchedule = (AnchorPane) (((Button) event.getSource()).getParent());
-            for (var child : selectedSchedule.getChildren())
+            var scheduleRoot = (AnchorPane) (((Button) event.getSource()).getParent());
+            for (var child : scheduleRoot.getChildren())
             {
                 if (child instanceof ScrollPane)
                 {
                     var vbox = (VBox) (((ScrollPane) child).getContent());
-                    createNewLine(vbox, null, null, false, null, Integer.parseInt(selectedSchedule.getAccessibleHelp()));
+                    createNewLine(vbox, null, null, false, null, Integer.parseInt(scheduleRoot.getAccessibleHelp()), schedulerSaveButton);
                 }
             }
+            schedulerSaveButton.setDisable(false);
         });
 
         scheduleContentVbox.setSpacing(10);
@@ -197,6 +199,7 @@ public class ScheduleSD extends Application implements Initializable
 
             if (date != null)
             {
+                schedulerSaveButton.setDisable(true);
                 var day = checkUsingOfThisDate(date);
                 {
                     if (day == null)
@@ -247,6 +250,7 @@ public class ScheduleSD extends Application implements Initializable
         {
             var scheduleSD = schedules.get(Integer.parseInt((((DatePicker) (event.getSource())).getParent()).getAccessibleHelp()));
             scheduleSD.setDate(schedulerDatePicker.getValue());
+            schedulerSaveButton.setDisable(false);
         });
 
         scheduleSettingsButton.setOnMouseClicked(event ->
@@ -255,7 +259,7 @@ public class ScheduleSD extends Application implements Initializable
             var scheduleSD = schedules.get(id);
             if (scheduleSD.getCopySettings() == null)
             {
-                var settings = new SchedulerCopySettings(event, id);
+                var settings = new SchedulerCopySettings(event, id, schedulerSaveButton);
                 scheduleSD.setCopySettings(settings);
                 try
                 {
@@ -271,6 +275,18 @@ public class ScheduleSD extends Application implements Initializable
                 settings.showSettings(settings.getCopySettingsRoot(), event);
             }
         });
+    }
+
+    private Button getSaveButton(AnchorPane scheduleRoot)
+    {
+        for (var node : scheduleRoot.getChildren())
+        {
+            if (node instanceof Button && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("scheduleSaveButton"))
+            {
+                return (Button) node;
+            }
+        }
+        return null;
     }
 
     private static List<Day> copySchedule(Day day, SchedulerCopySettings.ScheduleSettingsRepeat repeat, SchedulerCopySettings.ScheduleSettingsPeriod period)
@@ -331,7 +347,6 @@ public class ScheduleSD extends Application implements Initializable
                 list.add(copyScheduleEventsFromDay(date, day));
             }
         }
-
         return list;
     }
 
@@ -356,7 +371,7 @@ public class ScheduleSD extends Application implements Initializable
         return newDay;
     }
 
-    public static void createNewLine(VBox content, LocalTime startTime, LocalTime endTime, boolean checkBoxState, String info, int id)
+    public static void createNewLine(VBox content, LocalTime startTime, LocalTime endTime, boolean checkBoxState, String info, int id, Button schedulerSaveButton)
     {
         var hbox = new HBox();
         Main.setRegion(hbox, 460, 25);
@@ -501,6 +516,7 @@ public class ScheduleSD extends Application implements Initializable
             {
                 map.remove(addEventCheckBox);
             }
+            schedulerSaveButton.setDisable(false);
         });
 
         text.setOnKeyTyped(event ->
@@ -517,6 +533,7 @@ public class ScheduleSD extends Application implements Initializable
             {
                 map.remove(addEventCheckBox);
             }
+            schedulerSaveButton.setDisable(false);
         });
 
         hours1.setOnAction(addEventCheckBox.getOnAction());
@@ -702,6 +719,9 @@ public class ScheduleSD extends Application implements Initializable
             var loadingSchedule = new ScheduleSD(true);
             loadingSchedule.start(Main.Stage);
             var rootOfLoadingSchedule = loadingSchedule.getScheduleRoot();
+            var saveButton = loadingSchedule.getSaveButton(rootOfLoadingSchedule);
+            assert saveButton != null;
+            saveButton.setDisable(true);
 
             int numberOfTab = Integer.parseInt(xPath.evaluate("/save/schedules/schedule" + id + "/@tab", doc));
             //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
@@ -721,7 +741,7 @@ public class ScheduleSD extends Application implements Initializable
             {
                 String repeat = xPath.evaluate("save/schedules/schedule" + id + "/copySettings/repeat/text()", doc);
                 String period = xPath.evaluate("save/schedules/schedule" + id + "/copySettings/period/text()", doc);
-                var settings = new SchedulerCopySettings(repeat, period, true);
+                var settings = new SchedulerCopySettings(repeat, period, true, id, saveButton);
                 settings.start(Main.Stage);
                 loadingSchedule.setCopySettings(settings);
             }
@@ -754,7 +774,7 @@ public class ScheduleSD extends Application implements Initializable
                 String text = xPath.evaluate("save/schedules/schedule" + id + "/lines/line" + numberOfLine + "/text/text()", doc);
 
                 assert content != null;
-                createNewLine(content, startTime, endTime, checkBoxState, text, id);
+                createNewLine(content, startTime, endTime, checkBoxState, text, id, saveButton );
             }
         }
     }

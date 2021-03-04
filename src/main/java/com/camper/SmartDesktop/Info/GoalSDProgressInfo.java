@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -34,9 +35,9 @@ public class GoalSDProgressInfo extends Application
     public GoalSDProgressInfo(int idOfGoal, MouseEvent mouseEvent)
     {
         this.id = idOfGoal;
-        this.mouseEvent=mouseEvent;
-        goalProgressRoot=new AnchorPane();
-        Main.setRegion(goalProgressRoot,400,320);
+        this.mouseEvent = mouseEvent;
+        goalProgressRoot = new AnchorPane();
+        Main.setRegion(goalProgressRoot, 400, 320);
     }
 
     public void setEntered(boolean entered)
@@ -64,7 +65,7 @@ public class GoalSDProgressInfo extends Application
     {
         goalProgressRoot.setAccessibleHelp(String.valueOf(id));
         goalProgressRoot.setStyle("-fx-background-color: #f4f4f4");
-        Main.setRegion(goalProgressRoot,400,320);
+        Main.setRegion(goalProgressRoot, 400, 320);
         progressInfoMap.put(id, this);
 
         goalProgressRoot.setOnMouseEntered(event ->
@@ -100,17 +101,17 @@ public class GoalSDProgressInfo extends Application
 
     public void updatePieChart(Map<CheckBox, List<CheckBox>> groupOfGoalCheckBox, Map<EventOfDay, CheckBox> eventsOfCheckBoxes)
     {
-        sortCheckBoxes(groupOfGoalCheckBox,eventsOfCheckBoxes, this);
+        sortCheckBoxes(groupOfGoalCheckBox, eventsOfCheckBoxes, this);
         var chart = new PieChart();
         chart.getData().addAll(
                 new PieChart.Data("Не выполнено", notDone),
                 new PieChart.Data("В процессе", onProgress),
                 new PieChart.Data("Выполнено", done));
         chart.setTitle("Прогресс выполнения цели");
-        Main.setRegion(chart,400,320);
+        Main.setRegion(chart, 400, 320);
 
         int leftUpperCornerX = (int) (mouseEvent.getSceneX() - mouseEvent.getX()) - 363;
-        int leftUpperCornerY = (int) (mouseEvent.getSceneY() - mouseEvent.getY())-60;
+        int leftUpperCornerY = (int) (mouseEvent.getSceneY() - mouseEvent.getY()) - 60;
         int layoutX = leftUpperCornerX + 460;
         int width = 400;
 
@@ -127,13 +128,13 @@ public class GoalSDProgressInfo extends Application
 
     private void sortCheckBoxes(Map<CheckBox, List<CheckBox>> groupOfGoalCheckBox, Map<EventOfDay, CheckBox> eventsOfCheckBoxes, GoalSDProgressInfo progressInfo)
     {
-        this.done=0;
-        this.onProgress=0;
-        this.notDone=0;
-        var map = new HashMap<CheckBox,EventOfDay>();
+        this.done = 0;
+        this.onProgress = 0;
+        this.notDone = 0;
+        var map = new HashMap<CheckBox, EventOfDay>();
         for (var entry : eventsOfCheckBoxes.entrySet())
         {
-            map.put(entry.getValue(),entry.getKey());
+            map.put(entry.getValue(), entry.getKey());
         }
 
         for (var entry : groupOfGoalCheckBox.entrySet())
@@ -142,7 +143,7 @@ public class GoalSDProgressInfo extends Application
             {
                 var time = map.get(checkBoxOfTask).getTime();
                 var date = LocalDate.parse(checkBoxOfTask.getAccessibleText());
-                var dateTime = LocalDateTime.of(date,time);
+                var dateTime = LocalDateTime.of(date, time);
                 if (!(checkBoxOfTask.isSelected()) && dateTime.isBefore(LocalDateTime.now()))
                 {
                     progressInfo.notDone++;
@@ -156,12 +157,12 @@ public class GoalSDProgressInfo extends Application
                     progressInfo.done++;
                 }
             }
-            if (entry.getValue().size()==0)
+            if (entry.getValue().size() == 0)
             {
                 var selectAllCheckBox = entry.getKey();
                 var time = map.get(selectAllCheckBox).getTime();
                 var date = LocalDate.parse(selectAllCheckBox.getAccessibleText());
-                var dateTime = LocalDateTime.of(date,time);
+                var dateTime = LocalDateTime.of(date, time);
                 if (!(selectAllCheckBox.isSelected()) && dateTime.isBefore(LocalDateTime.now()))
                 {
                     progressInfo.notDone++;
