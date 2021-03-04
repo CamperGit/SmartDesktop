@@ -263,10 +263,4 @@ class EventOfDay
         EventOfDay that = (EventOfDay) o;
         return Objects.equals(time, that.time) && type == that.type && Objects.equals(info, that.info);
     }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(time, type, info);
-    }
 }

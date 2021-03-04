@@ -389,7 +389,7 @@ public class ScheduleSD extends Application implements Initializable
         return list;
     }
 
-    private Day checkUsingThisDateOnScheduleSaveList(LocalDate date)
+    /*private Day checkUsingThisDateOnScheduleSaveList(LocalDate date)
     {
         for (var dayWithEvent : this.scheduleDaysSaveList)
         {
@@ -399,7 +399,7 @@ public class ScheduleSD extends Application implements Initializable
             }
         }
         return null;
-    }
+    }*/
 
     private static Day copyScheduleEventsFromDay(LocalDate date, Day day)
     {
