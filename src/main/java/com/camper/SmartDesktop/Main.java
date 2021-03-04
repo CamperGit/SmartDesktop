@@ -52,15 +52,7 @@ public class Main extends Application implements Initializable
     @FXML
     private TabPane mainTabPane;
     @FXML
-    private Tab tab1;
-    @FXML
-    private Tab tab2;
-    @FXML
-    private Tab tab3;
-    @FXML
-    private Tab tab4;
-    @FXML
-    private Tab tab5;
+    private Tab tab1, tab2, tab3, tab4, tab5;
     @FXML
     private ImageView imageViewer;
     @FXML

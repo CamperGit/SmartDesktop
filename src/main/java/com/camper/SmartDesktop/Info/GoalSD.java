@@ -59,7 +59,6 @@ public class GoalSD extends Application implements Initializable
     private Map<LocalDate, VBox> tasksOfDay = new HashMap<>();
     private Map<EventOfDay, CheckBox> checkBoxes = new HashMap<>();
     private Map<CheckBox, List<CheckBox>> groupOfMainCheckBox = new HashMap<>();
-    private List<Day> daysWithEventsOfGoal = new ArrayList<>();
     private static int nextId = 1;
     private static AnchorPane selectedGoal;
     private static Map<Integer, GoalSD> goals = new HashMap<>();
@@ -843,6 +842,7 @@ public class GoalSD extends Application implements Initializable
                     completeAllCheckBoxStateElement.appendChild(completeAllCheckBoxStateElementValue);
                     numberOfLine++;
                 }
+                id++;
             }
         }
     }
@@ -883,6 +883,7 @@ public class GoalSD extends Application implements Initializable
                 {
                     ((DatePicker) node).setValue(startDate);
                     ((DatePicker) node).setEditable(false);
+                    break;
                 }
             }
 
@@ -892,6 +893,7 @@ public class GoalSD extends Application implements Initializable
                 {
                     ((DatePicker) node).setValue(endDate);
                     ((DatePicker) node).setEditable(false);
+                    break;
                 }
             }
 
@@ -901,6 +903,7 @@ public class GoalSD extends Application implements Initializable
                 {
                     ((TextField) node).setText(nameOfGoal);
                     ((TextField) node).setEditable(false);
+                    break;
                 }
             }
 
