@@ -276,7 +276,7 @@ public class GoalSD extends Application implements Initializable
                             var date = startDate.plusDays(i);
 
                             var timeOfEvent = LocalTime.of(23, 59);
-                            var day = CalendarSD.checkUsingOfThisDate(date);
+                            var day = CalendarSD.checkUsingOfThisDateOnEventList(date);
                             if (day == null)
                             {
                                 day = new Day(date);
@@ -616,7 +616,7 @@ public class GoalSD extends Application implements Initializable
                 var timeOfTask = LocalTime.of(Integer.parseInt(hours.getValue()), Integer.parseInt(minutes.getValue()));
                 String textOfTask = textField.getText();
                 var daysWithEvents = CalendarSD.getDaysWithEvents();
-                var day = CalendarSD.checkUsingOfThisDate(date);
+                var day = CalendarSD.checkUsingOfThisDateOnEventList(date);
                 if (day == null)
                 {
                     day = new Day(date);

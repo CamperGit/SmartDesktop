@@ -184,7 +184,7 @@ public class NotificationSD extends Application implements Initializable
             var daysWithEvents = getDaysWithEvents();
             if (dateOfEvent != null)
             {
-                var day = checkUsingOfThisDate(dateOfEvent);
+                var day = checkUsingOfThisDateOnEventList(dateOfEvent);
                 {
                     if (day == null)
                     {

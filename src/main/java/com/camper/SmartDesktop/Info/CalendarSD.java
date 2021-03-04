@@ -493,7 +493,7 @@ public class CalendarSD extends Application implements Initializable
      * @param date дата для проверки существования такой даты в списке дней с событиями
      * @return null, если такая дата ещё не использовалась, day - если есть день с такой датой в списке daysWithEvents
      */
-    public static Day checkUsingOfThisDate(LocalDate date)
+    public static Day checkUsingOfThisDateOnEventList(LocalDate date)
     {
         for (var dayWithEvent : daysWithEvents)
         {

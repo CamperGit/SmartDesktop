@@ -385,7 +385,10 @@ public class Main extends Application implements Initializable
                         {
                             for (File f : contents)
                             {
-                                f.delete();
+                                if (f.delete())
+                                {
+                                    //Лог что удалилось
+                                }
                             }
                         }
                     }
@@ -397,15 +400,17 @@ public class Main extends Application implements Initializable
                         {
                             for (File f : contents)
                             {
-                                f.delete();
+                                if (f.delete())
+                                {
+                                    //Лог что удалилось
+                                }
                             }
                         }
-                        Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH + "\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
                     } else
                     {
                         Files.createDirectory(Paths.get(DIRPATH + "\\Resources\\Videos"));
-                        Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH + "\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
                     }
+                    Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH + "\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
                     var mediaFromFirstLaunch = new Media("file:/" + result.getAbsolutePath().replace("\\", "/"));
                     mediaPlayer = new MediaPlayer(mediaFromFirstLaunch);
                     videoViewer.setMediaPlayer(mediaPlayer);
@@ -453,7 +458,10 @@ public class Main extends Application implements Initializable
                         {
                             for (File f : contents)
                             {
-                                f.delete();
+                                if (f.delete())
+                                {
+                                    //Лог что удалилось
+                                }
                             }
                         }
                         Files.copy(Paths.get(result.getAbsolutePath()), Paths.get(DIRPATH + "\\Resources\\Images\\image" + extensionOnFirstLaunch), StandardCopyOption.REPLACE_EXISTING);
@@ -478,7 +486,10 @@ public class Main extends Application implements Initializable
                         {
                             for (File f : contents)
                             {
-                                f.delete();
+                                if (f.delete())
+                                {
+                                    //Лог что удалилось
+                                }
                             }
                         }
                     }
