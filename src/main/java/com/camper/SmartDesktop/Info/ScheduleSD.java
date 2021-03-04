@@ -199,12 +199,39 @@ public class ScheduleSD extends Application implements Initializable
             var scheduleRoot = (AnchorPane) (((Button) event.getSource()).getParent());
             int id = Integer.parseInt(scheduleRoot.getAccessibleHelp());
             var scheduleSD = schedules.get(id);
+            var scheduleDaysSaveList = scheduleSD.getScheduleDaysSaveList();
             var date = scheduleSD.getDate();
             var mapWithEvents = scheduleSD.getEventsOfSchedule();
-
             if (date != null)
             {
                 schedulerSaveButton.setDisable(true);
+
+                //Ќужно удал€ть остальные ивенты из ивент листа, чтобы добавить новые
+                if (scheduleDaysSaveList.size() != 0)
+                {
+                    var alert = new Alert(Alert.AlertType.NONE, "¬ы уверены, что хотите перезаписать расписание?", new ButtonType("ƒа", ButtonBar.ButtonData.YES), new ButtonType("Ќет", ButtonBar.ButtonData.NO));
+                    var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
+                    if (alertResult.getButtonData().equals(ButtonBar.ButtonData.YES))
+                    {
+                        for (var day : scheduleDaysSaveList)
+                        {
+                            for (var scheduleEvent : day.getEvents())
+                            {
+                                removeScheduleEvent(day.getDate(), scheduleEvent);
+                            }
+                            var dayFromEventList = CalendarSD.checkUsingOfThisDateOnEventList(day.getDate());
+                            if (dayFromEventList != null)
+                            {
+                                updateDayIcons(dayFromEventList.getDate(), dayFromEventList.isHaveNotification(), dayFromEventList.isHaveGoal(), dayFromEventList.isHaveSchedule());
+                            }
+                        }
+                        scheduleDaysSaveList.clear();
+                    }
+                    if (alertResult.getButtonData().equals(ButtonBar.ButtonData.NO))
+                    {
+                        event.consume();
+                    }
+                }
 
                 var dayToEventList = checkUsingOfThisDateOnEventList(date);
                 var dayToSaveList = new Day(date);
@@ -228,15 +255,12 @@ public class ScheduleSD extends Application implements Initializable
                 if (dayToEventList.getEvents().size() != 0 && dayToSaveList.getEvents().size() != 0)
                 {
                     var daysWithEvents = CalendarSD.getDaysWithEvents();
-                    var scheduleDaysSaveList = scheduleSD.getScheduleDaysSaveList();
 
                     if (!(daysWithEvents.contains(dayToEventList)))
                     {
                         daysWithEvents.add(dayToEventList);
                     }
 
-                    //Ќужно удал€ть остальные ивенты из ивент листа, чтобы добавить новые
-                    scheduleDaysSaveList.clear();
                     scheduleDaysSaveList.add(dayToSaveList);
 
                     if (scheduleSD.getCopySettings() != null)
@@ -249,7 +273,11 @@ public class ScheduleSD extends Application implements Initializable
                     UpcomingEvent.loadEventsToQueue(scheduleDaysSaveList);
                     for (var dayFromList : scheduleDaysSaveList)
                     {
-                        updateDayIcons(dayFromList.getDate(), dayFromList.isHaveNotification(), dayFromList.isHaveGoal(), dayFromList.isHaveSchedule());
+                        var dayFromEventList = CalendarSD.checkUsingOfThisDateOnEventList(dayFromList.getDate());
+                        if (dayFromEventList != null)
+                        {
+                            updateDayIcons(dayFromEventList.getDate(), dayFromEventList.isHaveNotification(), dayFromEventList.isHaveGoal(), dayFromEventList.isHaveSchedule());
+                        }
                     }
                 }
             } else
@@ -290,6 +318,12 @@ public class ScheduleSD extends Application implements Initializable
                 settings.showSettings(settings.getCopySettingsRoot(), event);
             }
         });
+    }
+
+    private static void removeScheduleEvent(LocalDate date, EventOfDay event)
+    {
+        UpcomingEvent.removeEventFromQueue(date, event);
+        Day.removeEventFromDay(date, event);
     }
 
     private Button getSaveButton(AnchorPane scheduleRoot)
@@ -686,7 +720,7 @@ public class ScheduleSD extends Application implements Initializable
 
                 daysSaveList.forEach(day ->
                 {
-                    boolean haveEvents = Day.checkOfDeprecatedEvents(day,false);
+                    boolean haveEvents = Day.checkOfDeprecatedEvents(day, false);
                     if (!haveEvents)
                     {
                         daysSaveList.remove(day);
@@ -889,7 +923,7 @@ public class ScheduleSD extends Application implements Initializable
             }
 
             var clonedDays = new ArrayList<Day>();
-            daysSaveList.forEach(day->
+            daysSaveList.forEach(day ->
             {
                 try
                 {
