@@ -409,7 +409,7 @@ public class GoalSD extends Application implements Initializable
             var checkBoxes = goalSD.getCheckBoxes();
             for (var keyEvent : checkBoxes.keySet())
             {
-                if (keyEvent.getType().equals(event.getType()) && keyEvent.getInfo().equals(event.getInfo()) && keyEvent.getTime().equals(event.getTime()))
+                if (keyEvent.equals(event))
                 {
                     var checkBox = checkBoxes.remove(keyEvent);
                     checkBoxes.put(event, checkBox);

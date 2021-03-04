@@ -8,11 +8,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.camper.SmartDesktop.Info.DeprecatedEvents.getDaysWithDeprecatedEvents;
 import static com.camper.SmartDesktop.Info.DeprecatedEvents.updateBellIcon;
 
-public class Day
+public class Day implements Cloneable
 {
 
     public boolean isHaveNotification()
@@ -118,7 +119,7 @@ public class Day
     /**
      * @return возвращает информацию о том остались ли в данном дне, после удаления, какие-либо события
      */
-    public static boolean checkOfDeprecatedEvents(Day day)
+    public static boolean checkOfDeprecatedEvents(Day day, boolean addToDeprecatedEventsList)
     {
         var events = day.getEvents();
         var deprecatedEventsOfThisDay = new ArrayList<EventOfDay>();
@@ -135,7 +136,7 @@ public class Day
             events.remove(deprecatedEvent);
         }
 
-        if (deprecatedEventsOfThisDay.size() != 0)
+        if (deprecatedEventsOfThisDay.size() != 0 && addToDeprecatedEventsList)
         {
             var dayWithDeprecatedEvents = new Day(day.getDate());
             dayWithDeprecatedEvents.getEvents().addAll(deprecatedEventsOfThisDay);
@@ -216,6 +217,14 @@ public class Day
         }
         return day;
     }
+
+    @Override
+    public Day clone() throws CloneNotSupportedException
+    {
+        var clonedDay = (Day) super.clone();
+        clonedDay.events = new ArrayList<>(this.getEvents());
+        return clonedDay;
+    }
 }
 
 class EventOfDay
@@ -244,5 +253,20 @@ class EventOfDay
     public String getInfo()
     {
         return info;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EventOfDay that = (EventOfDay) o;
+        return Objects.equals(time, that.time) && type == that.type && Objects.equals(info, that.info);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(time, type, info);
     }
 }

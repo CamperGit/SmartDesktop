@@ -196,8 +196,8 @@ public class ScheduleSD extends Application implements Initializable
 
         schedulerSaveButton.setOnAction(event ->
         {
-            selectedSchedule = (AnchorPane) (((Button) event.getSource()).getParent());
-            int id = Integer.parseInt(selectedSchedule.getAccessibleHelp());
+            var scheduleRoot = (AnchorPane) (((Button) event.getSource()).getParent());
+            int id = Integer.parseInt(scheduleRoot.getAccessibleHelp());
             var scheduleSD = schedules.get(id);
             var date = scheduleSD.getDate();
             var mapWithEvents = scheduleSD.getEventsOfSchedule();
@@ -225,7 +225,7 @@ public class ScheduleSD extends Application implements Initializable
                     }
                 }
 
-                if (dayToEventList.getEvents().size() != 0 && dayToEventList.getEvents().size() != 0)
+                if (dayToEventList.getEvents().size() != 0 && dayToSaveList.getEvents().size() != 0)
                 {
                     var daysWithEvents = CalendarSD.getDaysWithEvents();
                     var scheduleDaysSaveList = scheduleSD.getScheduleDaysSaveList();
@@ -243,7 +243,7 @@ public class ScheduleSD extends Application implements Initializable
                     {
                         var repeat = scheduleSD.getCopySettings().getRepeatSelected();
                         var period = scheduleSD.getCopySettings().getPeriodSelected();
-                        scheduleDaysSaveList.addAll(copySchedule(dayToEventList, repeat, period));
+                        scheduleDaysSaveList.addAll(copySchedule(dayToSaveList, repeat, period));
                     }
 
                     UpcomingEvent.loadEventsToQueue(scheduleDaysSaveList);
@@ -404,28 +404,30 @@ public class ScheduleSD extends Application implements Initializable
     private static Day copyScheduleEventsFromDay(LocalDate date, Day day)
     {
         boolean added = false;
-        var newDay = checkUsingOfThisDateOnEventList(date);
+        var dayFromEventList = checkUsingOfThisDateOnEventList(date);
+        var newDay = new Day(date);
         var daysWithEvents = CalendarSD.getDaysWithEvents();
-        if (newDay == null)
+        if (dayFromEventList == null)
         {
-            newDay = new Day(date);
+            dayFromEventList = new Day(date);
         }
         for (var event : day.getEvents())
         {
             //ћы же копируем только расписание, поэтому другие ивенты, если они есть, добавл€ть не нужно
-            if (event.getType() == Day.EventType.Schedule)
+            if (event.getType().equals(Day.EventType.Schedule))
             {
-                if (newDay.addEvent(event))
+                if (dayFromEventList.addEvent(event))
                 {
+                    newDay.addEvent(event);
                     added = true;
                 }
             }
         }
         if (added)
         {
-            if (!(daysWithEvents.contains(newDay)))
+            if (!(daysWithEvents.contains(dayFromEventList)))
             {
-                daysWithEvents.add(newDay);
+                daysWithEvents.add(dayFromEventList);
             }
             return newDay;
         } else
@@ -634,6 +636,7 @@ public class ScheduleSD extends Application implements Initializable
                 //var scheduleSD = schedules.get(entry.getKey());
                 var scheduleSD = entry.getValue();
                 var schedule = scheduleSD.getScheduleRoot();
+                var daysSaveList = scheduleSD.getScheduleDaysSaveList();
                 var scheduleElement = doc.createElement("schedule" + id);
                 scheduleElement.setAttribute("tab", schedule.getAccessibleText());
 
@@ -677,6 +680,57 @@ public class ScheduleSD extends Application implements Initializable
                 scheduleElement.appendChild(dateElement);
                 var dateElementValue = doc.createTextNode(String.valueOf(scheduleSD.getDate()));
                 dateElement.appendChild(dateElementValue);
+
+                var daysWithEventsElement = doc.createElement("daysWithEvents");
+                scheduleElement.appendChild(daysWithEventsElement);
+
+                daysSaveList.forEach(day ->
+                {
+                    boolean haveEvents = Day.checkOfDeprecatedEvents(day,false);
+                    if (!haveEvents)
+                    {
+                        daysSaveList.remove(day);
+                    }
+                });
+
+                int numberOfDay = 1;
+                for (var day : daysSaveList)
+                {
+                    var dayElement = doc.createElement("day" + numberOfDay);
+                    daysWithEventsElement.appendChild(dayElement);
+
+                    var dayDateElement = doc.createElement("dayDate");
+                    dayElement.appendChild(dayDateElement);
+                    var dayDateElementValue = doc.createTextNode(day.getDate().toString());
+                    dayDateElement.appendChild(dayDateElementValue);
+
+                    var eventsElement = doc.createElement("events");
+                    dayElement.appendChild(eventsElement);
+                    int numberOfEvent = 1;
+                    for (var event : day.getEvents())
+                    {
+                        var eventElement = doc.createElement("event" + numberOfEvent);
+                        eventsElement.appendChild(eventElement);
+
+                        var timeOfEventElement = doc.createElement("time");
+                        eventElement.appendChild(timeOfEventElement);
+                        var timeOfEventElementValue = doc.createTextNode(event.getTime().toString());
+                        timeOfEventElement.appendChild(timeOfEventElementValue);
+
+                        var typeOfEventElement = doc.createElement("type");
+                        eventElement.appendChild(typeOfEventElement);
+                        var typeOfEventElementValue = doc.createTextNode(event.getType().toString());
+                        typeOfEventElement.appendChild(typeOfEventElementValue);
+
+                        var infoOfEventElement = doc.createElement("info");
+                        eventElement.appendChild(infoOfEventElement);
+                        var infoOfEventElementValue = doc.createTextNode(event.getInfo());
+                        infoOfEventElement.appendChild(infoOfEventElementValue);
+
+                        numberOfEvent++;
+                    }
+                    numberOfDay++;
+                }
 
                 VBox vbox = null;
                 for (Node node : schedule.getChildren())
@@ -782,6 +836,7 @@ public class ScheduleSD extends Application implements Initializable
             var loadingSchedule = new ScheduleSD(true);
             loadingSchedule.start(Main.Stage);
             var rootOfLoadingSchedule = loadingSchedule.getScheduleRoot();
+            var daysSaveList = loadingSchedule.getScheduleDaysSaveList();
             var saveButton = loadingSchedule.getSaveButton(rootOfLoadingSchedule);
             assert saveButton != null;
             saveButton.setDisable(true);
@@ -808,6 +863,43 @@ public class ScheduleSD extends Application implements Initializable
                 settings.start(Main.Stage);
                 loadingSchedule.setCopySettings(settings);
             }
+
+            int countOfDaysWithEvents = xPath.evaluateExpression("count(/save/schedules/schedule" + id + "/daysWithEvents/*)", doc, Integer.class);
+            for (int numberOfDay = 1; numberOfDay < countOfDaysWithEvents + 1; numberOfDay++)
+            {
+
+                var date = LocalDate.parse(xPath.evaluate("/save/schedules/schedule" + id + "/daysWithEvents/day" + numberOfDay + "/dayDate/text()", doc));
+                var day = new Day(date);
+
+                int countOfEvents = xPath.evaluateExpression("count(/save/schedules/schedule" + id + "/daysWithEvents/day" + numberOfDay + "/events/*)", doc, Integer.class);
+                for (int numberOfEvent = 1; numberOfEvent < countOfEvents + 1; numberOfEvent++)
+                {
+                    var time = LocalTime.parse(xPath.evaluate("/save/schedules/schedule" + id + "/daysWithEvents/day" + numberOfDay + "/events/event" + numberOfEvent + "/time/text()", doc));
+                    Day.EventType type = Day.EventType.Schedule;//Enum.valueOf(Day.EventType.class, xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/events/event" + numberOfEvent + "/type/text()", doc));
+                    var info = xPath.evaluate("/save/schedules/schedule" + id + "/daysWithEvents/day" + numberOfDay + "/events/event" + numberOfEvent + "/info/text()", doc);
+
+                    var event = new EventOfDay(time, type, info);
+                    day.addEvent(event);
+                }
+                var haveEvents = Day.checkOfDeprecatedEvents(day, true);
+                if (haveEvents)
+                {
+                    daysSaveList.add(day);
+                }
+            }
+
+            var clonedDays = new ArrayList<Day>();
+            daysSaveList.forEach(day->
+            {
+                try
+                {
+                    clonedDays.add(day.clone());
+                } catch (CloneNotSupportedException e)
+                {
+                    e.printStackTrace();
+                }
+            });
+            CalendarSD.getDaysWithEvents().addAll(clonedDays);
 
             VBox content = null;
             for (Node node : rootOfLoadingSchedule.getChildren())

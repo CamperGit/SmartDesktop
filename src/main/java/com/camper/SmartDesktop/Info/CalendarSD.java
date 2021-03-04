@@ -247,40 +247,47 @@ public class CalendarSD extends Application implements Initializable
             int numberOfDay = 1;
             for (var day : daysWithEvents)
             {
-                var dayElement = doc.createElement("day" + numberOfDay);
-                daysWithEventsElement.appendChild(dayElement);
-
-                var dateElement = doc.createElement("date");
-                dayElement.appendChild(dateElement);
-                var dateElementValue = doc.createTextNode(day.getDate().toString());
-                dateElement.appendChild(dateElementValue);
-
-                var eventsElement = doc.createElement("events");
-                dayElement.appendChild(eventsElement);
-                int numberOfEvent = 1;
-                for (var event : day.getEvents())
+                if (!(day.isHaveSchedule() && !day.isHaveGoal() && !day.isHaveNotification()))
                 {
-                    var eventElement = doc.createElement("event" + numberOfEvent);
-                    eventsElement.appendChild(eventElement);
+                    var dayElement = doc.createElement("day" + numberOfDay);
+                    daysWithEventsElement.appendChild(dayElement);
 
-                    var timeOfEventElement = doc.createElement("time");
-                    eventElement.appendChild(timeOfEventElement);
-                    var timeOfEventElementValue = doc.createTextNode(event.getTime().toString());
-                    timeOfEventElement.appendChild(timeOfEventElementValue);
+                    var dateElement = doc.createElement("date");
+                    dayElement.appendChild(dateElement);
+                    var dateElementValue = doc.createTextNode(day.getDate().toString());
+                    dateElement.appendChild(dateElementValue);
 
-                    var typeOfEventElement = doc.createElement("type");
-                    eventElement.appendChild(typeOfEventElement);
-                    var typeOfEventElementValue = doc.createTextNode(event.getType().toString());
-                    typeOfEventElement.appendChild(typeOfEventElementValue);
+                    var eventsElement = doc.createElement("events");
+                    dayElement.appendChild(eventsElement);
+                    int numberOfEvent = 1;
+                    for (var event : day.getEvents())
+                    {
+                        if (event.getType().equals(Day.EventType.Schedule))
+                        {
+                            continue;
+                        }
+                        var eventElement = doc.createElement("event" + numberOfEvent);
+                        eventsElement.appendChild(eventElement);
 
-                    var infoOfEventElement = doc.createElement("info");
-                    eventElement.appendChild(infoOfEventElement);
-                    var infoOfEventElementValue = doc.createTextNode(event.getInfo());
-                    infoOfEventElement.appendChild(infoOfEventElementValue);
+                        var timeOfEventElement = doc.createElement("time");
+                        eventElement.appendChild(timeOfEventElement);
+                        var timeOfEventElementValue = doc.createTextNode(event.getTime().toString());
+                        timeOfEventElement.appendChild(timeOfEventElementValue);
 
-                    numberOfEvent++;
+                        var typeOfEventElement = doc.createElement("type");
+                        eventElement.appendChild(typeOfEventElement);
+                        var typeOfEventElementValue = doc.createTextNode(event.getType().toString());
+                        typeOfEventElement.appendChild(typeOfEventElementValue);
+
+                        var infoOfEventElement = doc.createElement("info");
+                        eventElement.appendChild(infoOfEventElement);
+                        var infoOfEventElementValue = doc.createTextNode(event.getInfo());
+                        infoOfEventElement.appendChild(infoOfEventElementValue);
+
+                        numberOfEvent++;
+                    }
+                    numberOfDay++;
                 }
-                numberOfDay++;
             }
         }
     }
@@ -293,7 +300,11 @@ public class CalendarSD extends Application implements Initializable
         {
 
             var date = LocalDate.parse(xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/date/text()", doc));
-            var day = new Day(date);
+            var day = checkUsingOfThisDateOnEventList(date);
+            if (day == null)
+            {
+                day = new Day(date);
+            }
 
             //Делаем цикл и вытаскиваем ивенты, после чего добавляем их в переменную day методом addEvent
             int countOfEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/day" + numberOfDay + "/events/*)", doc, Integer.class);
@@ -311,7 +322,7 @@ public class CalendarSD extends Application implements Initializable
                 day.addEvent(event);
             }
 
-            var haveEvents = Day.checkOfDeprecatedEvents(day);
+            var haveEvents = Day.checkOfDeprecatedEvents(day, true);
             if (haveEvents)
             {
                 daysWithEvents.add(day);
