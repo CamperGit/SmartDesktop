@@ -167,10 +167,14 @@ public class SchedulerCopySettings extends Application implements Initializable
 
         scheduleDontRepeatRadioButton.setOnAction(event ->
         {
-            int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
-            var settings = settingsMap.get(id);
-            settings.repeatSelected = ScheduleSettingsRepeat.DONT;
-            settings.saveButton.setDisable(false);
+            var node = ((RadioButton) event.getSource()).getParent().getParent();
+            if (node != null)
+            {
+                int id = Main.returnAnchorId(node);
+                var settings = settingsMap.get(id);
+                settings.repeatSelected = ScheduleSettingsRepeat.DAY;
+                settings.saveButton.setDisable(false);
+            }
             schedulerForAWeekRadioButton.setDisable(true);
             schedulerForAMonthRadioButton.setDisable(true);
             schedulerForAYearRadioButton.setDisable(true);
@@ -181,10 +185,14 @@ public class SchedulerCopySettings extends Application implements Initializable
 
         scheduleDayRepeatRadioButton.setOnAction(event ->
         {
-            int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
-            var settings = settingsMap.get(id);
-            settings.repeatSelected = ScheduleSettingsRepeat.DAY;
-            settings.saveButton.setDisable(false);
+            var node = ((RadioButton) event.getSource()).getParent().getParent();
+            if (node != null)
+            {
+                int id = Main.returnAnchorId(node);
+                var settings = settingsMap.get(id);
+                settings.repeatSelected = ScheduleSettingsRepeat.DAY;
+                settings.saveButton.setDisable(false);
+            }
             schedulerForAWeekRadioButton.setDisable(false);
             schedulerForAMonthRadioButton.setDisable(false);
             schedulerForAYearRadioButton.setDisable(true);
@@ -193,10 +201,14 @@ public class SchedulerCopySettings extends Application implements Initializable
 
         scheduleWeekRepeatRadioButton.setOnAction(event ->
         {
-            int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
-            var settings = settingsMap.get(id);
-            settings.repeatSelected = ScheduleSettingsRepeat.WEEK;
-            settings.saveButton.setDisable(false);
+            var node = ((RadioButton) event.getSource()).getParent().getParent();
+            if (node != null)
+            {
+                int id = Main.returnAnchorId(node);
+                var settings = settingsMap.get(id);
+                settings.repeatSelected = ScheduleSettingsRepeat.DAY;
+                settings.saveButton.setDisable(false);
+            }
             schedulerForAWeekRadioButton.setDisable(true);
             schedulerForAMonthRadioButton.setDisable(false);
             schedulerForAYearRadioButton.setDisable(false);
@@ -205,10 +217,14 @@ public class SchedulerCopySettings extends Application implements Initializable
 
         scheduleMonthRepeatRadioButton.setOnAction(event ->
         {
-            int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
-            var settings = settingsMap.get(id);
-            settings.repeatSelected = ScheduleSettingsRepeat.MONTH;
-            settings.saveButton.setDisable(false);
+            var node = ((RadioButton) event.getSource()).getParent().getParent();
+            if (node != null)
+            {
+                int id = Main.returnAnchorId(node);
+                var settings = settingsMap.get(id);
+                settings.repeatSelected = ScheduleSettingsRepeat.DAY;
+                settings.saveButton.setDisable(false);
+            }
             schedulerForAWeekRadioButton.setDisable(true);
             schedulerForAMonthRadioButton.setDisable(true);
             schedulerForAYearRadioButton.setDisable(false);
@@ -218,11 +234,15 @@ public class SchedulerCopySettings extends Application implements Initializable
 
         scheduleYearRepeatRadioButton.setOnAction(event ->
         {
-            int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
-            var settings = settingsMap.get(id);
-            settings.repeatSelected = ScheduleSettingsRepeat.YEAR;
-            settings.periodSelected = ScheduleSettingsPeriod.DONT;
-            settings.saveButton.setDisable(false);
+            var node = ((RadioButton) event.getSource()).getParent().getParent();
+            if (node != null)
+            {
+                int id = Main.returnAnchorId(node);
+                var settings = settingsMap.get(id);
+                settings.repeatSelected = ScheduleSettingsRepeat.DAY;
+                settings.periodSelected = ScheduleSettingsPeriod.DONT;
+                settings.saveButton.setDisable(false);
+            }
             schedulerForAWeekRadioButton.setDisable(true);
             schedulerForAMonthRadioButton.setDisable(true);
             schedulerForAYearRadioButton.setDisable(true);
@@ -234,49 +254,57 @@ public class SchedulerCopySettings extends Application implements Initializable
 
         schedulerForAWeekRadioButton.setOnAction(event ->
         {
-            if (scheduleDayRepeatRadioButton.isSelected())
-            {
-                int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
-                var settings = settingsMap.get(id);
-                settings.periodSelected = ScheduleSettingsPeriod.FOR_A_WEEK;
-                settings.saveButton.setDisable(false);
-            } else
-            {
-                schedulerForAWeekRadioButton.setSelected(false);
-                event.consume();
-            }
+            int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
+            var settings = settingsMap.get(id);
+            settings.periodSelected = ScheduleSettingsPeriod.FOR_A_WEEK;
+            settings.saveButton.setDisable(false);
         });
 
         schedulerForAMonthRadioButton.setOnAction(event ->
         {
-            if (scheduleDayRepeatRadioButton.isSelected() || scheduleWeekRepeatRadioButton.isSelected())
-            {
-                int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
-                var settings = settingsMap.get(id);
-                settings.periodSelected = ScheduleSettingsPeriod.FOR_A_MONTH;
-                settings.saveButton.setDisable(false);
-            } else
-            {
-                schedulerForAMonthRadioButton.setSelected(false);
-                event.consume();
-            }
+            int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
+            var settings = settingsMap.get(id);
+            settings.periodSelected = ScheduleSettingsPeriod.FOR_A_MONTH;
+            settings.saveButton.setDisable(false);
 
         });
 
         schedulerForAYearRadioButton.setOnAction(event ->
         {
-            if (scheduleWeekRepeatRadioButton.isSelected() || scheduleMonthRepeatRadioButton.isSelected())
-            {
-                int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
-                var settings = settingsMap.get(id);
-                settings.periodSelected = ScheduleSettingsPeriod.FOR_A_YEAR;
-                settings.saveButton.setDisable(false);
-            } else
-            {
-                schedulerForAYearRadioButton.setSelected(false);
-                event.consume();
-            }
+            int id = Main.returnAnchorId(((RadioButton) event.getSource()).getParent());
+            var settings = settingsMap.get(id);
+            settings.periodSelected = ScheduleSettingsPeriod.FOR_A_YEAR;
+            settings.saveButton.setDisable(false);
         });
+    }
+
+    public void fireSchedulerCopySettingsRadioButton(String buttonName)
+    {
+        ToolBar toolBar=null;
+        for (var node : this.getCopySettingsRoot().getChildren())
+        {
+            if (node instanceof ToolBar)
+            {
+                toolBar=(ToolBar) node;
+                break;
+            }
+        }
+        if (toolBar!=null)
+        {
+            for (var node : toolBar.getItems())
+            {
+                if(node instanceof VBox)
+                {
+                    for (var vboxChild : ((VBox) node).getChildren())
+                    {
+                        if (vboxChild instanceof RadioButton && vboxChild.getAccessibleText() != null && vboxChild.getAccessibleText().equals(buttonName))
+                        {
+                            ((RadioButton) vboxChild).fire();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void showSettings(AnchorPane root, MouseEvent mouseEvent)

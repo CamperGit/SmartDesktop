@@ -895,8 +895,7 @@ public class ScheduleSD extends Application implements Initializable
             var rootOfLoadingSchedule = loadingSchedule.getScheduleRoot();
             var daysSaveList = loadingSchedule.getScheduleDaysSaveList();
             var saveButton = loadingSchedule.getSaveButton(rootOfLoadingSchedule);
-            assert saveButton != null;
-            saveButton.setDisable(true);
+
 
             int numberOfTab = Integer.parseInt(xPath.evaluate("/save/schedules/schedule" + id + "/@tab", doc));
             //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
@@ -918,7 +917,10 @@ public class ScheduleSD extends Application implements Initializable
                 String period = xPath.evaluate("save/schedules/schedule" + id + "/copySettings/period/text()", doc);
                 var settings = new SchedulerCopySettings(repeat, period, true, id, saveButton);
                 settings.start(Main.Stage);
+                settings.fireSchedulerCopySettingsRadioButton(repeat);
                 loadingSchedule.setCopySettings(settings);
+                assert saveButton != null;
+                saveButton.setDisable(true);
             }
 
             int countOfDaysWithEvents = xPath.evaluateExpression("count(/save/schedules/schedule" + id + "/daysWithEvents/*)", doc, Integer.class);
