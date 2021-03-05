@@ -45,11 +45,6 @@ public class Saving
         var rootDocument = doc.createElement("save");
         doc.appendChild(rootDocument);
 
-        NoteSD.addNotesToXML(doc, false);
-        ScheduleSD.addSchedulesToXML(doc, false);
-        GoalSD.addGoalsToXML(doc,false);
-        CalendarSD.addCalendarToXML(doc, false);
-
         var t = TransformerFactory.newInstance().newTransformer();
         t.setOutputProperty(OutputKeys.INDENT, "yes"); //Отступ
         t.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -80,6 +75,11 @@ public class Saving
             }
 
         }
+
+        NoteSD.addNotesToXML(doc, false);
+        ScheduleSD.addSchedulesToXML(doc, false);
+        GoalSD.addGoalsToXML(doc,false);
+        CalendarSD.addCalendarToXML(doc, false);
 
         var rootElement = doc.getFirstChild();
         var lastTabElement = doc.createElement("lastTab");
