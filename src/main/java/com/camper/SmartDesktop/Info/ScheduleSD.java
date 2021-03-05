@@ -735,7 +735,6 @@ public class ScheduleSD extends Application implements Initializable
             int id = 1;
             for (var entry : schedules.entrySet())
             {
-                //var scheduleSD = schedules.get(entry.getKey());
                 var scheduleSD = entry.getValue();
                 var schedule = scheduleSD.getScheduleRoot();
                 var daysSaveList = scheduleSD.getScheduleDaysSaveList();

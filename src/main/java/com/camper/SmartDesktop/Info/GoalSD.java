@@ -642,13 +642,7 @@ public class GoalSD extends Application implements Initializable
 
         mainCheckBox.addEventHandler(ActionEvent.ACTION, event ->
         {
-            if (mainCheckBox.isSelected())
-            {
-                completeCheckBox.setSelected(true);
-            } else
-            {
-                completeCheckBox.setSelected(false);
-            }
+            completeCheckBox.setSelected(mainCheckBox.isSelected());
         });
 
         this.getGroupOfMainCheckBox().get(mainCheckBox).add(completeCheckBox);
@@ -670,25 +664,13 @@ public class GoalSD extends Application implements Initializable
 
         hours.setOnAction(event ->
                 {
-                    if (date.isBefore(LocalDate.now()))
-                    {
-                        saveButton.setDisable(true);
-                    } else
-                    {
-                        saveButton.setDisable(false);
-                    }
+                    saveButton.setDisable(date.isBefore(LocalDate.now()));
                 }
         );
         minutes.setOnAction(hours.getOnAction());
         textField.setOnKeyTyped(event ->
         {
-            if (date.isBefore(LocalDate.now()))
-            {
-                saveButton.setDisable(true);
-            } else
-            {
-                saveButton.setDisable(false);
-            }
+            saveButton.setDisable(date.isBefore(LocalDate.now()));
         });
     }
 
