@@ -99,7 +99,7 @@ public class EventsOfDayInfo extends Application implements Initializable
         }
         paneOfInfoRoot.setLayoutX(layoutX);
         paneOfInfoRoot.setLayoutY(layoutY);
-        updateScrollArea(true, true, true);
+        updateScrollArea(date,true, true, true);
 
         paneOfInfoRoot.setOnMouseEntered(event -> entered = true);
         paneOfInfoRoot.setOnMouseExited(event ->
@@ -172,7 +172,7 @@ public class EventsOfDayInfo extends Application implements Initializable
 
         notificationCheckBox.setOnAction(event ->
         {
-            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            updateScrollArea(date,notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
             if (!notificationCheckBox.isSelected())
             {
                 allTypesCheckBox.setSelected(false);
@@ -185,7 +185,7 @@ public class EventsOfDayInfo extends Application implements Initializable
 
         goalsCheckBox.setOnAction(event ->
         {
-            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            updateScrollArea(date,notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
             if (!goalsCheckBox.isSelected())
             {
                 allTypesCheckBox.setSelected(false);
@@ -198,7 +198,7 @@ public class EventsOfDayInfo extends Application implements Initializable
 
         schedulerCheckBox.setOnAction(event ->
         {
-            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            updateScrollArea(date,notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
             if (!schedulerCheckBox.isSelected())
             {
                 allTypesCheckBox.setSelected(false);
@@ -222,7 +222,7 @@ public class EventsOfDayInfo extends Application implements Initializable
                 goalsCheckBox.setSelected(false);
                 schedulerCheckBox.setSelected(false);
             }
-            updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            updateScrollArea(date,notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
         });
         allTypesCheckBox.setSelected(true);
         notificationCheckBox.setSelected(true);
@@ -230,7 +230,7 @@ public class EventsOfDayInfo extends Application implements Initializable
         schedulerCheckBox.setSelected(true);
     }
 
-    private static void updateScrollArea(boolean notification, boolean goal, boolean schedule)
+    private static void updateScrollArea(LocalDate date, boolean notification, boolean goal, boolean schedule)
     {
         var content = new VBox(8);
         content.setMaxWidth(459);
@@ -252,11 +252,12 @@ public class EventsOfDayInfo extends Application implements Initializable
                 icon.setFitWidth(35);
                 icon.setFitHeight(35);
                 icon.setLayoutX(2);
-                HBox hbox = null;
                 if (type == Day.EventType.Notification && notification)
                 {
-                    icon.setImage(new Image("Images/notification42.png"));
-                    hbox = addInfoOfEvent(event, icon);
+                    icon.setImage(new Image("Images/notification25.png"));
+                    icon.setFitHeight(25);
+                    icon.setFitWidth(25);
+                    addInfoOfEvent(date, event, icon, content);
                 }
                 if (type == Day.EventType.Goal && goal)
                 {
@@ -267,8 +268,10 @@ public class EventsOfDayInfo extends Application implements Initializable
                 }
                 if (type == Day.EventType.Schedule && schedule)
                 {
-                    icon.setImage(new Image("Images/schedule42.png"));
-                    hbox = addInfoOfEvent(event, icon);
+                    icon.setImage(new Image("Images/schedule35.png"));
+                    icon.setFitHeight(25);
+                    icon.setFitWidth(25);
+                    addInfoOfEvent(date, event, icon, content);
                 }
                 if (type == Day.EventType.Task)
                 {
@@ -278,10 +281,6 @@ public class EventsOfDayInfo extends Application implements Initializable
                         goalsWithTask.put(goalName, new ArrayList<>());
                     }
                     goalsWithTask.get(goalName).add(event);
-                }
-                if (hbox != null)
-                {
-                    content.getChildren().add(hbox);
                 }
             }
         }
@@ -301,7 +300,6 @@ public class EventsOfDayInfo extends Application implements Initializable
                 }
                 if (goalSD != null)
                 {
-                    var oldLine = goalSD.getTasksOfDay().get(date);
                     var line = addGoalOnScrollPane(entry.getKey(), entry.getValue());
                     content.getChildren().add(line);
                 }
@@ -326,9 +324,44 @@ public class EventsOfDayInfo extends Application implements Initializable
         return;
     }
 
-    private static HBox addInfoOfEvent(EventOfDay event, ImageView icon)
+    private static void addInfoOfEvent(LocalDate date, EventOfDay event, ImageView icon, VBox content)
     {
-        var hSeparator = new Separator(Orientation.VERTICAL);
+        var time = new TextField(event.getTime().toString());
+        Main.setRegion(time, 45, 25);
+        time.setEditable(false);
+
+        var vSeparator = new Separator(Orientation.VERTICAL);
+        Main.setRegion(vSeparator, 4, 25);
+
+        var info = new TextField(event.getInfo());
+        Main.setRegion(info, 319, 25);
+        info.setEditable(false);
+
+        var deleteButton = new Button();
+        Main.setRegion(deleteButton, 25, 25);
+        deleteButton.setGraphic(new ImageView(new Image("Images/delete35.png")));
+        deleteButton.setStyle("-fx-background-color: #f4f4f4");
+
+        var hbox = new HBox(6, icon, time, vSeparator, info, deleteButton);
+        Main.setRegion(hbox, 460, 25);
+        hbox.setPadding(new Insets(0, 8, 0, 8));
+
+        content.getChildren().add(hbox);
+
+        deleteButton.setOnAction(e ->
+        {
+            if (event.getType().equals(Day.EventType.Schedule))
+            {
+                ScheduleSD.removeEventFromEventList(date,event);
+            }
+            if (event.getType().equals(Day.EventType.Notification))
+            {
+                NotificationSD.removeNotificationFromEventList(date,event);
+            }
+            content.getChildren().remove(hbox);
+        });
+
+        /*var hSeparator = new Separator(Orientation.VERTICAL);
 
         var time = new TextField(LocalTime.of(event.getTime().getHour(), event.getTime().getMinute()).toString());
         time.setPrefWidth(45);
@@ -345,8 +378,7 @@ public class EventsOfDayInfo extends Application implements Initializable
         Main.setRegion(hbox, 456, 42);
         hbox.setAlignment(Pos.CENTER);
         hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-
-        return hbox;
+        */
     }
 
     private static VBox addGoalOnScrollPane(String nameOfGoal, List<EventOfDay> tasks)
@@ -360,15 +392,15 @@ public class EventsOfDayInfo extends Application implements Initializable
         nameOfGoalLabel.setFont(Font.font("Times New Roman", FontWeight.BOLD, 16));
         nameOfGoalLabel.setAlignment(Pos.CENTER);
 
-        /*var icon = new ImageView(new Image("images/target25.png"));
+        var icon = new ImageView(new Image("Images/target25.png"));
         icon.setFitWidth(25);
-        icon.setFitHeight(25);*/
+        icon.setFitHeight(25);
 
         var leftOffset = new Separator(Orientation.VERTICAL);
         Main.setRegion(leftOffset, 4, 25);
         leftOffset.setVisible(false);
 
-        var hbox1 = new HBox(6, leftOffset/*, icon*/, nameOfGoalLabel);
+        var hbox1 = new HBox(6, leftOffset, icon, nameOfGoalLabel);
         Main.setRegion(hbox1, 460, 25);
         hbox1.setPadding(new Insets(0, 8, 0, 8));
 

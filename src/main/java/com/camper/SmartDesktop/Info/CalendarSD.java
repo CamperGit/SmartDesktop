@@ -295,7 +295,6 @@ public class CalendarSD extends Application implements Initializable
     public static void loadCalendarFromXML(Document doc, XPath xPath) throws Exception
     {
         int countOfDaysWithEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/*)", doc, Integer.class);
-
         for (int numberOfDay = 1; numberOfDay < countOfDaysWithEvents + 1; numberOfDay++)
         {
 
@@ -323,7 +322,7 @@ public class CalendarSD extends Application implements Initializable
             }
 
             var haveEvents = Day.checkOfDeprecatedEvents(day, true);
-            if (haveEvents)
+            if (haveEvents && !daysWithEvents.contains(day))
             {
                 daysWithEvents.add(day);
             }

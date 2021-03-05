@@ -424,6 +424,44 @@ public class ScheduleSD extends Application implements Initializable
         return list;
     }
 
+    public static void removeEventFromEventList(LocalDate date, EventOfDay scheduleEvent)
+    {
+        schedules:
+        for (var scheduleSD : schedules.values())
+        {
+            var days = scheduleSD.getScheduleDaysSaveList();
+            for (var day : days)
+            {
+                if (day.getDate().equals(date))
+                {
+                    for (var event : day.getEvents())
+                    {
+                        if (event.equals(scheduleEvent))
+                        {
+                            removeScheduleEvent(date,event);
+                            day.getEvents().remove(event);
+                            var dayFromEventsList = CalendarSD.checkUsingOfThisDateOnEventList(date);
+                            if (dayFromEventsList != null)
+                            {
+                                updateDayIcons(date, dayFromEventsList.isHaveNotification(), dayFromEventsList.isHaveGoal(), dayFromEventsList.isHaveSchedule());
+                            }
+                            else
+                            {
+                                updateDayIcons(date, false, false, false);
+                            }
+                            break;
+                        }
+                    }
+                }
+                if (day.getEvents().size() == 0)
+                {
+                    days.remove(day);
+                    break schedules;
+                }
+            }
+        }
+    }
+
     private static void removeDeprecatedScheduleEvents(List<Day> scheduleDaysSaveList)
     {
         var daysToRemove = new ArrayList<Day>();
@@ -947,18 +985,22 @@ public class ScheduleSD extends Application implements Initializable
                 }
             }
 
-            var clonedDays = new ArrayList<Day>();
-            daysSaveList.forEach(day ->
+            var daysWithEvents = CalendarSD.getDaysWithEvents();
+            for (var dayFromSaveList : daysSaveList)
             {
-                try
+                var dayFromEventList = CalendarSD.checkUsingOfThisDateOnEventList(dayFromSaveList.getDate());
+                if (dayFromEventList==null)
                 {
-                    clonedDays.add(day.clone());
-                } catch (CloneNotSupportedException e)
-                {
-                    e.printStackTrace();
+                    daysWithEvents.add(dayFromSaveList.clone());
                 }
-            });
-            CalendarSD.getDaysWithEvents().addAll(clonedDays);
+                else
+                {
+                    for (var eventFromSaveList : dayFromEventList.getEvents())
+                    {
+                        dayFromEventList.addEvent(eventFromSaveList);
+                    }
+                }
+            }
 
             VBox content = null;
             for (Node node : rootOfLoadingSchedule.getChildren())

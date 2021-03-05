@@ -189,16 +189,16 @@ public class NotificationSD extends Application implements Initializable
                     if (day == null)
                     {
                         day = new Day(dateOfEvent);
-                        daysWithEvents.add(day);
                     }
                     var eventOfDay = new EventOfDay(timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
                     if (day.addEvent(eventOfDay))
                     {
                         UpcomingEvent.addEventToQueue(day.getDate(), eventOfDay);
                         updateDayIcons(day.getDate(), day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
-                    } else if (day.getEvents().size() == 0)
+                    }
+                    if (!(daysWithEvents.contains(day)))
                     {
-                        daysWithEvents.remove(day);
+                        daysWithEvents.add(day);
                     }
 
                     selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
@@ -206,5 +206,16 @@ public class NotificationSD extends Application implements Initializable
                 }
             }
         });
+    }
+
+    public static void removeNotificationFromEventList(LocalDate date, EventOfDay notificationEvent)
+    {
+        var day = CalendarSD.checkUsingOfThisDateOnEventList(date);
+        UpcomingEvent.removeEventFromQueue(date, notificationEvent);
+        Day.removeEventFromDay(date, notificationEvent);
+        if (day != null)
+        {
+            updateDayIcons(date, day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
+        }
     }
 }
