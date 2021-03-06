@@ -206,7 +206,7 @@ public class SchedulerCopySettings extends Application implements Initializable
             {
                 int id = Main.returnAnchorId(node);
                 var settings = settingsMap.get(id);
-                settings.repeatSelected = ScheduleSettingsRepeat.DAY;
+                settings.repeatSelected = ScheduleSettingsRepeat.WEEK;
                 settings.saveButton.setDisable(false);
             }
             schedulerForAWeekRadioButton.setDisable(true);
@@ -222,7 +222,7 @@ public class SchedulerCopySettings extends Application implements Initializable
             {
                 int id = Main.returnAnchorId(node);
                 var settings = settingsMap.get(id);
-                settings.repeatSelected = ScheduleSettingsRepeat.DAY;
+                settings.repeatSelected = ScheduleSettingsRepeat.MONTH;
                 settings.saveButton.setDisable(false);
             }
             schedulerForAWeekRadioButton.setDisable(true);
@@ -239,7 +239,7 @@ public class SchedulerCopySettings extends Application implements Initializable
             {
                 int id = Main.returnAnchorId(node);
                 var settings = settingsMap.get(id);
-                settings.repeatSelected = ScheduleSettingsRepeat.DAY;
+                settings.repeatSelected = ScheduleSettingsRepeat.YEAR;
                 settings.periodSelected = ScheduleSettingsPeriod.DONT;
                 settings.saveButton.setDisable(false);
             }
