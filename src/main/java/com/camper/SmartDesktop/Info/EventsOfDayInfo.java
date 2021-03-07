@@ -334,7 +334,7 @@ public class EventsOfDayInfo extends Application implements Initializable
         Main.setRegion(vSeparator, 4, 25);
 
         var info = new TextField(event.getInfo());
-        Main.setRegion(info, 319, 25);
+        Main.setRegion(info, 314, 25);
         info.setEditable(false);
 
         var deleteButton = new Button();
@@ -396,11 +396,11 @@ public class EventsOfDayInfo extends Application implements Initializable
         icon.setFitWidth(25);
         icon.setFitHeight(25);
 
-        var leftOffset = new Separator(Orientation.VERTICAL);
+        /*var leftOffset = new Separator(Orientation.VERTICAL);
         Main.setRegion(leftOffset, 4, 25);
-        leftOffset.setVisible(false);
+        leftOffset.setVisible(false);*/
 
-        var hbox1 = new HBox(6, leftOffset, icon, nameOfGoalLabel);
+        var hbox1 = new HBox(12/*, leftOffset*/, icon, nameOfGoalLabel);
         Main.setRegion(hbox1, 460, 25);
         hbox1.setPadding(new Insets(0, 8, 0, 8));
 
@@ -419,7 +419,7 @@ public class EventsOfDayInfo extends Application implements Initializable
             Main.setRegion(vSeparator, 4, 25);
 
             var info = new TextField(task.getInfo());
-            Main.setRegion(info, 319, 25);
+            Main.setRegion(info, 314, 25);
             info.setEditable(false);
 
             var deleteButton = new Button();
