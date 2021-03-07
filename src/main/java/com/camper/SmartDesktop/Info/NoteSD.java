@@ -3,22 +3,28 @@ package com.camper.SmartDesktop.Info;
 import com.camper.SmartDesktop.Main;
 import com.camper.SmartDesktop.NodeDragger;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
 
 import javax.xml.xpath.XPath;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.camper.SmartDesktop.Main.*;
 
@@ -31,12 +37,21 @@ public class NoteSD extends Application implements Initializable
     @FXML
     private TextArea noteTextArea;
     @FXML
-    private Button noteTestButton;
+    private ComboBox<String> noteFamilyComboBox;
+    @FXML
+    private ComboBox<String> noteSizeComboBox;
+    @FXML
+    private CheckBox noteBoldCheckBox;
+    @FXML
+    private CheckBox noteItalicCheckBox;
     @FXML
     private Button noteCloseButton;
     private boolean load = false;
     private AnchorPane NoteRoot;
     private int id;
+    private Font font = Font.font("System", FontWeight.NORMAL, FontPosture.REGULAR, 12);
+    private FontWeight fontWeight = FontWeight.NORMAL;
+    private FontPosture fontPosture = FontPosture.REGULAR;
     private static AnchorPane selectedNote;
     private static Map<Integer, NoteSD> notes = new HashMap<>();
     private static int nextId = 1;
@@ -96,10 +111,34 @@ public class NoteSD extends Application implements Initializable
         var image = new Image("Images/closeButton40.png", 40, 40, false, false);
         closeButtonImage.setImage(image);
 
-        noteTestButton.setOnAction(event ->
+        noteFamilyComboBox.getItems().addAll(Font.getFamilies());
+        noteFamilyComboBox.setValue("System");
+
+        var sizeValues = new ArrayList<String>()
+        {{
+            addAll(Stream.iterate(0, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
+            addAll(IntStream.iterate(10, n -> n < 69, n -> ++n).mapToObj(Integer::toString).collect(Collectors.toList()));
+        }};
+        noteSizeComboBox.getItems().addAll(sizeValues);
+        noteSizeComboBox.setValue("12");
+
+        EventHandler<ActionEvent> listener = event ->
         {
-            noteTextArea.appendText("Test text!");
-        });
+            var noteSD = notes.get(Integer.parseInt(((AnchorPane) (((Node) event.getSource()).getParent())).getAccessibleHelp()));
+            int size = Integer.parseInt(noteSizeComboBox.getValue()); //Извлечение информации от выбранной кнопки радио-группы
+            var fontWeight = noteBoldCheckBox.isSelected() ? FontWeight.BOLD : FontWeight.NORMAL;
+            var fontPosture = noteItalicCheckBox.isSelected() ? FontPosture.ITALIC : FontPosture.REGULAR;
+            Font font = Font.font(noteFamilyComboBox.getValue(), fontWeight, fontPosture, size);
+            noteTextArea.setFont(font);
+            noteSD.font = font;
+            noteSD.fontWeight = fontWeight;
+            noteSD.fontPosture = fontPosture;
+        };
+
+        noteFamilyComboBox.setOnAction(listener);
+        noteBoldCheckBox.setOnAction(listener);
+        noteItalicCheckBox.setOnAction(listener);
+        noteSizeComboBox.setOnAction(listener);
 
         noteCloseButton.setOnAction(event ->
         {
@@ -129,7 +168,7 @@ public class NoteSD extends Application implements Initializable
                 var noteSD = notes.get(entry.getKey());
                 var note = noteSD.getNoteRoot();
                 var noteElement = doc.createElement("note" + id);
-                //РџРѕР»СѓС‡РёС‚СЊ Р·РЅР°С‡РµРЅРёРµ С‚Р°Р±Р°, РїСЂРё РєРѕС‚РѕСЂРѕРј Р±С‹Р» СЃРѕР·РґР°РЅ СЌР»РµРјРµРЅС‚
+                //Получить значение таба, при котором был создан элемент
                 noteElement.setAttribute("tab", note.getAccessibleText());
 
                 notesElement.appendChild(noteElement);
@@ -151,6 +190,29 @@ public class NoteSD extends Application implements Initializable
                 layoutElement.appendChild(layoutY);
                 var layoutYValue = doc.createTextNode(String.valueOf((int) (note.getLayoutY())));
                 layoutY.appendChild(layoutYValue);
+
+                var fontElement = doc.createElement("font");
+                noteElement.appendChild(fontElement);
+
+                var familyElement = doc.createElement("family");
+                fontElement.appendChild(familyElement);
+                var familyElementValue = doc.createTextNode(noteSD.font.getFamily());
+                familyElement.appendChild(familyElementValue);
+
+                var weightElement = doc.createElement("weight");
+                fontElement.appendChild(weightElement);
+                var weightElementValue = doc.createTextNode(noteSD.fontWeight.name());
+                weightElement.appendChild(weightElementValue);
+
+                var postureElement = doc.createElement("posture");
+                fontElement.appendChild(postureElement);
+                var postureElementValue = doc.createTextNode(noteSD.fontPosture.name());
+                postureElement.appendChild(postureElementValue);
+
+                var sizeElement = doc.createElement("size");
+                fontElement.appendChild(sizeElement);
+                var sizeElementValue = doc.createTextNode(String.valueOf(noteSD.font.getSize()));
+                sizeElement.appendChild(sizeElementValue);
 
                 var textElement = doc.createElement("text");
                 noteElement.appendChild(textElement);
@@ -178,7 +240,7 @@ public class NoteSD extends Application implements Initializable
             var rootOfLoadingNote = loadingNote.getNoteRoot();
 
             int numberOfTab = Integer.parseInt(xPath.evaluate("/save/notes/note" + id + "/@tab", doc));
-            //РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РІ СЃРѕР·РґР°РЅРЅС‹Р№ СЌР»РµРјРµРЅС‚ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ С‚РµРєСЃС‚, РІ РєРѕС‚РѕСЂРѕРј Р±СѓРґРµС‚ Р»РµР¶Р°С‚СЊ Р·РЅР°С‡РµРЅРёРµ С‚РѕРіРѕ С‚Р°Р±Р°, РЅР° РєРѕС‚РѕСЂРѕРј СЌР»РµРјРµРЅС‚ Р±С‹Р» СЃРѕР·РґР°РЅ
+            //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
             rootOfLoadingNote.setAccessibleText(String.valueOf(numberOfTab));
 
             var tab = tabs.get(numberOfTab);
@@ -191,12 +253,59 @@ public class NoteSD extends Application implements Initializable
             rootOfLoadingNote.setLayoutX(layoutX);
             rootOfLoadingNote.setLayoutY(layoutY);
 
-            for (Node node : rootOfLoadingNote.getChildren())
+            String family = xPath.evaluate("/save/notes/note" + id + "/font/family/text()", doc);
+            var weight = FontWeight.valueOf(xPath.evaluate("/save/notes/note" + id + "/font/weight/text()", doc));
+            var posture = FontPosture.valueOf(xPath.evaluate("/save/notes/note" + id + "/font/posture/text()", doc));
+            double size = Double.parseDouble(xPath.evaluate("/save/notes/note" + id + "/font/size/text()", doc));
+
+            loadingNote.font = Font.font(family, weight, posture, size);
+            loadingNote.fontWeight = weight;
+            loadingNote.fontPosture = posture;
+
+            for (var node : rootOfLoadingNote.getChildren())
             {
-                if (node instanceof TextArea)
+                if (node instanceof ComboBox && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("noteFamilyComboBox"))
+                {
+                    ((ComboBox<String>) node).setValue(family);
+                    break;
+                }
+            }
+
+            for (var node : rootOfLoadingNote.getChildren())
+            {
+                if (node instanceof CheckBox && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("noteBoldCheckBox") && loadingNote.fontWeight.equals(FontWeight.BOLD))
+                {
+                    ((CheckBox) node).setSelected(true);
+                    break;
+                }
+            }
+
+            for (var node : rootOfLoadingNote.getChildren())
+            {
+                if (node instanceof CheckBox && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("noteItalicCheckBox") && loadingNote.fontPosture.equals(FontPosture.ITALIC))
+                {
+                    ((CheckBox) node).setSelected(true);
+                    break;
+                }
+            }
+
+            for (var node : rootOfLoadingNote.getChildren())
+            {
+                if (node instanceof ComboBox && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("noteSizeComboBox"))
+                {
+                    ((ComboBox<String>) node).setValue(String.valueOf(size));
+                    break;
+                }
+            }
+
+            for (var node : rootOfLoadingNote.getChildren())
+            {
+                if (node instanceof TextArea && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("noteTextArea"))
                 {
                     String text = xPath.evaluate("save/notes/note" + id + "/text/text()", doc);
                     ((TextArea) node).setText(text);
+                    ((TextArea) node).setFont(loadingNote.font);
+                    break;
                 }
             }
         }

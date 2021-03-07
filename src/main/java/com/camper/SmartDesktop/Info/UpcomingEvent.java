@@ -128,7 +128,7 @@ public class UpcomingEvent extends Application implements Initializable
                                     {
                                         daysBeforeTheEvent = 0;
                                     }
-                                    int hoursBeforeTheEvent = upcomingEventTime.getHour() - currentTime.getHour() - 1;
+                                    int hoursBeforeTheEvent = upcomingEventTime.getHour() - currentTime.getHour();
                                     if (hoursBeforeTheEvent < 1)
                                     {
                                         hoursBeforeTheEvent = 0;
