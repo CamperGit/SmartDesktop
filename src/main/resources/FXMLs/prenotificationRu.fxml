@@ -11,11 +11,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="250.0" maxWidth="340.0" minHeight="242.0" minWidth="340.0" prefHeight="242.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="250.0" maxWidth="340.0" minHeight="243.0" minWidth="340.0" prefHeight="242.0" prefWidth="340.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.PrenotificationSD">
    <children>
-      <ToolBar maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="315.0" />
-      <Button layoutX="315.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
+      <ToolBar fx:id="prenotificationToolBar" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="315.0" />
+      <Button fx:id="prenotificationCloseButton" layoutX="315.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
       <Label alignment="CENTER" contentDisplay="CENTER" layoutY="25.0" prefHeight="25.0" prefWidth="340.0" text="Напомнить за" textAlignment="RIGHT">
          <font>
             <Font size="17.0" />
@@ -24,19 +23,19 @@
       <Separator layoutY="51.0" prefHeight="2.0" prefWidth="340.0" />
       <HBox layoutY="63.0" maxHeight="25.0" maxWidth="340.0" minHeight="25.0" minWidth="340.0" prefHeight="25.0" prefWidth="340.0" spacing="6.0">
          <children>
-            <ComboBox maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
+            <ComboBox fx:id="prenotificationComboBoxDays" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
             <Label maxHeight="25.0" minHeight="25.0" prefHeight="25.0" text="Дней" />
-            <ComboBox maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
+            <ComboBox fx:id="prenotificationComboBoxHours" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
             <Label maxHeight="25.0" maxWidth="31.0" minHeight="25.0" minWidth="16.0" prefHeight="25.0" prefWidth="26.0" text="Часа" />
-            <ComboBox maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
+            <ComboBox fx:id="prenotificationComboBoxMinutes" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
             <Label maxHeight="25.0" minHeight="25.0" prefHeight="25.0" text="Мин" />
          </children>
          <padding>
             <Insets left="9.0" />
          </padding>
       </HBox>
-      <TextArea layoutY="98.0" prefHeight="116.0" prefWidth="340.0" />
-      <Button layoutX="69.0" layoutY="214.0" mnemonicParsing="false" text="Button" />
-      <Button layoutX="211.0" layoutY="214.0" mnemonicParsing="false" text="Button" />
+      <TextArea fx:id="prenotificationTextArea" layoutY="98.0" prefHeight="116.0" prefWidth="340.0" />
+      <Button fx:id="prenotificationAddButton" layoutX="50.0" layoutY="216.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Добавить" />
+      <Button fx:id="prenotificationCancelButton" layoutX="220.0" layoutY="216.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Отменить" />
    </children>
 </AnchorPane>

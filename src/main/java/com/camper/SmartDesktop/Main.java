@@ -126,6 +126,7 @@ public class Main extends Application implements Initializable
         NotificationSD.clearSaveList();
         ScheduleSD.clearSaveList();
         GoalSD.clearSaveList();
+        PrenotificationSD.clearSaveList();
         CalendarSD.clearLastInfo();
     }
 

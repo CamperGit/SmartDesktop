@@ -22,6 +22,7 @@ import org.w3c.dom.Document;
 import javax.xml.xpath.XPath;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -590,7 +591,14 @@ public class GoalSD extends Application implements Initializable
 
         preNotificationButton.setOnAction(event ->
         {
-
+            try
+            {
+                var timeOfEvent = LocalTime.of(Integer.parseInt(hours.getValue()),Integer.parseInt(minutes.getValue()));
+                new PrenotificationSD(LocalDateTime.of(date, timeOfEvent)).start(Stage);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         });
 
         deleteButton.setOnAction(event ->
@@ -662,16 +670,9 @@ public class GoalSD extends Application implements Initializable
             }
         });
 
-        hours.setOnAction(event ->
-                {
-                    saveButton.setDisable(date.isBefore(LocalDate.now()));
-                }
-        );
+        hours.setOnAction(event -> saveButton.setDisable(date.isBefore(LocalDate.now())));
         minutes.setOnAction(hours.getOnAction());
-        textField.setOnKeyTyped(event ->
-        {
-            saveButton.setDisable(date.isBefore(LocalDate.now()));
-        });
+        textField.setOnKeyTyped(event -> saveButton.setDisable(date.isBefore(LocalDate.now())));
     }
 
     public static void addGoalsToXML(Document doc, boolean createEmptyXML)
