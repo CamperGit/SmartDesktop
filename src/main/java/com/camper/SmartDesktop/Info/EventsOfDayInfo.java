@@ -360,25 +360,6 @@ public class EventsOfDayInfo extends Application implements Initializable
             }
             content.getChildren().remove(hbox);
         });
-
-        /*var hSeparator = new Separator(Orientation.VERTICAL);
-
-        var time = new TextField(LocalTime.of(event.getTime().getHour(), event.getTime().getMinute()).toString());
-        time.setPrefWidth(45);
-        time.setMinWidth(45);
-        time.setEditable(false);
-
-        var info = new TextArea(event.getInfo());
-        info.setPrefWidth(346);
-        info.setPrefHeight(42);
-        info.setEditable(false);
-        info.setWrapText(true);
-
-        var hbox = new HBox(4, icon, hSeparator, time, info);
-        Main.setRegion(hbox, 456, 42);
-        hbox.setAlignment(Pos.CENTER);
-        hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-        */
     }
 
     private static VBox addGoalOnScrollPane(String nameOfGoal, List<EventOfDay> tasks)
@@ -396,11 +377,7 @@ public class EventsOfDayInfo extends Application implements Initializable
         icon.setFitWidth(25);
         icon.setFitHeight(25);
 
-        /*var leftOffset = new Separator(Orientation.VERTICAL);
-        Main.setRegion(leftOffset, 4, 25);
-        leftOffset.setVisible(false);*/
-
-        var hbox1 = new HBox(12/*, leftOffset*/, icon, nameOfGoalLabel);
+        var hbox1 = new HBox(12, icon, nameOfGoalLabel);
         Main.setRegion(hbox1, 460, 25);
         hbox1.setPadding(new Insets(0, 8, 0, 8));
 

@@ -53,6 +53,11 @@
                               <ImageView fx:id="goalIV" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" />
                            </graphic>
                         </Button>
+                        <Button fx:id="upcomingEventInfo" maxHeight="35.0" maxWidth="35.0" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #f4f4f4;">
+                           <graphic>
+                              <ImageView fx:id="upcomingEventInfoIV" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </Button>
                       <Button fx:id="note" maxHeight="35.0" maxWidth="35.0" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #f4f4f4;">
                            <graphic>
                               <ImageView fx:id="noteIV" fitHeight="35.0" fitWidth="30.0" layoutX="5.0" pickOnBounds="true" preserveRatio="true" />

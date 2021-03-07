@@ -1,18 +1,23 @@
 package com.camper.SmartDesktop.Info;
 
+import com.camper.SmartDesktop.Main;
+import com.camper.SmartDesktop.NodeDragger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,26 +25,56 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import static com.camper.SmartDesktop.Info.CalendarSD.updateDayIcons;
+import static com.camper.SmartDesktop.Main.*;
 
 public class UpcomingEvent extends Application implements Initializable
 {
+    @FXML
+    private Button upcomingEventCloseButton;
+    @FXML
+    private ToolBar upcomingEventToolBar;
+    @FXML
+    private Label upcomingEventTimeLabel;
+
     private static PriorityBlockingQueue<LocalDateTime> eventsOnQueue = new PriorityBlockingQueue<>(5, LocalDateTime::compareTo);
     private static Map<LocalDateTime, EventOfDay> infoOfEvents = new HashMap<>();
     private static ExecutorService executorService = Executors.newCachedThreadPool();
     private static Task<Integer> task;
     private static LocalDateTime upcomingEvent;
     private static boolean alreadyShowing = false;
+    private static AnchorPane UpcomingEventInfoRoot = null;
+    private boolean load = false;
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        UpcomingEventInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/upcomingEventRu.fxml")));
+        UpcomingEventInfoRoot.setLayoutX(80);
+        UpcomingEventInfoRoot.setLayoutY(30);
 
+        addChild(UpcomingEventInfoRoot);
+        if (!load)
+        {
+            UpcomingEventInfoRoot.setAccessibleText(String.valueOf(idOfSelectedTab));
+            var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
+            elementsOfSelectedTab.add(UpcomingEventInfoRoot);
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        upcomingEventToolBar.setOnMouseDragged(event ->
+        {
+            UpcomingEventInfoRoot = (AnchorPane) (((ToolBar) event.getSource()).getParent());
+            NodeDragger.addDraggingProperty(UpcomingEventInfoRoot, event);
+        });
 
+        upcomingEventCloseButton.setOnAction(event ->
+        {
+            UpcomingEventInfoRoot = (AnchorPane) (((Button) event.getSource()).getParent());
+            Main.root.getChildren().remove(UpcomingEventInfoRoot);
+        });
     }
 
     private static Task<Integer> returnTask()
@@ -58,6 +93,47 @@ public class UpcomingEvent extends Application implements Initializable
                 while (now.isBefore(upcomingEvent))
                 {
                     now = LocalDateTime.now();
+                    if (UpcomingEventInfoRoot != null && UpcomingEventInfoRoot.isVisible())
+                    {
+                        for (var node : UpcomingEventInfoRoot.getChildren())
+                        {
+                            if (node instanceof Label && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("upcomingEventTimeLabel"))
+                            {
+                                var currentDate = now.toLocalDate();
+                                var currentTime = now.toLocalTime();
+                                var upcomingEventDate = upcomingEvent.toLocalDate();
+                                var upcomingEventTime = upcomingEvent.toLocalTime();
+                                Platform.runLater(() ->
+                                {
+                                    int daysBeforeTheEvent = ((int) upcomingEventDate.minusDays(currentDate.toEpochDay()).toEpochDay()) - 1;
+                                    daysBeforeTheEvent--;
+                                    if (daysBeforeTheEvent < 1)
+                                    {
+                                        daysBeforeTheEvent = 0;
+                                    }
+                                    int hoursBeforeTheEvent = upcomingEventTime.getHour() - currentTime.getHour() - 1;
+                                    if (hoursBeforeTheEvent < 1)
+                                    {
+                                        hoursBeforeTheEvent = 0;
+                                    }
+                                    int minutesBeforeTheEvent = upcomingEventTime.getMinute() - currentTime.getMinute() - 1;
+                                    if (minutesBeforeTheEvent < 1)
+                                    {
+                                        minutesBeforeTheEvent = 0;
+                                    }
+
+                                    int secondsBeforeTheEvent = (upcomingEventTime.getSecond() == 0 ? 60 : upcomingEventTime.getSecond()) - currentTime.getSecond();
+                                    if (secondsBeforeTheEvent < 1 || secondsBeforeTheEvent == 60)
+                                    {
+                                        secondsBeforeTheEvent = 0;
+                                    }
+                                    String time = MessageFormat.format("{0, choice,0#0{0}| 10#{0}} ää : {1, choice,0#0{1}| 10#{1}} ÷÷ : {2, choice,0#0{2}| 10#{2}} ìì : {3, choice,0#0{3}| 10#{3}} ññ",
+                                            daysBeforeTheEvent, hoursBeforeTheEvent, minutesBeforeTheEvent, secondsBeforeTheEvent);
+                                    ((Label) node).setText(time);
+                                });
+                            }
+                        }
+                    }
                     try
                     {
                         Thread.sleep(100);
@@ -91,11 +167,11 @@ public class UpcomingEvent extends Application implements Initializable
                             }
 
                             var goalSD = GoalSD.getGoalFromGoalName(otherInfoOfEvent.getInfo());
-                            if (goalSD!=null)
+                            if (goalSD != null)
                             {
                                 for (var node : goalSD.getTasksOfDay().get(date).getChildren())
                                 {
-                                    if (node instanceof Button && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("addNewTaskButton"))
+                                    if (node instanceof Button && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("addNewTaskButton"))
                                     {
                                         node.setDisable(true);
                                     }
@@ -200,7 +276,7 @@ public class UpcomingEvent extends Application implements Initializable
 
     public static void removeEventFromQueue(LocalDate date, EventOfDay eventOfDay)
     {
-        var localDateTime = LocalDateTime.of(date,eventOfDay.getTime());
+        var localDateTime = LocalDateTime.of(date, eventOfDay.getTime());
         eventsOnQueue.remove(localDateTime);
         infoOfEvents.remove(localDateTime);
     }

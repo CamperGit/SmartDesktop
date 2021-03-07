@@ -3,15 +3,15 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="121.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="107.0" prefWidth="340.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.UpcomingEvent">
    <children>
-      <ToolBar prefHeight="25.0" prefWidth="315.0" />
-      <Button layoutX="315.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
-      <Label fx:id="upcomingEventTimeLabel" alignment="CENTER" layoutY="62.0" prefHeight="56.0" prefWidth="340.0" text="2 дня 15 часов 10 минут 5 секунд" textAlignment="CENTER">
+      <ToolBar fx:id="upcomingEventToolBar" prefHeight="25.0" prefWidth="315.0" />
+      <Button fx:id="upcomingEventCloseButton" layoutX="315.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
+      <Label fx:id="upcomingEventTimeLabel" accessibleHelp="upcomingEventTimeLabel" alignment="CENTER" layoutY="54.0" prefHeight="46.0" prefWidth="340.0" style="-fx-background-color: #f4f4f4;" text="00 дд : 00 чч : 00 мм : 00 сс" textAlignment="CENTER">
          <font>
             <Font size="19.0" />
          </font>
@@ -22,4 +22,7 @@
          </font>
       </Label>
    </children>
+   <effect>
+      <DropShadow />
+   </effect>
 </AnchorPane>

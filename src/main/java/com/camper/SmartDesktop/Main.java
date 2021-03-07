@@ -70,6 +70,8 @@ public class Main extends Application implements Initializable
     @FXML
     private Button goal;
     @FXML
+    private Button upcomingEventInfo;
+    @FXML
     private Button calendar;
     @FXML
     private Button autorizeButton;
@@ -81,6 +83,8 @@ public class Main extends Application implements Initializable
     private ImageView scheduleIV;
     @FXML
     private ImageView goalIV;
+    @FXML
+    private ImageView upcomingEventInfoIV;
     @FXML
     private ImageView imagePlayerIV;
     @FXML
@@ -235,11 +239,11 @@ public class Main extends Application implements Initializable
         noteIV.setImage(new Image("Images/note35.png"));
         scheduleIV.setImage(new Image("Images/schedule35.png"));
         goalIV.setImage(new Image("Images/goal42.png"));
+        upcomingEventInfoIV.setImage(new Image("Images/upcomingEvent35.png"));
         imagePlayerIV.setImage(new Image("Images/imageViewer35.png"));
         mediaPlayerIV.setImage(new Image("Images/videoPlayer35.png"));
         calendarIV.setImage(new Image("Images/calendar35.png"));
         deprecatedEventsIV.setImage(new Image("Images/bell25.png"));
-
 
         autorizeButton.setLayoutX(DEFAULT_WIDTH - 120);
         savesChoiceBox.setLayoutX(DEFAULT_WIDTH - 320);
@@ -531,6 +535,17 @@ public class Main extends Application implements Initializable
             try
             {
                 new GoalSD().start(Stage);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
+
+        upcomingEventInfo.setOnAction(event ->
+        {
+            try
+            {
+                new UpcomingEvent().start(Stage);
             } catch (Exception e)
             {
                 e.printStackTrace();
