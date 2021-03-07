@@ -2,6 +2,7 @@ package com.camper.SmartDesktop;
 
 
 import com.camper.SmartDesktop.Info.*;
+import com.camper.SmartDesktop.StandardElements.TableSD;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -72,6 +73,8 @@ public class Main extends Application implements Initializable
     @FXML
     private Button upcomingEventInfo;
     @FXML
+    private Button table;
+    @FXML
     private Button calendar;
     @FXML
     private Button autorizeButton;
@@ -85,6 +88,8 @@ public class Main extends Application implements Initializable
     private ImageView goalIV;
     @FXML
     private ImageView upcomingEventInfoIV;
+    @FXML
+    private ImageView tableIV;
     @FXML
     private ImageView imagePlayerIV;
     @FXML
@@ -131,6 +136,7 @@ public class Main extends Application implements Initializable
         ScheduleSD.clearSaveList();
         GoalSD.clearSaveList();
         PrenotificationSD.clearSaveList();
+        TableSD.clearSaveList();
         CalendarSD.clearLastInfo();
     }
 
@@ -240,6 +246,7 @@ public class Main extends Application implements Initializable
         scheduleIV.setImage(new Image("Images/schedule35.png"));
         goalIV.setImage(new Image("Images/goal42.png"));
         upcomingEventInfoIV.setImage(new Image("Images/upcomingEvent35.png"));
+        tableIV.setImage(new Image("Images/table35.png"));
         imagePlayerIV.setImage(new Image("Images/imageViewer35.png"));
         mediaPlayerIV.setImage(new Image("Images/videoPlayer35.png"));
         calendarIV.setImage(new Image("Images/calendar35.png"));
@@ -560,6 +567,17 @@ public class Main extends Application implements Initializable
                 {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        table.setOnAction(event ->
+        {
+            try
+            {
+                new TableSD().start(Stage);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
             }
         });
 
