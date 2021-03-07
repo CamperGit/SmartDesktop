@@ -543,12 +543,23 @@ public class Main extends Application implements Initializable
 
         upcomingEventInfo.setOnAction(event ->
         {
-            try
+            var upcomingEventInfo = UpcomingEvent.getUpcomingEventInfoRoot();
+            if (upcomingEventInfo!=null)
             {
-                new UpcomingEvent().start(Stage);
-            } catch (Exception e)
+                upcomingEventInfo.setVisible(true);
+                tabs.get(Integer.parseInt(upcomingEventInfo.getAccessibleText())).remove(upcomingEventInfo);
+                tabs.get(idOfSelectedTab).add(upcomingEventInfo);
+                upcomingEventInfo.setAccessibleText(String.valueOf(idOfSelectedTab));
+            }
+            else
             {
-                e.printStackTrace();
+                try
+                {
+                    new UpcomingEvent().start(Stage);
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         });
 

@@ -1,9 +1,6 @@
 package com.camper.SmartDesktop;
 
-import com.camper.SmartDesktop.Info.CalendarSD;
-import com.camper.SmartDesktop.Info.GoalSD;
-import com.camper.SmartDesktop.Info.NoteSD;
-import com.camper.SmartDesktop.Info.ScheduleSD;
+import com.camper.SmartDesktop.Info.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -45,11 +42,6 @@ public class Saving
         var rootDocument = doc.createElement("save");
         doc.appendChild(rootDocument);
 
-        NoteSD.addNotesToXML(doc, false);
-        ScheduleSD.addSchedulesToXML(doc, false);
-        GoalSD.addGoalsToXML(doc,false);
-        CalendarSD.addCalendarToXML(doc, false);
-
         var t = TransformerFactory.newInstance().newTransformer();
         t.setOutputProperty(OutputKeys.INDENT, "yes"); //Отступ
         t.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -81,6 +73,12 @@ public class Saving
 
         }
 
+        NoteSD.addNotesToXML(doc, false);
+        ScheduleSD.addSchedulesToXML(doc, false);
+        GoalSD.addGoalsToXML(doc, false);
+        UpcomingEvent.addUpcomingEventInfoToXML(doc, false);
+        CalendarSD.addCalendarToXML(doc, false);
+
         var rootElement = doc.getFirstChild();
         var lastTabElement = doc.createElement("lastTab");
         lastTabElement.setAttribute("tab", String.valueOf(idOfSelectedTab));
@@ -107,9 +105,10 @@ public class Saving
         doc.appendChild(rootDocument);
 
         NoteSD.addNotesToXML(doc, true);
-        CalendarSD.addCalendarToXML(doc, true);
-        GoalSD.addGoalsToXML(doc,true);
         ScheduleSD.addSchedulesToXML(doc, true);
+        GoalSD.addGoalsToXML(doc, true);
+        UpcomingEvent.addUpcomingEventInfoToXML(doc, true);
+        CalendarSD.addCalendarToXML(doc, true);
 
         var rootElement = doc.getFirstChild();
         var lastTabElement = doc.createElement("lastTab");

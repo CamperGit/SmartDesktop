@@ -11,7 +11,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.w3c.dom.Document;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.time.LocalDate;
@@ -33,8 +36,6 @@ public class UpcomingEvent extends Application implements Initializable
     private Button upcomingEventCloseButton;
     @FXML
     private ToolBar upcomingEventToolBar;
-    @FXML
-    private Label upcomingEventTimeLabel;
 
     private static PriorityBlockingQueue<LocalDateTime> eventsOnQueue = new PriorityBlockingQueue<>(5, LocalDateTime::compareTo);
     private static Map<LocalDateTime, EventOfDay> infoOfEvents = new HashMap<>();
@@ -42,8 +43,23 @@ public class UpcomingEvent extends Application implements Initializable
     private static Task<Integer> task;
     private static LocalDateTime upcomingEvent;
     private static boolean alreadyShowing = false;
+
     private static AnchorPane UpcomingEventInfoRoot = null;
     private boolean load = false;
+
+    public static AnchorPane getUpcomingEventInfoRoot()
+    {
+        return UpcomingEventInfoRoot;
+    }
+
+    public UpcomingEvent()
+    {
+    }
+
+    private UpcomingEvent(boolean load)
+    {
+        this.load = load;
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -74,6 +90,7 @@ public class UpcomingEvent extends Application implements Initializable
         {
             UpcomingEventInfoRoot = (AnchorPane) (((Button) event.getSource()).getParent());
             Main.root.getChildren().remove(UpcomingEventInfoRoot);
+            UpcomingEventInfoRoot = null;
         });
     }
 
@@ -127,7 +144,7 @@ public class UpcomingEvent extends Application implements Initializable
                                     {
                                         secondsBeforeTheEvent = 0;
                                     }
-                                    String time = MessageFormat.format("{0, choice,0#0{0}| 10#{0}} הה : {1, choice,0#0{1}| 10#{1}} קק : {2, choice,0#0{2}| 10#{2}} לל : {3, choice,0#0{3}| 10#{3}} סס",
+                                    String time = MessageFormat.format("{0, choice,0#0{0}| 10#{0}} ה : {1, choice,0#0{1}| 10#{1}} ק : {2, choice,0#0{2}| 10#{2}} לטם : {3, choice,0#0{3}| 10#{3}} סוך",
                                             daysBeforeTheEvent, hoursBeforeTheEvent, minutesBeforeTheEvent, secondsBeforeTheEvent);
                                     ((Label) node).setText(time);
                                 });
@@ -284,5 +301,58 @@ public class UpcomingEvent extends Application implements Initializable
     public static void runEventTask()
     {
         executorService.execute(returnTask());
+    }
+
+    public static void addUpcomingEventInfoToXML(Document doc, boolean createEmptyXML)
+    {
+        var rootElement = doc.getFirstChild();
+
+        var upcomingEventInfoElement = doc.createElement("upcomingEventInfo");
+        rootElement.appendChild(upcomingEventInfoElement);
+        if (!createEmptyXML && UpcomingEventInfoRoot != null)
+        {
+            upcomingEventInfoElement.setAttribute("tab", UpcomingEventInfoRoot.getAccessibleText());
+
+            var visibilityElement = doc.createElement("visibility");
+            upcomingEventInfoElement.appendChild(visibilityElement);
+            var visibilityValue = doc.createTextNode(String.valueOf(UpcomingEventInfoRoot.isVisible()));
+            visibilityElement.appendChild(visibilityValue);
+
+            var layoutElement = doc.createElement("layout");
+            upcomingEventInfoElement.appendChild(layoutElement);
+
+            var layoutX = doc.createElement("layoutX");
+            layoutElement.appendChild(layoutX);
+            var layoutXValue = doc.createTextNode(String.valueOf((int) (UpcomingEventInfoRoot.getLayoutX())));
+            layoutX.appendChild(layoutXValue);
+
+            var layoutY = doc.createElement("layoutY");
+            layoutElement.appendChild(layoutY);
+            var layoutYValue = doc.createTextNode(String.valueOf((int) (UpcomingEventInfoRoot.getLayoutY())));
+            layoutY.appendChild(layoutYValue);
+        }
+    }
+
+    public static void loadUpcomingEventInfoFromXML(Document doc, XPath xPath) throws Exception
+    {
+        boolean notEmpty = xPath.evaluateExpression("count(/save/upcomingEventInfo/*)", doc, Integer.class) != 0;
+        if (notEmpty)
+        {
+            var loadingUpcomingEventInfo = new UpcomingEvent(true);
+            loadingUpcomingEventInfo.start(Stage);
+
+            int numberOfTab = Integer.parseInt(xPath.evaluate("/save/upcomingEventInfo/@tab", doc));
+            UpcomingEventInfoRoot.setAccessibleText(String.valueOf(numberOfTab));
+
+            var tab = tabs.get(numberOfTab);
+            tab.add(UpcomingEventInfoRoot);
+            boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/upcomingEventInfo/visibility/text()", doc));
+            UpcomingEventInfoRoot.setVisible(visibility);
+
+            double layoutX = Double.parseDouble(xPath.evaluate("/save/upcomingEventInfo/layout/layoutX/text()", doc));
+            double layoutY = Double.parseDouble(xPath.evaluate("/save/upcomingEventInfo/layout/layoutY/text()", doc));
+            UpcomingEventInfoRoot.setLayoutX(layoutX);
+            UpcomingEventInfoRoot.setLayoutY(layoutY);
+        }
     }
 }
