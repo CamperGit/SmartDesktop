@@ -125,7 +125,7 @@ public class NoteSD extends Application implements Initializable
         EventHandler<ActionEvent> listener = event ->
         {
             var noteSD = notes.get(Integer.parseInt(((AnchorPane) (((Node) event.getSource()).getParent())).getAccessibleHelp()));
-            int size = Integer.parseInt(noteSizeComboBox.getValue()); //Извлечение информации от выбранной кнопки радио-группы
+            int size = Integer.parseInt(noteSizeComboBox.getValue());
             var fontWeight = noteBoldCheckBox.isSelected() ? FontWeight.BOLD : FontWeight.NORMAL;
             var fontPosture = noteItalicCheckBox.isSelected() ? FontPosture.ITALIC : FontPosture.REGULAR;
             Font font = Font.font(noteFamilyComboBox.getValue(), fontWeight, fontPosture, size);
@@ -293,7 +293,7 @@ public class NoteSD extends Application implements Initializable
             {
                 if (node instanceof ComboBox && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("noteSizeComboBox"))
                 {
-                    ((ComboBox<String>) node).setValue(String.valueOf(size));
+                    ((ComboBox<String>) node).setValue(String.valueOf((int)size));
                     break;
                 }
             }
@@ -303,8 +303,8 @@ public class NoteSD extends Application implements Initializable
                 if (node instanceof TextArea && node.getAccessibleHelp()!=null && node.getAccessibleHelp().equals("noteTextArea"))
                 {
                     String text = xPath.evaluate("save/notes/note" + id + "/text/text()", doc);
-                    ((TextArea) node).setText(text);
                     ((TextArea) node).setFont(loadingNote.font);
+                    ((TextArea) node).setText(text);
                     break;
                 }
             }

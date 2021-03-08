@@ -5,6 +5,7 @@ import com.camper.SmartDesktop.NodeDragger;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 
 import java.net.URL;
@@ -31,21 +33,25 @@ public class TableSD extends Application implements Initializable
     @FXML
     private ToolBar tableToolBar;
 
-    private boolean load=false;
+    private boolean load = false;
     private AnchorPane TableRoot;
     private int id;
     /*private TableView<List<String>> table;*/
     private ObservableList<List<String>> data = FXCollections.observableArrayList();
-    private TableView<ObservableList<StringProperty>> table;
+    private TableView<List<String>> table;
     private ArrayList<String> myList = new ArrayList<>();
     private static AnchorPane selectedTable;
     private static Map<Integer, TableSD> tables = new HashMap<>();
-    private static int nextId=1;
+    private static int nextId = 1;
 
-    public TableSD(){}
+    public TableSD()
+    {
+    }
 
     private TableSD(boolean load)
-    {this.load = load;}
+    {
+        this.load = load;
+    }
 
     private AnchorPane getTableRoot()
     {
@@ -70,7 +76,7 @@ public class TableSD extends Application implements Initializable
     public static void clearSaveList()
     {
         tables.clear();
-        nextId=1;
+        nextId = 1;
     }
 
     @Override
@@ -89,6 +95,12 @@ public class TableSD extends Application implements Initializable
         table.setPrefWidth(540);
         table.setPrefHeight(400);
         table.setLayoutY(25);
+        for (int row = 0; row < 100; row++)
+        {
+            List<String> list = new ArrayList<>();
+            table.getItems().add(list);
+            //data.add(tableSD.table.getColumns().size() - 1, new SimpleStringProperty(""));
+        }
         TableRoot.getChildren().add(table);
 
 
@@ -123,29 +135,27 @@ public class TableSD extends Application implements Initializable
             var dialog = new TextInputDialog();
             dialog.setHeaderText("Введите название столбца");
             var result = dialog.showAndWait().orElse(null);
-            if (result!=null)
+            if (result != null)
             {
-                var newColumn = new TableColumn<ObservableList<StringProperty>,String>(result);
-                //newColumn.setCellValueFactory(new PropertyValueFactory<>(result));
-                newColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+                var newColumn = new TableColumn<List<String>, String>(result);
                 tableSD.table.getColumns().add(newColumn);
-
-                for (int row = 0; row < 100; row++) {
-                    ObservableList<StringProperty> data = FXCollections.observableArrayList();
-                    data.add(tableSD.table.getColumns().size()-1, new SimpleStringProperty(""));
-                    tableSD.table.getItems().add(data);
-                }
-
-                newColumn.setOnEditCommit((TableColumn.CellEditEvent<ObservableList<StringProperty>, String> editEvent) ->
+                for (var row : tableSD.table.getItems())
                 {
-                    TablePosition<ObservableList<StringProperty>, String> pos = editEvent.getTablePosition();
+                    row.add(row.size(),"");
+                }
+                int index = tableSD.table.getColumns().size()-1;
+                newColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(index)));
+                newColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+                newColumn.setOnEditCommit((TableColumn.CellEditEvent<List<String>, String> editEvent) ->
+                {
+                    TablePosition<List<String>, String> pos = editEvent.getTablePosition();
 
                     String newValue = editEvent.getNewValue();
 
-                    int row = pos.getRow();
-                    ObservableList<StringProperty> list = editEvent.getTableView().getItems().get(row);
-                    list.remove(pos.getColumn());
-                    list.add(new SimpleStringProperty(newValue));
+                    int numberOfRow = pos.getRow();
+                    int numberOfCol = pos.getColumn();
+                    List<String> editList = editEvent.getTableView().getItems().get(numberOfRow);
+                    editList.set(numberOfCol,newValue);
                 });
 
             }
