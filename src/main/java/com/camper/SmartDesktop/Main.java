@@ -3,6 +3,7 @@ package com.camper.SmartDesktop;
 
 import com.camper.SmartDesktop.Info.*;
 import com.camper.SmartDesktop.StandardElements.TableSD;
+import com.camper.SmartDesktop.StandardElements.Weather;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +21,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -75,6 +77,8 @@ public class Main extends Application implements Initializable
     @FXML
     private Button table;
     @FXML
+    private Button weather;
+    @FXML
     private Button calendar;
     @FXML
     private Button autorizeButton;
@@ -88,6 +92,8 @@ public class Main extends Application implements Initializable
     private ImageView goalIV;
     @FXML
     private ImageView upcomingEventInfoIV;
+    @FXML
+    private ImageView weatherIV;
     @FXML
     private ImageView tableIV;
     @FXML
@@ -138,6 +144,7 @@ public class Main extends Application implements Initializable
         PrenotificationSD.clearSaveList();
         TableSD.clearSaveList();
         UpcomingEvent.clearLastInfo();
+        Weather.clearLastInfo();
         CalendarSD.clearLastInfo();
     }
 
@@ -248,6 +255,7 @@ public class Main extends Application implements Initializable
         goalIV.setImage(new Image("Images/goal42.png"));
         upcomingEventInfoIV.setImage(new Image("Images/upcomingEvent35.png"));
         tableIV.setImage(new Image("Images/table35.png"));
+        weatherIV.setImage(new Image("Images/weather35.png"));
         imagePlayerIV.setImage(new Image("Images/imageViewer35.png"));
         mediaPlayerIV.setImage(new Image("Images/videoPlayer35.png"));
         calendarIV.setImage(new Image("Images/calendar35.png"));
@@ -579,6 +587,28 @@ public class Main extends Application implements Initializable
             } catch (Exception e)
             {
                 e.printStackTrace();
+            }
+        });
+
+        weather.setOnAction(event ->
+        {
+            var weather = Weather.getWeatherRoot();
+            if (weather!=null)
+            {
+                weather.setVisible(true);
+                tabs.get(Integer.parseInt(weather.getAccessibleText())).remove(weather);
+                tabs.get(idOfSelectedTab).add(weather);
+                weather.setAccessibleText(String.valueOf(idOfSelectedTab));
+            }
+            else
+            {
+                try
+                {
+                    new Weather().start(Stage);
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         });
 

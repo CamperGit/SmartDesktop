@@ -2,6 +2,7 @@ package com.camper.SmartDesktop;
 
 import com.camper.SmartDesktop.Info.*;
 import com.camper.SmartDesktop.StandardElements.TableSD;
+import com.camper.SmartDesktop.StandardElements.Weather;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -78,6 +79,7 @@ public class Saving
         ScheduleSD.addSchedulesToXML(doc, false);
         GoalSD.addGoalsToXML(doc, false);
         TableSD.addTablesToXML(doc, false);
+        Weather.addWeatherInfoToXML(doc, false);
         UpcomingEvent.addUpcomingEventInfoToXML(doc, false);
         CalendarSD.addCalendarToXML(doc, false);
 
@@ -110,6 +112,7 @@ public class Saving
         ScheduleSD.addSchedulesToXML(doc, true);
         GoalSD.addGoalsToXML(doc, true);
         TableSD.addTablesToXML(doc, true);
+        Weather.addWeatherInfoToXML(doc, true);
         UpcomingEvent.addUpcomingEventInfoToXML(doc, true);
         CalendarSD.addCalendarToXML(doc, true);
 
