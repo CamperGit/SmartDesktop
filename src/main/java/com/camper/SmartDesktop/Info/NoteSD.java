@@ -165,7 +165,7 @@ public class NoteSD extends Application implements Initializable
             int id = 1;
             for (var entry : notes.entrySet())
             {
-                var noteSD = notes.get(entry.getKey());
+                var noteSD = entry.getValue();
                 var note = noteSD.getNoteRoot();
                 var noteElement = doc.createElement("note" + id);
                 //Получить значение таба, при котором был создан элемент

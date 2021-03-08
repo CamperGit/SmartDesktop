@@ -1,6 +1,7 @@
 package com.camper.SmartDesktop;
 
 import com.camper.SmartDesktop.Info.*;
+import com.camper.SmartDesktop.StandardElements.TableSD;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -105,6 +106,7 @@ public class Loading
                 NoteSD.loadNotesFromXML(doc, xPath);
                 ScheduleSD.loadSchedulesFromXML(doc, xPath);
                 GoalSD.loadGoalsFromXML(doc, xPath);
+                TableSD.loadTablesFromXML(doc, xPath);
                 UpcomingEvent.loadUpcomingEventInfoFromXML(doc, xPath);
                 // алендарь всегда должен грузитьс€ последним!!!
                 CalendarSD.loadCalendarFromXML(doc, xPath);
