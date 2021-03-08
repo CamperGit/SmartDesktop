@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -59,6 +60,12 @@ public class UpcomingEvent extends Application implements Initializable
     private UpcomingEvent(boolean load)
     {
         this.load = load;
+    }
+
+    public static void clearLastInfo()
+    {
+        Main.root.getChildren().remove(UpcomingEventInfoRoot);
+        UpcomingEventInfoRoot = null;
     }
 
     @Override
@@ -116,36 +123,30 @@ public class UpcomingEvent extends Application implements Initializable
                         {
                             if (node instanceof Label && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("upcomingEventTimeLabel"))
                             {
-                                var currentDate = now.toLocalDate();
-                                var currentTime = now.toLocalTime();
-                                var upcomingEventDate = upcomingEvent.toLocalDate();
-                                var upcomingEventTime = upcomingEvent.toLocalTime();
                                 Platform.runLater(() ->
                                 {
-                                    int daysBeforeTheEvent = ((int) upcomingEventDate.minusDays(currentDate.toEpochDay()).toEpochDay()) - 1;
-                                    daysBeforeTheEvent--;
-                                    if (daysBeforeTheEvent < 1)
-                                    {
-                                        daysBeforeTheEvent = 0;
-                                    }
-                                    int hoursBeforeTheEvent = upcomingEventTime.getHour() - currentTime.getHour();
-                                    if (hoursBeforeTheEvent < 1)
-                                    {
-                                        hoursBeforeTheEvent = 0;
-                                    }
-                                    int minutesBeforeTheEvent = upcomingEventTime.getMinute() - currentTime.getMinute() - 1;
-                                    if (minutesBeforeTheEvent < 1)
-                                    {
-                                        minutesBeforeTheEvent = 0;
-                                    }
+                                    LocalDateTime tempDateTime = LocalDateTime.from(LocalDateTime.now());
 
-                                    int secondsBeforeTheEvent = (upcomingEventTime.getSecond() == 0 ? 60 : upcomingEventTime.getSecond()) - currentTime.getSecond();
-                                    if (secondsBeforeTheEvent < 1 || secondsBeforeTheEvent == 60)
-                                    {
-                                        secondsBeforeTheEvent = 0;
-                                    }
+                                    long years = tempDateTime.until(upcomingEvent, ChronoUnit.YEARS);
+                                    tempDateTime = tempDateTime.plusYears(years);
+
+                                    long months = tempDateTime.until(upcomingEvent, ChronoUnit.MONTHS);
+                                    tempDateTime = tempDateTime.plusMonths(months);
+
+                                    long days = tempDateTime.until(upcomingEvent, ChronoUnit.DAYS);
+                                    tempDateTime = tempDateTime.plusDays(days);
+
+
+                                    long hours = tempDateTime.until(upcomingEvent, ChronoUnit.HOURS);
+                                    tempDateTime = tempDateTime.plusHours(hours);
+
+                                    long minutes = tempDateTime.until(upcomingEvent, ChronoUnit.MINUTES);
+                                    tempDateTime = tempDateTime.plusMinutes(minutes);
+
+                                    long seconds = tempDateTime.until(upcomingEvent, ChronoUnit.SECONDS);
+
                                     String time = MessageFormat.format("{0, choice,0#0{0}| 10#{0}} д : {1, choice,0#0{1}| 10#{1}} ч : {2, choice,0#0{2}| 10#{2}} мин : {3, choice,0#0{3}| 10#{3}} сек",
-                                            daysBeforeTheEvent, hoursBeforeTheEvent, minutesBeforeTheEvent, secondsBeforeTheEvent);
+                                            days, hours, minutes, seconds);
                                     ((Label) node).setText(time);
                                 });
                             }
