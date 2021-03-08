@@ -117,6 +117,10 @@ public class UpcomingEvent extends Application implements Initializable
                 while (now.isBefore(upcomingEvent))
                 {
                     now = LocalDateTime.now();
+                    if (now.getDayOfMonth() != CalendarSD.currentDay)
+                    {
+                        CalendarSD.updateCalendarTodayLabel();
+                    }
                     if (UpcomingEventInfoRoot != null && UpcomingEventInfoRoot.isVisible())
                     {
                         for (var node : UpcomingEventInfoRoot.getChildren())

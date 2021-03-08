@@ -34,12 +34,14 @@ public class CalendarSD extends Application implements Initializable
     private ChoiceBox<String> monthChoiceBox;
     @FXML
     private ComboBox<Integer> yearComboBox;
+
     private boolean load = false;
     private static AnchorPane CalendarRoot;
     private final static List<Day> daysWithEvents = new ArrayList<>();
     private final static List<ImageView> notificationIcons = new ArrayList<>();
     private final static List<ImageView> goalIcons = new ArrayList<>();
     private final static List<ImageView> scheduleIcons = new ArrayList<>();
+    public static int currentDay;
     private static int selectedMonth;
     private static int selectedYear;
 
@@ -76,6 +78,7 @@ public class CalendarSD extends Application implements Initializable
         CalendarRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarRu.fxml")));
         CalendarRoot.setLayoutX(80);
         CalendarRoot.setLayoutY(30);
+        updateCalendarTodayLabel();
         addChild(CalendarRoot);
         if (!load)
         {
@@ -513,6 +516,60 @@ public class CalendarSD extends Application implements Initializable
             }
         }
         return null;
+    }
+
+    public static void updateCalendarTodayLabel()
+    {
+        for (var node : CalendarRoot.getChildren())
+        {
+            if (node instanceof Label && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("calendarTodayLabel"))
+            {
+                var now = LocalDate.now();
+                int month = now.getMonth().getValue();
+                String monthName = null;
+                switch (month)
+                {
+                    case 1:
+                        monthName = "Января";
+                        break;
+                    case 2:
+                        monthName = "Февраля";
+                        break;
+                    case 3:
+                        monthName = "Марта";
+                        break;
+                    case 4:
+                        monthName = "Апреля";
+                        break;
+                    case 5:
+                        monthName = "Мая";
+                        break;
+                    case 6:
+                        monthName = "Июня";
+                        break;
+                    case 7:
+                        monthName = "Июля";
+                        break;
+                    case 8:
+                        monthName = "Августа";
+                        break;
+                    case 9:
+                        monthName = "Сентября";
+                        break;
+                    case 10:
+                        monthName = "Октября";
+                        break;
+                    case 11:
+                        monthName = "Ноября";
+                        break;
+                    case 12:
+                        monthName = "Декабря";
+                        break;
+                }
+                ((Label) node).setText(now.getDayOfMonth() + " " + monthName + " " + now.getYear());
+                currentDay = now.getDayOfMonth();
+            }
+        }
     }
 
     private static void loadEventsIconOfMonth(int year, int month)

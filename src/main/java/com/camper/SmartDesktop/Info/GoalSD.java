@@ -229,8 +229,8 @@ public class GoalSD extends Application implements Initializable
                 {
                     Main.root.getChildren().remove(goalSD.getProgressInfo().getGoalProgressRoot());
                     var progress = goalSD.getProgressInfo();
-                    progress.updatePieChart(goalSD.groupOfMainCheckBox, goalSD.checkBoxes);
                     progress.setMouseEvent(event);
+                    progress.updatePieChart(goalSD.groupOfMainCheckBox, goalSD.checkBoxes);
                 }
 
             } catch (Exception e)
