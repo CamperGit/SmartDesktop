@@ -77,8 +77,6 @@ public class Main extends Application implements Initializable
     @FXML
     private Button upcomingEventInfo;
     @FXML
-    private Button history;
-    @FXML
     private Button table;
     @FXML
     private Button weather;
@@ -98,8 +96,6 @@ public class Main extends Application implements Initializable
     private ImageView notificationIV;
     @FXML
     private ImageView upcomingEventInfoIV;
-    @FXML
-    private ImageView historyIV;
     @FXML
     private ImageView weatherIV;
     @FXML
@@ -263,7 +259,6 @@ public class Main extends Application implements Initializable
         goalIV.setImage(new Image("Images/goal42.png"));
         notificationIV.setImage(new Image("Images/notification35.png"));
         upcomingEventInfoIV.setImage(new Image("Images/upcomingEvent35.png"));
-        historyIV.setImage(new Image("Images/history35.png"));
         tableIV.setImage(new Image("Images/table35.png"));
         weatherIV.setImage(new Image("Images/weather35.png"));
         imagePlayerIV.setImage(new Image("Images/imageViewer35.png"));
@@ -599,12 +594,6 @@ public class Main extends Application implements Initializable
                 }
             }
         });
-
-        history.setOnAction(event ->
-        {
-
-        });
-
 
         table.setOnAction(event ->
         {

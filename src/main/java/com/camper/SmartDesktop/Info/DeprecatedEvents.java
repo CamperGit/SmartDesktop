@@ -20,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import org.w3c.dom.Document;
 
 import java.net.URL;
 import java.time.LocalTime;
@@ -37,6 +38,7 @@ public class DeprecatedEvents extends Application implements Initializable
     private CheckBox schedulerCheckBox;
     @FXML
     private CheckBox allTypesCheckBox;
+    private static int numberOfEvents = 0;
     private static AnchorPane checkDeprecatedEventsRoot;
     private static List<Day> daysWithDeprecatedEvents = new ArrayList<>();
     private static boolean entered = false;
@@ -132,6 +134,16 @@ public class DeprecatedEvents extends Application implements Initializable
         schedulerCheckBox.setSelected(true);
     }
 
+    public static void increaseTheNumberOfEvent(int countOfEvent)
+    {
+        numberOfEvents += countOfEvent;
+        while (numberOfEvents > 100)
+        {
+            var day = daysWithDeprecatedEvents.remove(0);
+            numberOfEvents -= day.getEvents().size();
+        }
+    }
+
     public static void updateBellIcon(boolean state)
     {
         for (Node node : Main.root.getChildren())
@@ -176,7 +188,7 @@ public class DeprecatedEvents extends Application implements Initializable
             var events = day.getEvents();
             if (events.size() != 0)
             {
-                vbox.getChildren().addAll(date,hSeparatorUnderDate);
+                vbox.getChildren().addAll(date, hSeparatorUnderDate);
                 events.sort(Comparator.comparing(EventOfDay::getTime));
                 for (var event : events)
                 {
@@ -277,7 +289,7 @@ public class DeprecatedEvents extends Application implements Initializable
         info.setWrapText(true);
 
         var rightOffset = new Separator(Orientation.VERTICAL);
-        Main.setRegion(rightOffset,6,25);
+        Main.setRegion(rightOffset, 6, 25);
         rightOffset.setVisible(false);
 
         var hbox = new HBox(4, icon, hSeparator, time, info, rightOffset);

@@ -166,6 +166,12 @@ public class UpcomingEvent extends Application implements Initializable
                     {
                         var otherInfoOfEvent = infoOfEvents.get(upcomingEvent);
                         var date = upcomingEvent.toLocalDate();
+                        var dayWithEvent = CalendarSD.checkUsingOfThisDateOnEventList(date);
+                        if (dayWithEvent != null)
+                        {
+                            Day.checkOfDeprecatedEvents(dayWithEvent,true);
+                        }
+                        DeprecatedEvents.updateBellIcon(false);
                         if (otherInfoOfEvent.getType().equals(Day.EventType.Task))
                         {
                             alreadyShowing = true;

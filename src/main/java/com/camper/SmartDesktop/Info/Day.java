@@ -138,10 +138,23 @@ public class Day implements Cloneable
 
         if (deprecatedEventsOfThisDay.size() != 0 && addToDeprecatedEventsList)
         {
-            var dayWithDeprecatedEvents = new Day(day.getDate());
+            Day dayWithDeprecatedEvents = null;
+            var daysWithDeprecatedEvents = DeprecatedEvents.getDaysWithDeprecatedEvents();
+            for(var dayFromList : daysWithDeprecatedEvents)
+            {
+                if (dayFromList.getDate().equals(day.getDate()))
+                {
+                    dayWithDeprecatedEvents=dayFromList;
+                }
+            }
+            if (dayWithDeprecatedEvents == null)
+            {
+                dayWithDeprecatedEvents = new Day(day.getDate());
+                daysWithDeprecatedEvents.add(dayWithDeprecatedEvents);
+            }
             dayWithDeprecatedEvents.getEvents().addAll(deprecatedEventsOfThisDay);
-            getDaysWithDeprecatedEvents().add(dayWithDeprecatedEvents);
-            updateBellIcon(true);
+            DeprecatedEvents.increaseTheNumberOfEvent(dayWithDeprecatedEvents.getEvents().size());
+            DeprecatedEvents.updateBellIcon(true);
         }
 
         day.setHaveNotification(false);
