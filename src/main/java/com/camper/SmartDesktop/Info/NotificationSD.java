@@ -217,5 +217,9 @@ public class NotificationSD extends Application implements Initializable
         {
             updateDayIcons(date, day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
         }
+        else
+        {
+            updateDayIcons(date, false, false, false);
+        }
     }
 }

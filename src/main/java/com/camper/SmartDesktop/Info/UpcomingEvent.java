@@ -117,10 +117,6 @@ public class UpcomingEvent extends Application implements Initializable
                 while (now.isBefore(upcomingEvent))
                 {
                     now = LocalDateTime.now();
-                    if (now.getDayOfMonth() != CalendarSD.currentDay)
-                    {
-                        CalendarSD.updateCalendarTodayLabel();
-                    }
                     if (UpcomingEventInfoRoot != null && UpcomingEventInfoRoot.isVisible())
                     {
                         for (var node : UpcomingEventInfoRoot.getChildren())
@@ -298,9 +294,14 @@ public class UpcomingEvent extends Application implements Initializable
 
     public static void removeEventFromQueue(LocalDate date, EventOfDay eventOfDay)
     {
-        var localDateTime = LocalDateTime.of(date, eventOfDay.getTime());
-        eventsOnQueue.remove(localDateTime);
-        infoOfEvents.remove(localDateTime);
+        if (task!=null)
+        {
+            task.cancel();
+            var localDateTime = LocalDateTime.of(date, eventOfDay.getTime());
+            eventsOnQueue.remove(localDateTime);
+            infoOfEvents.remove(localDateTime);
+            runEventTask();
+        }
     }
 
     public static void runEventTask()

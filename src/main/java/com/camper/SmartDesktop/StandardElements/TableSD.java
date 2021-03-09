@@ -254,7 +254,7 @@ public class TableSD extends Application implements Initializable
                 {
                     int numberOfRow = Integer.parseInt(xPath.evaluate("/save/tables/table" + id + "/columns/column" + numberOfColumn + "/rows/row" + numberOfRowWithValue +"/@numberOfRow", doc));
                     String rowValue = xPath.evaluate("/save/tables/table" + id + "/columns/column" + numberOfColumn + "/rows/row" + numberOfRowWithValue +"/text()", doc);
-                    loadingTable.table.getItems().get(numberOfRow-1).set(numberOfColumn-1,rowValue);
+                    loadingTable.table.getItems().get(numberOfRow).set(numberOfColumn-1,rowValue);
                 }
             }
         }
