@@ -249,7 +249,7 @@ public class DeprecatedEvents extends Application implements Initializable
         var hbox = new HBox(4, icon, hSeparator, time, info);
         Main.setRegion(hbox, 479, 42);
         hbox.setAlignment(Pos.CENTER);
-        hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+        //hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 
         return hbox;
     }

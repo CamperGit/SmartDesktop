@@ -177,9 +177,33 @@ public class ScheduleSD extends Application implements Initializable
 
         scheduleCloseButton.setOnAction(event ->
         {
-            selectedSchedule = (AnchorPane) (((Button) event.getSource()).getParent());
-            schedules.remove(Integer.parseInt(selectedSchedule.getAccessibleHelp()));
-            Main.root.getChildren().remove(selectedSchedule);
+            var alert = new Alert(Alert.AlertType.WARNING, "Вы уверены, что хотите удалить расписание?" + "\n" + "(Это удалит все события связанные с данным элементом)", new ButtonType("Да", ButtonBar.ButtonData.YES), new ButtonType("Нет", ButtonBar.ButtonData.NO));
+            var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
+            if (alertResult.getButtonData().equals(ButtonBar.ButtonData.YES))
+            {
+                selectedSchedule = (AnchorPane) (((Button) event.getSource()).getParent());
+                var scheduleSD = schedules.remove(Integer.parseInt(selectedSchedule.getAccessibleHelp()));
+                var scheduleDaysSaveList = scheduleSD.getScheduleDaysSaveList();
+                for (var dayFromSaveList : scheduleDaysSaveList)
+                {
+                    var date = dayFromSaveList.getDate();
+                    for (var eventOfDay : dayFromSaveList.getEvents())
+                    {
+                        removeScheduleEvent(date,eventOfDay);
+                    }
+                    var day = CalendarSD.checkUsingOfThisDateOnEventList(date);
+                    if (day != null)
+                    {
+                        updateDayIcons(date, day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
+                    }
+                    else
+                    {
+                        updateDayIcons(date, false, false, false);
+                    }
+                }
+                scheduleDaysSaveList.clear();
+                Main.root.getChildren().remove(selectedSchedule);
+            }
         });
 
         scheduleToolBar.setOnMouseDragged(event ->
@@ -872,22 +896,22 @@ public class ScheduleSD extends Application implements Initializable
                                 {
                                     if (node instanceof ComboBox && node.getAccessibleHelp().equals("startTimeHours"))
                                     {
-                                        startHour = Integer.parseInt(((ComboBox<String>) node).getValue());
+                                        startHour = Integer.parseInt((String) (((ComboBox) node).getValue()));
                                         continue;
                                     }
                                     if (node instanceof ComboBox && node.getAccessibleHelp().equals("endTimeHours"))
                                     {
-                                        endHour = Integer.parseInt(((ComboBox<String>) node).getValue());
+                                        endHour = Integer.parseInt((String) (((ComboBox) node).getValue()));
                                         continue;
                                     }
                                     if (node instanceof ComboBox && node.getAccessibleHelp().equals("startTimeMinutes"))
                                     {
-                                        startMinute = Integer.parseInt(((ComboBox<String>) node).getValue());
+                                        startMinute = Integer.parseInt((String) (((ComboBox) node).getValue()));
                                         continue;
                                     }
                                     if (node instanceof ComboBox && node.getAccessibleHelp().equals("endTimeMinutes"))
                                     {
-                                        endMinute = Integer.parseInt(((ComboBox<String>) node).getValue());
+                                        endMinute = Integer.parseInt((String) (((ComboBox) node).getValue()));
                                         continue;
                                     }
                                     if (node instanceof CheckBox)

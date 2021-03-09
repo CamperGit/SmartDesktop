@@ -169,9 +169,32 @@ public class GoalSD extends Application implements Initializable
     {
         goalCloseButton.setOnAction(event ->
         {
-            selectedGoal = (AnchorPane) (((Button) event.getSource()).getParent());
-            goals.remove(Integer.parseInt(selectedGoal.getAccessibleHelp()));
-            Main.root.getChildren().remove(selectedGoal);
+            var alert = new Alert(Alert.AlertType.WARNING, "Вы уверены, что хотите удалить цель?" + "\n" + "(Это удалит все события связанные с данным элементом)", new ButtonType("Да", ButtonBar.ButtonData.YES), new ButtonType("Нет", ButtonBar.ButtonData.NO));
+            var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
+            if (alertResult.getButtonData().equals(ButtonBar.ButtonData.YES))
+            {
+                selectedGoal = (AnchorPane) (((Button) event.getSource()).getParent());
+                var goalSD = goals.remove(Integer.parseInt(selectedGoal.getAccessibleHelp()));
+                var checkBoxes = goalSD.getCheckBoxes();
+                for (var entry : checkBoxes.entrySet())
+                {
+                    var eventOfDay = entry.getKey();
+                    var date = LocalDate.parse(entry.getValue().getAccessibleText());
+                    UpcomingEvent.removeEventFromQueue(date, eventOfDay);
+                    Day.removeEventFromDay(date, eventOfDay);
+                    var day = CalendarSD.checkUsingOfThisDateOnEventList(date);
+                    if (day != null)
+                    {
+                        updateDayIcons(date, day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
+                    }
+                    else
+                    {
+                        updateDayIcons(date, false, false, false);
+                    }
+                }
+                checkBoxes.clear();
+                Main.root.getChildren().remove(selectedGoal);
+            }
         });
 
         goalToolBar.setOnMouseDragged(event ->
@@ -527,7 +550,7 @@ public class GoalSD extends Application implements Initializable
         String preNotificationButtonText = "Напомнить за";
         var preNotificationButton = new Button(preNotificationButtonText);
         Main.setRegion(preNotificationButton, 122, 25);
-        preNotificationButton.setGraphic(new ImageView(new Image("Images/prenotification25.png")));
+        preNotificationButton.setGraphic(new ImageView(new Image("Images/notification25.png")));
         preNotificationButton.setContentDisplay(ContentDisplay.RIGHT);
 
         var vSeparatorBetweenTimeAndButton = new Separator(Orientation.VERTICAL);
@@ -593,7 +616,7 @@ public class GoalSD extends Application implements Initializable
         {
             try
             {
-                var timeOfEvent = LocalTime.of(Integer.parseInt(hours.getValue()),Integer.parseInt(minutes.getValue()));
+                var timeOfEvent = LocalTime.of(Integer.parseInt(hours.getValue()), Integer.parseInt(minutes.getValue()));
                 new PrenotificationSD(LocalDateTime.of(date, timeOfEvent)).start(Stage);
             } catch (Exception e)
             {
@@ -787,12 +810,12 @@ public class GoalSD extends Application implements Initializable
                                         {
                                             if (hboxElement instanceof ComboBox && hboxElement.getAccessibleHelp().equals("hours"))
                                             {
-                                                hour = Integer.parseInt(((ComboBox<String>) hboxElement).getValue());
+                                                hour = Integer.parseInt((String) (((ComboBox) hboxElement).getValue()));
                                                 continue;
                                             }
                                             if (hboxElement instanceof ComboBox && hboxElement.getAccessibleHelp().equals("minutes"))
                                             {
-                                                minute = Integer.parseInt(((ComboBox<String>) hboxElement).getValue());
+                                                minute = Integer.parseInt((String) (((ComboBox) hboxElement).getValue()));
                                                 continue;
                                             }
                                             if (hboxElement instanceof TextField && hboxElement.getAccessibleHelp().equals("textField"))
