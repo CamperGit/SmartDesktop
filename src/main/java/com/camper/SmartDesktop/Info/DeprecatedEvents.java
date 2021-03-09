@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -16,6 +17,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -164,10 +167,17 @@ public class DeprecatedEvents extends Application implements Initializable
             date.setAlignment(Pos.CENTER);
             var hSeparatorUnderDate = new Separator();
 
+            var goalsWithTask = new HashMap<String, List<EventOfDay>>();
+
             VBox vbox = new VBox();
+            vbox.setMaxWidth(477);
+            vbox.setPrefWidth(477);
+            vbox.setMinWidth(477);
+            vbox.setAlignment(Pos.CENTER);
             var events = day.getEvents();
             if (events.size() != 0)
             {
+                vbox.getChildren().addAll(date,hSeparatorUnderDate);
                 events.sort(Comparator.comparing(EventOfDay::getTime));
                 for (var event : events)
                 {
@@ -185,28 +195,49 @@ public class DeprecatedEvents extends Application implements Initializable
                     }
                     if (type == Day.EventType.Goal && goal)
                     {
-                        icon.setImage(new Image("Images/goal42.png"));
-                        hbox = addInfoOfEvent(event, icon);
+                        if (!(goalsWithTask.containsKey(event.getInfo())))
+                        {
+                            goalsWithTask.put(event.getInfo(), new ArrayList<>());
+                        }
                     }
                     if (type == Day.EventType.Schedule && schedule)
                     {
                         icon.setImage(new Image("Images/schedule42.png"));
                         hbox = addInfoOfEvent(event, icon);
                     }
+                    if (type == Day.EventType.Task)
+                    {
+                        String goalName = GoalSD.getGoalNameOfEventTask(event);
+                        if (!(goalsWithTask.containsKey(goalName)))
+                        {
+                            goalsWithTask.put(goalName, new ArrayList<>());
+                        }
+                        goalsWithTask.get(goalName).add(event);
+                    }
                     if (hbox != null)
                     {
                         var hSeparator = new Separator();
-                        if (!(vbox.getChildren().contains(date) && vbox.getChildren().contains(hSeparatorUnderDate)))
+                        vbox.getChildren().addAll(hbox, hSeparator);
+                    }
+                }
+            }
+            if (goal && goalsWithTask.size() != 0)
+            {
+                for (var entry : goalsWithTask.entrySet())
+                {
+                    GoalSD goalSD = null;
+                    for (var g : GoalSD.getGoals().values())
+                    {
+                        if (g.getNameOfGoal().equals(entry.getKey()))
                         {
-                            vbox.getChildren().addAll(date, hSeparatorUnderDate, hbox, hSeparator);
-                        } else
-                        {
-                            vbox.getChildren().addAll(hbox, hSeparator);
+                            goalSD = g;
+                            break;
                         }
-                        vbox.setMaxWidth(477);
-                        vbox.setPrefWidth(477);
-                        vbox.setMinWidth(477);
-                        vbox.setAlignment(Pos.CENTER);
+                    }
+                    if (goalSD != null)
+                    {
+                        var line = addGoalOnScrollPane(entry.getKey(), entry.getValue());
+                        vbox.getChildren().add(line);
                     }
                 }
             }
@@ -239,18 +270,87 @@ public class DeprecatedEvents extends Application implements Initializable
         time.setEditable(false);
 
         var info = new TextArea(event.getInfo());
-        info.setPrefWidth(360);
+        info.setPrefWidth(364);
         info.setPrefHeight(25);
         info.setMaxHeight(25);
         info.setMinHeight(25);
         info.setEditable(false);
         info.setWrapText(true);
 
-        var hbox = new HBox(4, icon, hSeparator, time, info);
+        var rightOffset = new Separator(Orientation.VERTICAL);
+        Main.setRegion(rightOffset,6,25);
+        rightOffset.setVisible(false);
+
+        var hbox = new HBox(4, icon, hSeparator, time, info, rightOffset);
         Main.setRegion(hbox, 479, 42);
         hbox.setAlignment(Pos.CENTER);
         //hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 
         return hbox;
+    }
+
+    private static VBox addGoalOnScrollPane(String nameOfGoal, List<EventOfDay> tasks)
+    {
+        var line = new VBox(3);
+        line.setPadding(new Insets(4, 0, 0, 0));
+        var childList = line.getChildren();
+
+        var nameOfGoalLabel = new Label(nameOfGoal);
+        Main.setRegion(nameOfGoalLabel, 379, 25);
+        nameOfGoalLabel.setFont(Font.font("Times New Roman", FontWeight.BOLD, 16));
+        nameOfGoalLabel.setAlignment(Pos.CENTER);
+
+        var icon = new ImageView(new Image("Images/target25.png"));
+        icon.setFitWidth(25);
+        icon.setFitHeight(25);
+
+        var hbox1 = new HBox(12, icon, nameOfGoalLabel);
+        Main.setRegion(hbox1, 460, 25);
+        hbox1.setPadding(new Insets(0, 8, 0, 8));
+
+        var hSeparator = new Separator(Orientation.HORIZONTAL);
+        Main.setRegion(hSeparator, 477, 4);
+
+        childList.addAll(hbox1, hSeparator);
+
+        for (var task : tasks)
+        {
+            var time = new TextField(task.getTime().toString());
+            Main.setRegion(time, 45, 25);
+            time.setEditable(false);
+
+            var vSeparator = new Separator(Orientation.VERTICAL);
+            Main.setRegion(vSeparator, 4, 25);
+
+            var info = new TextField(task.getInfo());
+            Main.setRegion(info, 360, 25);
+            info.setEditable(false);
+
+            var checkBox = new CheckBox();
+            checkBox.getStylesheets().add(Objects.requireNonNull(mainCL.getResource("FXMLs/mediumCheckBox.css")).toExternalForm());
+            Main.setRegion(checkBox, 25, 25);
+            var goalSD = GoalSD.getGoalFromGoalName(nameOfGoal);
+            if (goalSD != null)
+            {
+                checkBox.setSelected(goalSD.getCheckBoxes().get(task).isSelected());
+            } else
+            {
+                checkBox.setSelected(false);
+            }
+
+            var taskInfo = new HBox(6, time, vSeparator, info, checkBox);
+            Main.setRegion(taskInfo, 460, 25);
+            taskInfo.setPadding(new Insets(0, 8, 0, 8));
+
+            childList.add(taskInfo);
+
+            checkBox.setOnAction(event -> GoalSD.updateStateOfGoalCheckBoxes(task, checkBox.isSelected()));
+        }
+
+        var endHSeparator = new Separator(Orientation.HORIZONTAL);
+        Main.setRegion(endHSeparator, 477, 4);
+        childList.add(endHSeparator);
+
+        return line;
     }
 }
