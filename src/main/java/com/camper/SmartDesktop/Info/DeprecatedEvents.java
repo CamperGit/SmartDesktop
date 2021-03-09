@@ -49,7 +49,7 @@ public class DeprecatedEvents extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        checkDeprecatedEventsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/deprecatedEvents.fxml")));
+        checkDeprecatedEventsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/deprecatedEventsRu.fxml")));
         checkDeprecatedEventsRoot.setLayoutX(DEFAULT_WIDTH - 512);
         checkDeprecatedEventsRoot.setLayoutY(25);
         updateScrollArea(true, true, true);
@@ -60,14 +60,13 @@ public class DeprecatedEvents extends Application implements Initializable
             if (entered)
             {
                 entered = false;
-                daysWithDeprecatedEvents.clear();
                 Main.root.getChildren().remove(checkDeprecatedEventsRoot);
-                updateBellIcon();
+                updateBellIcon(false);
             }
         });
 
         addChild(checkDeprecatedEventsRoot);
-        //daysWithDeprecatedEvents.clear();
+
     }
 
     @Override
@@ -133,14 +132,14 @@ public class DeprecatedEvents extends Application implements Initializable
         schedulerCheckBox.setSelected(true);
     }
 
-    public static void updateBellIcon()
+    public static void updateBellIcon(boolean state)
     {
         for (Node node : Main.root.getChildren())
         {
             if (node instanceof Button && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("deprecatedEventsBell"))
             {
                 var button = (Button) node;
-                if (daysWithDeprecatedEvents.size() != 0)
+                if (state)
                 {
                     button.setGraphic(new ImageView(new Image("Images/bell25Active.png")));
                 } else
@@ -190,7 +189,7 @@ public class DeprecatedEvents extends Application implements Initializable
                     HBox hbox = null;
                     if (type == Day.EventType.Notification && notification)
                     {
-                        icon.setImage(new Image("Images/notification42.png"));
+                        icon.setImage(new Image("Images/notification25.png"));
                         hbox = addInfoOfEvent(event, icon);
                     }
                     if (type == Day.EventType.Goal && goal)
@@ -284,7 +283,6 @@ public class DeprecatedEvents extends Application implements Initializable
         var hbox = new HBox(4, icon, hSeparator, time, info, rightOffset);
         Main.setRegion(hbox, 479, 42);
         hbox.setAlignment(Pos.CENTER);
-        //hbox.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
 
         return hbox;
     }

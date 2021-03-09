@@ -141,7 +141,7 @@ public class Day implements Cloneable
             var dayWithDeprecatedEvents = new Day(day.getDate());
             dayWithDeprecatedEvents.getEvents().addAll(deprecatedEventsOfThisDay);
             getDaysWithDeprecatedEvents().add(dayWithDeprecatedEvents);
-            updateBellIcon();
+            updateBellIcon(true);
         }
 
         day.setHaveNotification(false);

@@ -73,7 +73,11 @@ public class Main extends Application implements Initializable
     @FXML
     private Button goal;
     @FXML
+    private Button notification;
+    @FXML
     private Button upcomingEventInfo;
+    @FXML
+    private Button history;
     @FXML
     private Button table;
     @FXML
@@ -91,7 +95,11 @@ public class Main extends Application implements Initializable
     @FXML
     private ImageView goalIV;
     @FXML
+    private ImageView notificationIV;
+    @FXML
     private ImageView upcomingEventInfoIV;
+    @FXML
+    private ImageView historyIV;
     @FXML
     private ImageView weatherIV;
     @FXML
@@ -253,7 +261,9 @@ public class Main extends Application implements Initializable
         noteIV.setImage(new Image("Images/note35.png"));
         scheduleIV.setImage(new Image("Images/schedule35.png"));
         goalIV.setImage(new Image("Images/goal42.png"));
+        notificationIV.setImage(new Image("Images/notification35.png"));
         upcomingEventInfoIV.setImage(new Image("Images/upcomingEvent35.png"));
+        historyIV.setImage(new Image("Images/history35.png"));
         tableIV.setImage(new Image("Images/table35.png"));
         weatherIV.setImage(new Image("Images/weather35.png"));
         imagePlayerIV.setImage(new Image("Images/imageViewer35.png"));
@@ -271,7 +281,7 @@ public class Main extends Application implements Initializable
             try
             {
                 new DeprecatedEvents().start(Stage);
-                DeprecatedEvents.updateBellIcon();
+                DeprecatedEvents.updateBellIcon(false);
             } catch (Exception e)
             {
                 e.printStackTrace();
@@ -557,6 +567,17 @@ public class Main extends Application implements Initializable
             }
         });
 
+        notification.setOnAction(event ->
+        {
+            try
+            {
+                new NotificationSD().start(Stage);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
+
         upcomingEventInfo.setOnAction(event ->
         {
             var upcomingEventInfo = UpcomingEvent.getUpcomingEventInfoRoot();
@@ -578,6 +599,12 @@ public class Main extends Application implements Initializable
                 }
             }
         });
+
+        history.setOnAction(event ->
+        {
+
+        });
+
 
         table.setOnAction(event ->
         {
