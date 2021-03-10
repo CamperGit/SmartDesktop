@@ -35,6 +35,10 @@ public class DeprecatedEvents extends Application implements Initializable
     private CheckBox schedulerCheckBox;
     @FXML
     private CheckBox allTypesCheckBox;
+    @FXML
+    private Label deprecatedEventsLabel;
+    @FXML
+    private Label deprecatedEventsShowLabel;
     private static int numberOfEvents = 0;
     private static AnchorPane checkDeprecatedEventsRoot;
     private static List<Day> daysWithDeprecatedEvents = new ArrayList<>();
@@ -71,12 +75,18 @@ public class DeprecatedEvents extends Application implements Initializable
         });
 
         addChild(checkDeprecatedEventsRoot);
-
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        deprecatedEventsLabel.setText(languageBundle.getString("deprecatedEventsLabel"));
+        deprecatedEventsShowLabel.setText(languageBundle.getString("deprecatedEventsShowLabel"));
+        notificationCheckBox.setText(languageBundle.getString("deprecatedEventsNotificationCheckBox"));
+        goalsCheckBox.setText(languageBundle.getString("deprecatedEventsGoalCheckBox"));
+        schedulerCheckBox.setText(languageBundle.getString("deprecatedEventsScheduleCheckBox"));
+        allTypesCheckBox.setText(languageBundle.getString("deprecatedEventsAllTypesCheckBox"));
+
         notificationCheckBox.setOnAction(event ->
         {
             updateScrollArea(notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());

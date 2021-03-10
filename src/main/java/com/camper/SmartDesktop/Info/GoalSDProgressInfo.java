@@ -28,7 +28,7 @@ public class GoalSDProgressInfo extends Application
     private boolean entered = false;
     private int id;
     private int done;
-    private int onProgress;
+    private int underway;
     private int notDone;
     private static Map<Integer, GoalSDProgressInfo> progressInfoMap = new HashMap<>();
 
@@ -104,10 +104,10 @@ public class GoalSDProgressInfo extends Application
         sortCheckBoxes(groupOfGoalCheckBox, eventsOfCheckBoxes, this);
         var chart = new PieChart();
         chart.getData().addAll(
-                new PieChart.Data("Не выполнено", notDone),
-                new PieChart.Data("В процессе", onProgress),
-                new PieChart.Data("Выполнено", done));
-        chart.setTitle("Прогресс выполнения цели");
+                new PieChart.Data(languageBundle.getString("goalProgressInfoPieChartNotDone"), notDone),
+                new PieChart.Data(languageBundle.getString("goalProgressInfoPieChartUnderway"), underway),
+                new PieChart.Data(languageBundle.getString("goalProgressInfoPieChartDone"), done));
+        chart.setTitle(languageBundle.getString("goalProgressInfoChartTitle"));
         Main.setRegion(chart, 400, 320);
 
         int leftUpperCornerX = (int) (mouseEvent.getSceneX() - mouseEvent.getX()) - 363;
@@ -129,7 +129,7 @@ public class GoalSDProgressInfo extends Application
     private void sortCheckBoxes(Map<CheckBox, List<CheckBox>> groupOfGoalCheckBox, Map<EventOfDay, CheckBox> eventsOfCheckBoxes, GoalSDProgressInfo progressInfo)
     {
         this.done = 0;
-        this.onProgress = 0;
+        this.underway = 0;
         this.notDone = 0;
         var map = new HashMap<CheckBox, EventOfDay>();
         for (var entry : eventsOfCheckBoxes.entrySet())
@@ -150,7 +150,7 @@ public class GoalSDProgressInfo extends Application
                 }
                 if (!(checkBoxOfTask.isSelected()) && dateTime.isAfter(LocalDateTime.now()))
                 {
-                    progressInfo.onProgress++;
+                    progressInfo.underway++;
                 }
                 if (checkBoxOfTask.isSelected())
                 {
@@ -169,7 +169,7 @@ public class GoalSDProgressInfo extends Application
                 }
                 if (!(selectAllCheckBox.isSelected()) && dateTime.isAfter(LocalDateTime.now()))
                 {
-                    progressInfo.onProgress++;
+                    progressInfo.underway++;
                 }
                 if (selectAllCheckBox.isSelected())
                 {

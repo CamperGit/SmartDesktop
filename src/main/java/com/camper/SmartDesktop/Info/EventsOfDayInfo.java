@@ -126,6 +126,11 @@ public class EventsOfDayInfo extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        allTypesCheckBox.setText(languageBundle.getString("eventOfDayInfoAllTypesCheckBox"));
+        addNotificationButton.setText(languageBundle.getString("eventOfDayInfoNotificationCheckBox"));
+        addGoalsButton.setText(languageBundle.getString("eventOfDayInfoGoalsCheckBox"));
+        addScheduleButton.setText(languageBundle.getString("eventOfDayInfoSchedulerCheckBox"));
+
         addNotificationButtonIV.setImage(new Image("Images/add18.png"));
         addGoalsButtonIV.setImage(new Image("Images/add18.png"));
         addScheduleButtonIV.setImage(new Image("Images/add18.png"));

@@ -27,18 +27,18 @@
       </HBox>
       <TextField fx:id="goalNameTextField" accessibleHelp="nameOfGoal" alignment="CENTER" layoutY="25.0" prefHeight="25.0" prefWidth="460.0" promptText="Название цели" />
       <Separator layoutY="50.0" prefHeight="0.0" prefWidth="460.0" />
-      <Label alignment="CENTER_RIGHT" layoutX="171.0" layoutY="60.0" maxHeight="25.0" minHeight="25.0" minWidth="24.0" prefHeight="25.0" prefWidth="32.0" text="По">
+      <Label fx:id="goalToLabel" alignment="CENTER_RIGHT" layoutX="176.0" layoutY="60.0" maxHeight="25.0" minHeight="25.0" minWidth="24.0" prefHeight="25.0" prefWidth="32.0" text="По">
          <font>
             <Font name="Times New Roman" size="16.0" />
          </font>
       </Label>
-      <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="60.0" maxHeight="25.0" maxWidth="24.0" minHeight="25.0" minWidth="24.0" prefHeight="25.0" prefWidth="24.0" text="С">
+      <Label fx:id="goalFromLabel" alignment="CENTER" contentDisplay="RIGHT" layoutY="60.0" maxHeight="25.0" maxWidth="39.0" minHeight="25.0" minWidth="24.0" prefHeight="25.0" prefWidth="39.0" text="С">
          <font>
             <Font name="Times New Roman" size="16.0" />
          </font>
       </Label>
-      <DatePicker fx:id="goalStartDatePicker" accessibleHelp="startDatePicker" layoutX="31.0" layoutY="60.0" maxHeight="25.0" maxWidth="140.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="140.0" />
-      <DatePicker fx:id="goalEndDatePicker" accessibleHelp="endDatePicker" layoutX="210.0" layoutY="60.0" maxHeight="25.0" maxWidth="140.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="140.0" />
+      <DatePicker fx:id="goalStartDatePicker" accessibleHelp="startDatePicker" layoutX="40.0" layoutY="60.0" maxHeight="25.0" maxWidth="140.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="140.0" />
+      <DatePicker fx:id="goalEndDatePicker" accessibleHelp="endDatePicker" layoutX="215.0" layoutY="60.0" maxHeight="25.0" maxWidth="140.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="140.0" />
       <Button fx:id="goalProgressButton" layoutX="363.0" layoutY="60.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Прогресс" />
       <Button fx:id="goalSaveButton" accessibleHelp="goalSaveButton" layoutY="94.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="460.0" text="Сохранить" />
       <Separator accessibleHelp="goalSaveButtonSeparator" layoutY="119.0" prefHeight="0.0" prefWidth="460.0" />

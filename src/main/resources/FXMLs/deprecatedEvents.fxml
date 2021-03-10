@@ -9,14 +9,14 @@
 
 <AnchorPane maxHeight="300.0" maxWidth="479.0" minHeight="300.0" minWidth="479.0" prefHeight="300.0" prefWidth="479.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.DeprecatedEvents">
    <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutY="35.0" prefHeight="30.0" prefWidth="479.0" text="Прошедшие события" textAlignment="RIGHT">
+      <Label fx:id="deprecatedEventsLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="35.0" prefHeight="30.0" prefWidth="479.0" text="Прошедшие события" textAlignment="RIGHT">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
       <ToolBar prefHeight="35.0" prefWidth="479.0">
          <items>
-            <Label text="Отображать:">
+            <Label fx:id="deprecatedEventsShowLabel" text="Отображать:">
                <font>
                   <Font size="14.0" />
                </font>

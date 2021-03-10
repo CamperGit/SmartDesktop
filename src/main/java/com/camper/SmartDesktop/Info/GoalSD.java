@@ -51,6 +51,10 @@ public class GoalSD extends Application implements Initializable
     private ToolBar goalToolBar;
     @FXML
     private ImageView goalCloseButtonIV;
+    @FXML
+    private Label goalFromLabel;
+    @FXML
+    private Label goalToLabel;
 
     private boolean load = false;
     private int id;
@@ -169,6 +173,12 @@ public class GoalSD extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        goalNameTextField.setPromptText(languageBundle.getString("goalNamePromptTextTextField"));
+        goalFromLabel.setText(languageBundle.getString("goalFromLabel"));
+        goalToLabel.setText(languageBundle.getString("goalToLabel"));
+        goalProgressButton.setText(languageBundle.getString("goalProgressButton"));
+        goalSaveButton.setText(languageBundle.getString("goalSaveButton"));
+
         goalCloseButtonIV.setImage(new Image("Images/delete30.png"));
 
         goalCloseButton.setOnAction(event ->
@@ -486,9 +496,8 @@ public class GoalSD extends Application implements Initializable
             addNewTaskButton.setDisable(true);
         }
 
-        String completeAllText = "Всё выполнено";
         var completeAllCheckBox = new CheckBox();
-        completeAllCheckBox.setText(completeAllText);
+        completeAllCheckBox.setText(languageBundle.getString("goalCompleteAllCheckBox"));
         completeAllCheckBox.getStylesheets().add(Objects.requireNonNull(mainCL.getResource("FXMLs/mediumCheckBox.css")).toExternalForm());
         completeAllCheckBox.setSelected(checkBoxState);
         completeAllCheckBox.setAccessibleHelp("completeAllCheckBox");
@@ -551,8 +560,7 @@ public class GoalSD extends Application implements Initializable
             minutes.setValue(time.getMinute() < 10 ? "0" + time.getMinute() : String.valueOf(time.getMinute()));
         }
 
-        String preNotificationButtonText = "Напомнить за";
-        var preNotificationButton = new Button(preNotificationButtonText);
+        var preNotificationButton = new Button(languageBundle.getString("goalPrenotificationButton"));
         Main.setRegion(preNotificationButton, 122, 25);
         preNotificationButton.setGraphic(new ImageView(new Image("Images/notification25.png")));
         preNotificationButton.setContentDisplay(ContentDisplay.RIGHT);
@@ -561,9 +569,8 @@ public class GoalSD extends Application implements Initializable
         Main.setRegion(vSeparatorBetweenTimeAndButton, 35, 25);
         vSeparatorBetweenTimeAndButton.setVisible(false);
 
-        String completeText = "Готово";
-        var completeCheckBox = new CheckBox();
-        completeCheckBox.setText(completeText);
+        var completeCheckBox = new CheckBox(languageBundle.getString("goalCompleteCheckBox"));
+        Main.setRegion(completeCheckBox,82 ,25);
         completeCheckBox.getStylesheets().add(Objects.requireNonNull(mainCL.getResource("FXMLs/mediumCheckBox.css")).toExternalForm());
         completeCheckBox.setPadding(new Insets(0, 13, 0, 0));
         completeCheckBox.setAccessibleHelp("completeCheckBox");
