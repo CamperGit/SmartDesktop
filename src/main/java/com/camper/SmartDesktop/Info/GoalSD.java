@@ -747,119 +747,125 @@ public class GoalSD extends Application implements Initializable
 
                 var startDateElement = doc.createElement("startDate");
                 goalElement.appendChild(startDateElement);
-                var startDateValue = doc.createTextNode(goalSD.getStartDate().toString());
-                startDateElement.appendChild(startDateValue);
 
                 var endDateElement = doc.createElement("endDate");
                 goalElement.appendChild(endDateElement);
-                var endDateValue = doc.createTextNode(goalSD.getEndDate().toString());
-                endDateElement.appendChild(endDateValue);
 
                 var nameOfGoalElement = doc.createElement("nameOfGoal");
                 goalElement.appendChild(nameOfGoalElement);
-                var nameOfGoalValue = doc.createTextNode(goalSD.getNameOfGoal());
-                nameOfGoalElement.appendChild(nameOfGoalValue);
 
                 var linesElement = doc.createElement("lines");
                 goalElement.appendChild(linesElement);
 
-                var sortedLines = new TreeMap<>(goalSD.getTasksOfDay());
-
-                int numberOfLine = 1;
-                for (var line : sortedLines.values())
+                if(goalSD.getNameOfGoal() != null && goalSD.getStartDate() != null && goalSD.getEndDate() != null)
                 {
-                    var lineElement = doc.createElement("line" + numberOfLine);
-                    linesElement.appendChild(lineElement);
+                    var startDateValue = doc.createTextNode(goalSD.getStartDate().toString());
+                    startDateElement.appendChild(startDateValue);
 
-                    var completeAllCheckBoxStateElement = doc.createElement("completeAllCheckBoxState");
-                    lineElement.appendChild(completeAllCheckBoxStateElement);
-                    Boolean completeAllCheckBoxState = null;
+                    var endDateValue = doc.createTextNode(goalSD.getEndDate().toString());
+                    endDateElement.appendChild(endDateValue);
 
-                    var tasksElement = doc.createElement("tasks");
-                    lineElement.appendChild(tasksElement);
+                    var nameOfGoalValue = doc.createTextNode(goalSD.getNameOfGoal());
+                    nameOfGoalElement.appendChild(nameOfGoalValue);
 
-                    int numberOfTask = 1;
-                    for (var tasks : line.getChildren())
+                    var sortedLines = new TreeMap<>(goalSD.getTasksOfDay());
+
+                    int numberOfLine = 1;
+                    for (var line : sortedLines.values())
                     {
-                        if (completeAllCheckBoxState == null && tasks instanceof HBox)
+                        var lineElement = doc.createElement("line" + numberOfLine);
+                        linesElement.appendChild(lineElement);
+
+                        var completeAllCheckBoxStateElement = doc.createElement("completeAllCheckBoxState");
+                        lineElement.appendChild(completeAllCheckBoxStateElement);
+                        Boolean completeAllCheckBoxState = null;
+
+                        var tasksElement = doc.createElement("tasks");
+                        lineElement.appendChild(tasksElement);
+
+                        int numberOfTask = 1;
+                        for (var tasks : line.getChildren())
                         {
-                            for (var goalHBoxElements : ((HBox) tasks).getChildren())
+                            if (completeAllCheckBoxState == null && tasks instanceof HBox)
                             {
-                                if (goalHBoxElements instanceof CheckBox && goalHBoxElements.getAccessibleHelp() != null && goalHBoxElements.getAccessibleHelp().equals("completeAllCheckBox"))
+                                for (var goalHBoxElements : ((HBox) tasks).getChildren())
                                 {
-                                    completeAllCheckBoxState = ((CheckBox) goalHBoxElements).isSelected();
-                                    break;
+                                    if (goalHBoxElements instanceof CheckBox && goalHBoxElements.getAccessibleHelp() != null && goalHBoxElements.getAccessibleHelp().equals("completeAllCheckBox"))
+                                    {
+                                        completeAllCheckBoxState = ((CheckBox) goalHBoxElements).isSelected();
+                                        break;
+                                    }
                                 }
                             }
-                        }
 
-                        if (tasks instanceof VBox)
-                        {
-                            var taskElement = doc.createElement("task" + numberOfTask);
-                            tasksElement.appendChild(taskElement);
-
-                            var timeElement = doc.createElement("time");
-                            taskElement.appendChild(timeElement);
-                            int hour = 0;
-                            int minute = 0;
-
-                            var textElement = doc.createElement("text");
-                            taskElement.appendChild(textElement);
-                            String text = "";
-
-                            var completeElement = doc.createElement("complete");
-                            taskElement.appendChild(completeElement);
-                            boolean complete = false;
-
-                            for (var hboxesOfTask : ((VBox) tasks).getChildren())
+                            if (tasks instanceof VBox)
                             {
-                                if (hboxesOfTask instanceof HBox)
+                                var taskElement = doc.createElement("task" + numberOfTask);
+                                tasksElement.appendChild(taskElement);
+
+                                var timeElement = doc.createElement("time");
+                                taskElement.appendChild(timeElement);
+                                int hour = 0;
+                                int minute = 0;
+
+                                var textElement = doc.createElement("text");
+                                taskElement.appendChild(textElement);
+                                String text = "";
+
+                                var completeElement = doc.createElement("complete");
+                                taskElement.appendChild(completeElement);
+                                boolean complete = false;
+
+                                for (var hboxesOfTask : ((VBox) tasks).getChildren())
                                 {
-                                    for (var hboxElement : ((HBox) hboxesOfTask).getChildren())
+                                    if (hboxesOfTask instanceof HBox)
                                     {
-                                        if (hboxElement.getAccessibleHelp() != null)
+                                        for (var hboxElement : ((HBox) hboxesOfTask).getChildren())
                                         {
-                                            if (hboxElement instanceof ComboBox && hboxElement.getAccessibleHelp().equals("hours"))
+                                            if (hboxElement.getAccessibleHelp() != null)
                                             {
-                                                hour = Integer.parseInt((String) (((ComboBox) hboxElement).getValue()));
-                                                continue;
-                                            }
-                                            if (hboxElement instanceof ComboBox && hboxElement.getAccessibleHelp().equals("minutes"))
-                                            {
-                                                minute = Integer.parseInt((String) (((ComboBox) hboxElement).getValue()));
-                                                continue;
-                                            }
-                                            if (hboxElement instanceof TextField && hboxElement.getAccessibleHelp().equals("textField"))
-                                            {
-                                                text = ((TextField) hboxElement).getText();
-                                                continue;
-                                            }
-                                            if (hboxElement instanceof CheckBox && hboxElement.getAccessibleHelp().equals("completeCheckBox"))
-                                            {
-                                                complete = ((CheckBox) hboxElement).isSelected();
+                                                if (hboxElement instanceof ComboBox && hboxElement.getAccessibleHelp().equals("hours"))
+                                                {
+                                                    hour = Integer.parseInt((String) (((ComboBox) hboxElement).getValue()));
+                                                    continue;
+                                                }
+                                                if (hboxElement instanceof ComboBox && hboxElement.getAccessibleHelp().equals("minutes"))
+                                                {
+                                                    minute = Integer.parseInt((String) (((ComboBox) hboxElement).getValue()));
+                                                    continue;
+                                                }
+                                                if (hboxElement instanceof TextField && hboxElement.getAccessibleHelp().equals("textField"))
+                                                {
+                                                    text = ((TextField) hboxElement).getText();
+                                                    continue;
+                                                }
+                                                if (hboxElement instanceof CheckBox && hboxElement.getAccessibleHelp().equals("completeCheckBox"))
+                                                {
+                                                    complete = ((CheckBox) hboxElement).isSelected();
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                var timeElementValue = doc.createTextNode(String.valueOf(LocalTime.of(hour, minute)));
+                                timeElement.appendChild(timeElementValue);
+
+                                var textElementValue = doc.createTextNode(text);
+                                textElement.appendChild(textElementValue);
+
+                                var completeElementValue = doc.createTextNode(String.valueOf(complete));
+                                completeElement.appendChild(completeElementValue);
+
+                                numberOfTask++;
                             }
-                            var timeElementValue = doc.createTextNode(String.valueOf(LocalTime.of(hour, minute)));
-                            timeElement.appendChild(timeElementValue);
-
-                            var textElementValue = doc.createTextNode(text);
-                            textElement.appendChild(textElementValue);
-
-                            var completeElementValue = doc.createTextNode(String.valueOf(complete));
-                            completeElement.appendChild(completeElementValue);
-
-                            numberOfTask++;
                         }
-                    }
 
-                    var completeAllCheckBoxStateElementValue = doc.createTextNode(String.valueOf(completeAllCheckBoxState));
-                    completeAllCheckBoxStateElement.appendChild(completeAllCheckBoxStateElementValue);
-                    numberOfLine++;
+                        var completeAllCheckBoxStateElementValue = doc.createTextNode(String.valueOf(completeAllCheckBoxState));
+                        completeAllCheckBoxStateElement.appendChild(completeAllCheckBoxStateElementValue);
+                        numberOfLine++;
+                    }
+                    id++;
                 }
-                id++;
             }
         }
     }
@@ -886,47 +892,47 @@ public class GoalSD extends Application implements Initializable
             rootOfLoadingGoal.setLayoutX(layoutX);
             rootOfLoadingGoal.setLayoutY(layoutY);
 
-            var startDate = LocalDate.parse(xPath.evaluate("/save/goals/goal" + id + "/startDate/text()", doc));
-            var endDate = LocalDate.parse(xPath.evaluate("/save/goals/goal" + id + "/endDate/text()", doc));
-            String nameOfGoal = xPath.evaluate("/save/goals/goal" + id + "/nameOfGoal/text()", doc);
-
-            loadingGoal.setStartDate(startDate);
-            loadingGoal.setEndDate(endDate);
-            loadingGoal.setNameOfGoal(nameOfGoal);
-
-            for (var node : rootOfLoadingGoal.getChildren())
-            {
-                if (node instanceof DatePicker && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("startDatePicker"))
-                {
-                    ((DatePicker) node).setValue(startDate);
-                    ((DatePicker) node).setEditable(false);
-                    break;
-                }
-            }
-
-            for (var node : rootOfLoadingGoal.getChildren())
-            {
-                if (node instanceof DatePicker && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("endDatePicker"))
-                {
-                    ((DatePicker) node).setValue(endDate);
-                    ((DatePicker) node).setEditable(false);
-                    break;
-                }
-            }
-
-            for (var node : rootOfLoadingGoal.getChildren())
-            {
-                if (node instanceof TextField && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("nameOfGoal"))
-                {
-                    ((TextField) node).setText(nameOfGoal);
-                    ((TextField) node).setEditable(false);
-                    break;
-                }
-            }
-
             int numberOfLines = xPath.evaluateExpression("count(/save/goals/goal" + id + "/lines/*)", doc, Integer.class);
             if (numberOfLines != 0)
             {
+                var startDate = LocalDate.parse(xPath.evaluate("/save/goals/goal" + id + "/startDate/text()", doc));
+                var endDate = LocalDate.parse(xPath.evaluate("/save/goals/goal" + id + "/endDate/text()", doc));
+                String nameOfGoal = xPath.evaluate("/save/goals/goal" + id + "/nameOfGoal/text()", doc);
+
+                loadingGoal.setStartDate(startDate);
+                loadingGoal.setEndDate(endDate);
+                loadingGoal.setNameOfGoal(nameOfGoal);
+
+                for (var node : rootOfLoadingGoal.getChildren())
+                {
+                    if (node instanceof DatePicker && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("startDatePicker"))
+                    {
+                        ((DatePicker) node).setValue(startDate);
+                        ((DatePicker) node).setEditable(false);
+                        break;
+                    }
+                }
+
+                for (var node : rootOfLoadingGoal.getChildren())
+                {
+                    if (node instanceof DatePicker && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("endDatePicker"))
+                    {
+                        ((DatePicker) node).setValue(endDate);
+                        ((DatePicker) node).setEditable(false);
+                        break;
+                    }
+                }
+
+                for (var node : rootOfLoadingGoal.getChildren())
+                {
+                    if (node instanceof TextField && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("nameOfGoal"))
+                    {
+                        ((TextField) node).setText(nameOfGoal);
+                        ((TextField) node).setEditable(false);
+                        break;
+                    }
+                }
+
                 var content = new VBox(6);
                 content.setPadding(new Insets(8, 0, 0, 0));
                 var scrollPane = new ScrollPane(content);

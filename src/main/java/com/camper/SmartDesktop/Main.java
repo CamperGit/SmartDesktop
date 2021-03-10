@@ -311,6 +311,7 @@ public class Main extends Application implements Initializable
             defaultLocale = new Locale("ru", "RU");
             try
             {
+                saveAll(null);
                 deleteAllNewElements();
                 clearTab();
                 loadSave(null);
@@ -326,6 +327,7 @@ public class Main extends Application implements Initializable
             defaultLocale = Locale.ENGLISH;
             try
             {
+                saveAll(null);
                 deleteAllNewElements();
                 clearTab();
                 loadSave(null);
