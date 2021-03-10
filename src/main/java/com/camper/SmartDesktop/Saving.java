@@ -98,6 +98,7 @@ public class Saving
         rootElement.appendChild(lastTabElement);
 
         saveInfo.setProperty("lastSaveName", filename);
+        saveInfo.setProperty("language", defaultLocale.getLanguage());
         saveInfo.store(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"), "Info of latest save");
 
         t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));

@@ -56,6 +56,8 @@ public class Main extends Application implements Initializable
     @FXML
     private TabPane toolBarTabPane;
     @FXML
+    private Tab infoTab, desktopTab, standardToolsTab;
+    @FXML
     private TabPane mainTabPane;
     @FXML
     private Tab tab1, tab2, tab3, tab4, tab5;
@@ -86,7 +88,7 @@ public class Main extends Application implements Initializable
     @FXML
     private Button calendar;
     @FXML
-    private Button autorizeButton;
+    private Button loginButton;
     @FXML
     private Button checkDeprecatedEventsButton;
     @FXML
@@ -114,9 +116,7 @@ public class Main extends Application implements Initializable
     @FXML
     private ImageView languageMenuIV;
     @FXML
-    private Menu helpMenu;
-    @FXML
-    private Menu aboutTheProgramMenu;
+    private Menu desktopMenu, viewMenu, helpMenu, aboutTheProgramMenu;
     @FXML
     private MenuButton languageMenu;
     @FXML
@@ -140,7 +140,7 @@ public class Main extends Application implements Initializable
     public static String currencySaveName;
     public static Properties saveInfo = new Properties();
     public static Stage Stage;
-    public static Locale defaultLocale = new Locale("ru", "RU");
+    public static Locale defaultLocale = new Locale("ru");
     public static ResourceBundle languageBundle = ResourceBundle.getBundle("language", defaultLocale);
     public static final int DEFAULT_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
     public static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -196,6 +196,30 @@ public class Main extends Application implements Initializable
         }
     }
 
+    private void localizeMainScreen()
+    {
+        desktopMenu.setText(languageBundle.getString("mainDesktopMenu"));
+        desktopPhotoSelectorMenuItem.setText(languageBundle.getString("mainDesktopPhotoSelectorMenuItem"));
+        desktopVideoSelectorMenuItem.setText(languageBundle.getString("mainDesktopVideoSelectorMenuItem"));
+        viewMenu.setText(languageBundle.getString("mainViewMenu"));
+        hideLeftTabPaneMenuItem.setText(languageBundle.getString("mainHideLeftTabPaneMenuItem"));
+        hideRightTabPaneMenuItem.setText(languageBundle.getString("mainHideRightTabPaneMenuItem"));
+        helpMenu.setText(languageBundle.getString("mainHelpMenu"));
+        aboutTheProgramMenu.setText(languageBundle.getString("mainAboutTheProgramMenu"));
+
+        infoTab.setText(languageBundle.getString("mainInfoTab"));
+        desktopTab.setText(languageBundle.getString("mainDesktopTab"));
+        standardToolsTab.setText(languageBundle.getString("mainStandardToolsTab"));
+        String preSave = languageBundle.getString("mainPreSaveTab");
+        tab1.setText(preSave + " 1");
+        tab2.setText(preSave + " 2");
+        tab3.setText(preSave + " 3");
+        tab4.setText(preSave + " 4");
+        tab5.setText(preSave + " 5");
+        checkDeprecatedEventsButton.setText(languageBundle.getString("mainCheckDeprecatedEventsButton"));
+        loginButton.setText(languageBundle.getString("mainLoginButton"));
+    }
+
     @Override
     public void start(Stage stage) throws Exception
     {
@@ -223,12 +247,15 @@ public class Main extends Application implements Initializable
         if (!Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\saveInfo.properties")))
         {
             saveInfo.setProperty("lastSaveName", "save1.xml");
+            saveInfo.setProperty("language", "ru");
             saveInfo.store(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"), "Info of latest save");
         }
         try (FileInputStream io = new FileInputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"))
         {
             saveInfo.load(io);
         }
+        defaultLocale = Locale.forLanguageTag(saveInfo.getProperty("language"));
+        languageBundle = ResourceBundle.getBundle("language", defaultLocale);
 
         var elementsOfTab1 = new ArrayList<Node>();
         var elementsOfTab2 = new ArrayList<Node>();
@@ -249,8 +276,6 @@ public class Main extends Application implements Initializable
         numberOfImmutableElements = root.getChildren().size();
 
         currencySaveName = loadSave(null);
-
-        languageBundle = ResourceBundle.getBundle("language", defaultLocale);
 
         if (CalendarSD.getRoot() == null)
         {
@@ -294,7 +319,7 @@ public class Main extends Application implements Initializable
         calendarIV.setImage(new Image("Images/calendar35.png"));
         deprecatedEventsIV.setImage(new Image("Images/bell25.png"));
 
-        autorizeButton.setLayoutX(DEFAULT_WIDTH - 120);
+        loginButton.setLayoutX(DEFAULT_WIDTH - 120);
         savesChoiceBox.setLayoutX(DEFAULT_WIDTH - 320);
         addNewPresetButton.setLayoutX(DEFAULT_WIDTH - 345);
         checkDeprecatedEventsButton.setLayoutX(DEFAULT_WIDTH - 512);
@@ -302,16 +327,25 @@ public class Main extends Application implements Initializable
         hideLeftTabPaneMenuItem.setOnAction(event -> toolBarTabPane.setVisible(!hideLeftTabPaneMenuItem.isSelected()));
         hideRightTabPaneMenuItem.setOnAction(event -> mainTabPane.setVisible(!hideRightTabPaneMenuItem.isSelected()));
 
-        languageMenu.setText("язык: RU");
-        languageMenuIV.setImage(new Image("Images/russianFlag25.png"));
-        defaultLocale = new Locale("ru", "RU");
+        if (defaultLocale.equals(Locale.ENGLISH))
+        {
+            languageMenu.setText("Language: EN");
+            languageMenuIV.setImage(new Image("Images/englishFlag25.png"));
+        }
+        else
+        {
+            languageMenu.setText("язык: RU");
+            languageMenuIV.setImage(new Image("Images/russianFlag25.png"));
+        }
+        localizeMainScreen();
 
         languageRussianMenuItem.setOnAction(event ->
         {
             languageMenu.setText("язык: RU");
             languageMenuIV.setImage(new Image("Images/russianFlag25.png"));
-            defaultLocale = new Locale("ru", "RU");
+            defaultLocale = new Locale("ru");
             languageBundle = ResourceBundle.getBundle("language", defaultLocale);
+            this.localizeMainScreen();
             try
             {
                 saveAll(null);
@@ -329,6 +363,7 @@ public class Main extends Application implements Initializable
             languageMenuIV.setImage(new Image("Images/englishFlag25.png"));
             defaultLocale = Locale.ENGLISH;
             languageBundle = ResourceBundle.getBundle("language", defaultLocale);
+            this.localizeMainScreen();
             try
             {
                 saveAll(null);
@@ -647,14 +682,13 @@ public class Main extends Application implements Initializable
         upcomingEventInfo.setOnAction(event ->
         {
             var upcomingEventInfo = UpcomingEvent.getUpcomingEventInfoRoot();
-            if (upcomingEventInfo!=null)
+            if (upcomingEventInfo != null)
             {
                 upcomingEventInfo.setVisible(true);
                 tabs.get(Integer.parseInt(upcomingEventInfo.getAccessibleText())).remove(upcomingEventInfo);
                 tabs.get(idOfSelectedTab).add(upcomingEventInfo);
                 upcomingEventInfo.setAccessibleText(String.valueOf(idOfSelectedTab));
-            }
-            else
+            } else
             {
                 try
                 {
@@ -680,14 +714,13 @@ public class Main extends Application implements Initializable
         weather.setOnAction(event ->
         {
             var weather = Weather.getWeatherRoot();
-            if (weather!=null)
+            if (weather != null)
             {
                 weather.setVisible(true);
                 tabs.get(Integer.parseInt(weather.getAccessibleText())).remove(weather);
                 tabs.get(idOfSelectedTab).add(weather);
                 weather.setAccessibleText(String.valueOf(idOfSelectedTab));
-            }
-            else
+            } else
             {
                 try
                 {

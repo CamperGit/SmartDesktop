@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import static com.camper.SmartDesktop.Info.UpcomingEvent.runEventTask;
 import static com.camper.SmartDesktop.Main.*;
@@ -101,6 +103,7 @@ public class Loading
 
                     doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + filename);
                     saveInfo.setProperty("lastSaveName", filename);
+                    saveInfo.setProperty("language", "ru");
                     saveInfo.store(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"), "Info of latest save");
                 }
 
@@ -121,6 +124,7 @@ public class Loading
                 filename = "save1.xml";
                 createEmptyXML(filename);
                 saveInfo.setProperty("lastSaveName", filename);
+                saveInfo.setProperty("language", "ru");
                 saveInfo.store(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"), "Info of latest save");
                 runEventTask();
             }

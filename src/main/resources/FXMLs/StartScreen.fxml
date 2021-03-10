@@ -22,13 +22,13 @@
       <MediaView fx:id="videoViewer" fitHeight="1080.0" fitWidth="1920.0" />
       <MenuBar maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="1272.0">
         <menus>
-          <Menu mnemonicParsing="false" text="Рабочий стол">
+          <Menu fx:id="desktopMenu" mnemonicParsing="false" text="Рабочий стол">
             <items>
               <MenuItem fx:id="desktopPhotoSelectorMenuItem" mnemonicParsing="false" text="Установить фон рабочего стола(Фото)" />
                   <MenuItem fx:id="desktopVideoSelectorMenuItem" mnemonicParsing="false" text="Установить фон рабочего стола(Видео)" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Вид">
+          <Menu fx:id="viewMenu" mnemonicParsing="false" text="Вид">
             <items>
                   <CheckMenuItem fx:id="hideLeftTabPaneMenuItem" mnemonicParsing="false" text="Скрыть панель инструментов" />
                   <CheckMenuItem fx:id="hideRightTabPaneMenuItem" mnemonicParsing="false" text="Скрыть панель рабочих столов" />
@@ -40,7 +40,7 @@
       </MenuBar>
       <TabPane fx:id="toolBarTabPane" accessibleHelp="ToolTabPane" layoutY="25.0" prefHeight="1055.0" prefWidth="75.0" side="LEFT" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Цели и информация">
+          <Tab fx:id="infoTab" text="Цели и информация">
                <content>
                   <ToolBar accessibleHelp="ToolTabPane" orientation="VERTICAL" prefHeight="955.0" prefWidth="45.0">
                     <items>
@@ -72,7 +72,7 @@
                   </ToolBar>
                </content>
           </Tab>
-          <Tab text="Рабочий стол">
+          <Tab fx:id="desktopTab" text="Рабочий стол">
                <content>
                   <ToolBar orientation="VERTICAL" prefHeight="1055.0" prefWidth="40.0">
                     <items>
@@ -95,7 +95,7 @@
                   </ToolBar>
                </content>
           </Tab>
-            <Tab text="Стандартные инструменты">
+            <Tab fx:id="standardToolsTab" text="Стандартные инструменты">
                <content>
                   <ToolBar orientation="VERTICAL" prefHeight="1055.0" prefWidth="40.0">
                     <items>
@@ -137,7 +137,7 @@
             <Insets />
          </opaqueInsets>
       </TabPane>
-      <Button fx:id="autorizeButton" layoutX="1800.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Войти" />
+      <Button fx:id="loginButton" layoutX="1800.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="120.0" text="Войти" />
       <Button fx:id="checkDeprecatedEventsButton" accessibleHelp="deprecatedEventsBell" layoutX="1408.0" maxHeight="25.0" maxWidth="-Infinity" minHeight="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="167.0" text="Прошедшие события">
          <graphic>
             <ImageView fx:id="deprecatedEventsIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
