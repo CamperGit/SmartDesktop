@@ -81,14 +81,7 @@ public class NotificationSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        if (defaultLocale.equals(new Locale("ru","RU")))
-        {
-            NotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/notificationRu.fxml")));
-        }
-        else
-        {
-            NotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/notificationEn.fxml")));
-        }
+        NotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/notification.fxml")));
         NotificationRoot.setLayoutX(DEFAULT_WIDTH / 2 - 340 / 2);
         NotificationRoot.setLayoutY(DEFAULT_HEIGHT / 2 - 248 / 2);
 

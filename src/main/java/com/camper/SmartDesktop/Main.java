@@ -23,7 +23,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -244,7 +243,7 @@ public class Main extends Application implements Initializable
 
         Stage = stage;
 
-        root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreenRu.fxml")));
+        root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreen.fxml")));
         var scene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT - 66);
 
         numberOfImmutableElements = root.getChildren().size();

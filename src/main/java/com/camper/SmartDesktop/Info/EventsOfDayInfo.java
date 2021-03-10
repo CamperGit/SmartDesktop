@@ -1,16 +1,13 @@
 package com.camper.SmartDesktop.Info;
 
 import com.camper.SmartDesktop.Main;
-import com.sun.javafx.font.FontFactory;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,14 +16,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
 
 import static com.camper.SmartDesktop.Main.*;
@@ -81,14 +75,7 @@ public class EventsOfDayInfo extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        if (defaultLocale.equals(new Locale("ru","RU")))
-        {
-            paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfoRu.fxml")));
-        }
-        else
-        {
-            paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfoEn.fxml")));
-        }
+        paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfo.fxml")));
         int leftDownCornerX = (int) (mouseEvent.getSceneX() - mouseEvent.getX());
         int leftDownCornerY = (int) (mouseEvent.getSceneY() - mouseEvent.getY()) + 38 + 4;//38 - высота кнопки
         int layoutX = leftDownCornerX;

@@ -6,7 +6,6 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -17,9 +16,7 @@ import javafx.stage.Stage;
 
 
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -77,14 +74,7 @@ public class PrenotificationSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        if (defaultLocale.equals(new Locale("ru","RU")))
-        {
-            PrenotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/prenotificationRu.fxml")));
-        }
-        else
-        {
-            PrenotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/prenotificationEn.fxml")));
-        }
+        PrenotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/prenotification.fxml")));
         PrenotificationRoot.setLayoutX(DEFAULT_WIDTH / 2 - 340 / 2);
         PrenotificationRoot.setLayoutY(DEFAULT_HEIGHT / 2 - 244 / 2);
 

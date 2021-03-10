@@ -2,12 +2,10 @@ package com.camper.SmartDesktop.Info;
 
 import com.camper.SmartDesktop.Main;
 import javafx.application.Application;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -100,14 +98,7 @@ public class SchedulerCopySettings extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        if (defaultLocale.equals(new Locale("ru","RU")))
-        {
-            CopySettingsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleSettingsRu.fxml")));
-        }
-        else
-        {
-            CopySettingsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleSettingsEn.fxml")));
-        }
+        CopySettingsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleSettings.fxml")));
         CopySettingsRoot.setAccessibleHelp(String.valueOf(id));
         settingsMap.put(id, this);
 

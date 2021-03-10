@@ -89,14 +89,7 @@ public class NoteSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        if (defaultLocale.equals(new Locale("ru","RU")))
-        {
-            NoteRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/noteRu.fxml")));
-        }
-        else
-        {
-            NoteRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/noteEn.fxml")));
-        }
+        NoteRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/note.fxml")));
         NoteRoot.setLayoutX(80);
         NoteRoot.setLayoutY(30);
         this.id = nextId;

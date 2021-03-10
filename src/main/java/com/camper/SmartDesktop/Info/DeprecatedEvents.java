@@ -6,21 +6,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import org.w3c.dom.Document;
 
 import java.net.URL;
 import java.time.LocalTime;
@@ -57,14 +54,7 @@ public class DeprecatedEvents extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        if (defaultLocale.equals(new Locale("ru","RU")))
-        {
-            checkDeprecatedEventsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/deprecatedEventsRu.fxml")));
-        }
-        else
-        {
-            checkDeprecatedEventsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/deprecatedEventsEn.fxml")));
-        }
+        checkDeprecatedEventsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/deprecatedEvents.fxml")));
         checkDeprecatedEventsRoot.setLayoutX(DEFAULT_WIDTH - 512);
         checkDeprecatedEventsRoot.setLayoutY(25);
         updateScrollArea(true, true, true);

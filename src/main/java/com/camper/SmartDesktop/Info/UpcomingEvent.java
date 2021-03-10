@@ -14,14 +14,11 @@ import javafx.stage.Stage;
 import org.w3c.dom.Document;
 
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -71,14 +68,7 @@ public class UpcomingEvent extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        if (defaultLocale.equals(new Locale("ru","RU")))
-        {
-            UpcomingEventInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/upcomingEventRu.fxml")));
-        }
-        else
-        {
-            UpcomingEventInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/upcomingEventEn.fxml")));
-        }
+        UpcomingEventInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/upcomingEvent.fxml")));
         UpcomingEventInfoRoot.setLayoutX(80);
         UpcomingEventInfoRoot.setLayoutY(30);
 
