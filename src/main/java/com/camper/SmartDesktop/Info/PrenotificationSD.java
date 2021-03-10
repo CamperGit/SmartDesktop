@@ -77,7 +77,14 @@ public class PrenotificationSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        PrenotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/prenotificationRu.fxml")));
+        if (defaultLocale.equals(new Locale("ru","RU")))
+        {
+            PrenotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/prenotificationRu.fxml")));
+        }
+        else
+        {
+            PrenotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/prenotificationEn.fxml")));
+        }
         PrenotificationRoot.setLayoutX(DEFAULT_WIDTH / 2 - 340 / 2);
         PrenotificationRoot.setLayoutY(DEFAULT_HEIGHT / 2 - 244 / 2);
 

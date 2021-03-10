@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="320.0" maxWidth="460.0" minHeight="320.0" minWidth="460.0" prefHeight="320.0" prefWidth="460.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.GoalSD">
+   <children>
+      <ToolBar fx:id="goalToolBar" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="435.0" />
+      <Button fx:id="goalCloseButton" layoutX="435.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
+         <graphic>
+            <ImageView fx:id="goalCloseButtonIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+         </graphic>
+      </Button>
+      <HBox layoutX="7.0" layoutY="281.0" maxHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="460.0" spacing="6.0">
+         <children>
+            <Separator minWidth="25.0" opacity="0.0" orientation="VERTICAL" prefHeight="25.0" prefWidth="20.0" />
+         </children>
+      </HBox>
+      <TextField fx:id="goalNameTextField" accessibleHelp="nameOfGoal" alignment="CENTER" layoutY="25.0" prefHeight="25.0" prefWidth="460.0" promptText="Goal name" />
+      <Separator layoutY="50.0" prefHeight="0.0" prefWidth="460.0" />
+      <Label alignment="CENTER_RIGHT" layoutX="176.0" layoutY="60.0" maxHeight="25.0" minHeight="25.0" minWidth="24.0" prefHeight="25.0" prefWidth="32.0" text="To">
+         <font>
+            <Font name="Times New Roman" size="16.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="60.0" maxHeight="25.0" maxWidth="39.0" minHeight="25.0" minWidth="24.0" prefHeight="25.0" prefWidth="39.0" text="From">
+         <font>
+            <Font name="Times New Roman" size="16.0" />
+         </font>
+      </Label>
+      <DatePicker fx:id="goalStartDatePicker" accessibleHelp="startDatePicker" layoutX="44.0" layoutY="60.0" maxHeight="25.0" maxWidth="140.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="140.0" />
+      <DatePicker fx:id="goalEndDatePicker" accessibleHelp="endDatePicker" layoutX="215.0" layoutY="60.0" maxHeight="25.0" maxWidth="140.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="140.0" />
+      <Button fx:id="goalProgressButton" layoutX="368.0" layoutY="60.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Progress" />
+      <Button fx:id="goalSaveButton" accessibleHelp="goalSaveButton" layoutY="94.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="460.0" text="Save" />
+      <Separator accessibleHelp="goalSaveButtonSeparator" layoutY="119.0" prefHeight="0.0" prefWidth="460.0" />
+      <Separator layoutY="94.0" prefHeight="0.0" prefWidth="460.0" />
+   </children>
+   <effect>
+      <DropShadow />
+   </effect>
+</AnchorPane>

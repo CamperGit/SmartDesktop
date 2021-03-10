@@ -149,7 +149,14 @@ public class GoalSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        GoalRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/goalRu.fxml")));
+        if (defaultLocale.equals(new Locale("ru","RU")))
+        {
+            GoalRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/goalRu.fxml")));
+        }
+        else
+        {
+            GoalRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/goalEn.fxml")));
+        }
         GoalRoot.setLayoutX(80);
         GoalRoot.setLayoutY(30);
         this.id = nextId;

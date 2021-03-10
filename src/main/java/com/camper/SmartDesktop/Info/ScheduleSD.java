@@ -135,7 +135,14 @@ public class ScheduleSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        ScheduleRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleRu.fxml")));
+        if (defaultLocale.equals(new Locale("ru","RU")))
+        {
+            ScheduleRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleRu.fxml")));
+        }
+        else
+        {
+            ScheduleRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleEn.fxml")));
+        }
         ScheduleRoot.setLayoutX(80);
         ScheduleRoot.setLayoutY(30);
         this.id = nextId;

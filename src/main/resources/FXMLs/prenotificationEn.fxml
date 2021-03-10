@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="250.0" maxWidth="340.0" minHeight="243.0" minWidth="340.0" prefHeight="242.0" prefWidth="340.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.PrenotificationSD">
+   <children>
+      <ToolBar fx:id="prenotificationToolBar" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="315.0" />
+      <Button fx:id="prenotificationCloseButton" layoutX="315.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutY="25.0" prefHeight="25.0" prefWidth="340.0" text="Remind in" textAlignment="RIGHT">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Label>
+      <Separator layoutY="51.0" prefHeight="2.0" prefWidth="340.0" />
+      <HBox layoutY="63.0" maxHeight="25.0" maxWidth="340.0" minHeight="25.0" minWidth="340.0" prefHeight="25.0" prefWidth="340.0" spacing="6.0">
+         <children>
+            <ComboBox fx:id="prenotificationComboBoxDays" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
+            <Label maxHeight="25.0" minHeight="25.0" prefHeight="25.0" text="Days" />
+            <ComboBox fx:id="prenotificationComboBoxHours" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
+            <Label maxHeight="25.0" maxWidth="31.0" minHeight="25.0" minWidth="16.0" prefHeight="25.0" prefWidth="26.0" text="H" />
+            <ComboBox fx:id="prenotificationComboBoxMinutes" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
+            <Label maxHeight="25.0" minHeight="25.0" prefHeight="25.0" text="Min" />
+         </children>
+         <padding>
+            <Insets left="9.0" />
+         </padding>
+      </HBox>
+      <TextArea fx:id="prenotificationTextArea" layoutY="98.0" prefHeight="116.0" prefWidth="340.0" />
+      <Button fx:id="prenotificationAddButton" layoutX="50.0" layoutY="216.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Add" />
+      <Button fx:id="prenotificationCancelButton" layoutX="220.0" layoutY="216.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Cancel" />
+   </children>
+</AnchorPane>

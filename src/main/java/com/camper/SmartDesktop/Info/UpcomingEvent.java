@@ -71,7 +71,14 @@ public class UpcomingEvent extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        UpcomingEventInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/upcomingEventRu.fxml")));
+        if (defaultLocale.equals(new Locale("ru","RU")))
+        {
+            UpcomingEventInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/upcomingEventRu.fxml")));
+        }
+        else
+        {
+            UpcomingEventInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/upcomingEventEn.fxml")));
+        }
         UpcomingEventInfoRoot.setLayoutX(80);
         UpcomingEventInfoRoot.setLayoutY(30);
 

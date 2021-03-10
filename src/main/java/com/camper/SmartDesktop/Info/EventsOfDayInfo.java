@@ -81,7 +81,14 @@ public class EventsOfDayInfo extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfoRu.fxml")));
+        if (defaultLocale.equals(new Locale("ru","RU")))
+        {
+            paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfoRu.fxml")));
+        }
+        else
+        {
+            paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfoEn.fxml")));
+        }
         int leftDownCornerX = (int) (mouseEvent.getSceneX() - mouseEvent.getX());
         int leftDownCornerY = (int) (mouseEvent.getSceneY() - mouseEvent.getY()) + 38 + 4;//38 - высота кнопки
         int layoutX = leftDownCornerX;

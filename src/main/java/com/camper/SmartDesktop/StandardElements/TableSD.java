@@ -60,7 +60,7 @@ public class TableSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        TableRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/tableRu.fxml")));
+        TableRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/table.fxml")));
         TableRoot.setLayoutX(80);
         TableRoot.setLayoutY(30);
         this.id = nextId;

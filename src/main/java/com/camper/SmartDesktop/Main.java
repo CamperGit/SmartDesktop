@@ -113,9 +113,13 @@ public class Main extends Application implements Initializable
     @FXML
     private ImageView deprecatedEventsIV;
     @FXML
+    private ImageView languageMenuIV;
+    @FXML
     private Menu helpMenu;
     @FXML
     private Menu aboutTheProgramMenu;
+    @FXML
+    private MenuButton languageMenu;
     @FXML
     private MenuItem desktopPhotoSelectorMenuItem;
     @FXML
@@ -124,6 +128,10 @@ public class Main extends Application implements Initializable
     private CheckMenuItem hideLeftTabPaneMenuItem;
     @FXML
     private CheckMenuItem hideRightTabPaneMenuItem;
+    @FXML
+    private MenuItem languageRussianMenuItem;
+    @FXML
+    private MenuItem languageEnglishMenuItem;
 
     private static MediaPlayer mediaPlayer;
     private static int numberOfImmutableElements;
@@ -133,6 +141,7 @@ public class Main extends Application implements Initializable
     public static String currencySaveName;
     public static Properties saveInfo = new Properties();
     public static Stage Stage;
+    public static Locale defaultLocale = new Locale("ru", "RU");
     public static final int DEFAULT_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
     public static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
     public static final ClassLoader mainCL = Main.class.getClassLoader();
@@ -252,7 +261,7 @@ public class Main extends Application implements Initializable
             }
         }
 
-        //РџРѕСЃР»Рµ Р·Р°РіСЂСѓР·РєРё РЅР°С…РѕРґРёС‚ С‚Р°Р± СЃ РїСЂРµСЃРµС‚Р°РјРё Рё СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РµРјСѓ РїСЂРµСЃРµС‚ СЂР°РІРЅС‹Р№ С‡РёСЃР»Сѓ РІ СЃРѕС…СЂР°РЅС‘РЅРЅРѕРј С„Р°Р№Р»Рµ
+        //После загрузки находит таб с пресетами и устанавливает ему пресет равный числу в сохранённом файле
         for (Node node : root.getChildren())
         {
             if (node instanceof TabPane && node.getAccessibleHelp().equals("Presaves tab pane"))
@@ -291,6 +300,41 @@ public class Main extends Application implements Initializable
         hideLeftTabPaneMenuItem.setOnAction(event -> toolBarTabPane.setVisible(!hideLeftTabPaneMenuItem.isSelected()));
         hideRightTabPaneMenuItem.setOnAction(event -> mainTabPane.setVisible(!hideRightTabPaneMenuItem.isSelected()));
 
+        languageMenu.setText("Язык: RU");
+        languageMenuIV.setImage(new Image("Images/russianFlag25.png"));
+        defaultLocale = new Locale("ru", "RU");
+
+        languageRussianMenuItem.setOnAction(event ->
+        {
+            languageMenu.setText("Язык: RU");
+            languageMenuIV.setImage(new Image("Images/russianFlag25.png"));
+            defaultLocale = new Locale("ru", "RU");
+            try
+            {
+                deleteAllNewElements();
+                clearTab();
+                loadSave(null);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
+        languageEnglishMenuItem.setOnAction(event ->
+        {
+            languageMenu.setText("Language: EN");
+            languageMenuIV.setImage(new Image("Images/englishFlag25.png"));
+            defaultLocale = Locale.ENGLISH;
+            try
+            {
+                deleteAllNewElements();
+                clearTab();
+                loadSave(null);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
+
         checkDeprecatedEventsButton.setOnMouseClicked(event ->
         {
             try
@@ -305,7 +349,7 @@ public class Main extends Application implements Initializable
 
         var selectionModel = mainTabPane.getSelectionModel();
         loadSavesToSavesList(savesChoiceBox);
-        //РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р·РЅР°С‡РµРЅРёРµ РїСЂРµСЃРµС‚Р° РІ Р·Р°РіСЂСѓР·РѕС‡РЅРѕРј СЃРїРёСЃРєРµ
+        //Устанавливаем значение пресета в загрузочном списке
         savesChoiceBox.setValue(saveInfo.getProperty("lastSaveName"));
         addNewPresetButton.setOnAction((event) ->
         {
@@ -314,7 +358,7 @@ public class Main extends Application implements Initializable
                 loadSavesToSavesList(savesChoiceBox);
                 String nameNewSave = addNewSaveFile();
                 savesChoiceBox.getItems().add(nameNewSave);
-                //Р”Р°Р¶Рµ РїСЂРё СѓСЃС‚Р°РЅР°РІР»РµРЅРёРё Р·РЅР°С‡РµРЅРёСЏ РІ РІС‹РїР»С‹РІР°СЋС‰РµРј СЃРїРёСЃРєРµ РїСЂРѕРіСЂР°РјРјРЅРѕ СЃСЂР°Р±Р°С‚С‹РІР°РµС‚ РѕР±СЂР°Р±РѕС‚С‡РёРє СЃРѕР±С‹С‚РёР№ РґР»СЏ РЅРµРіРѕ.
+                //Даже при устанавлении значения в выплывающем списке программно срабатывает обработчик событий для него.
                 savesChoiceBox.setValue(nameNewSave);
             } catch (Exception e)
             {
@@ -325,7 +369,7 @@ public class Main extends Application implements Initializable
         {
             try
             {
-                //Р’С‹Р·С‹РІР°РµС‚СЃСЏ Рё РїСЂРё СЃРѕР·РґР°РЅРёРё РЅРѕРІРѕРіРѕ РїСЂРµСЃРµС‚Р° Рё РїСЂРё Р·Р°РіСЂСѓР·РєРµ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РµРіРѕ
+                //Вызывается и при создании нового пресета и при загрузке уже существующего
                 saveAll(null);
                 deleteAllNewElements();
                 clearTab();
@@ -432,7 +476,7 @@ public class Main extends Application implements Initializable
                             {
                                 if (f.delete())
                                 {
-                                    //Р›РѕРі С‡С‚Рѕ СѓРґР°Р»РёР»РѕСЃСЊ
+                                    //Лог что удалилось
                                 }
                             }
                         }
@@ -447,7 +491,7 @@ public class Main extends Application implements Initializable
                             {
                                 if (f.delete())
                                 {
-                                    //Р›РѕРі С‡С‚Рѕ СѓРґР°Р»РёР»РѕСЃСЊ
+                                    //Лог что удалилось
                                 }
                             }
                         }
@@ -493,10 +537,10 @@ public class Main extends Application implements Initializable
                     if (Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Images")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Images")))
                     {
                         /**
-                         * Р§С‚РѕР±С‹ РёРјРµС‚СЊ С‚РѕР»СЊРєРѕ РѕРґРёРЅ С„Р°Р№Р» С„РѕРЅР° Рё РЅРµ С…СЂР°РЅРёС‚СЊ РЅРµСЃРєРѕР»СЊРєРѕ РёР·РѕР±СЂР°Р¶РµРЅРёР№ РІ СЂР°Р·РЅРѕРј СЂР°СЃС€РёСЂРµРЅРёРё, С‡С‚Рѕ
-                         * Р±СѓРґРµС‚ РјРµС€Р°С‚СЊ РІ РІС‹Р±РѕСЂРµ С„РѕРЅР° СЂР°Р±РѕС‡РµРіРѕ СЃС‚РѕР»Р°, РІРµРґСЊ РІС‹Р±РёСЂР°С‚СЊСЃСЏ РѕРЅ Р±СѓРґРµС‚ РїРѕ РїРµСЂРІРѕРјСѓ РІС…РѕР¶РґРµРЅРёСЋ
-                         * РЅСѓР¶РЅРѕРіРѕ СЂР°СЃС€РёСЂРµРЅРёСЏ РїСЂРё РїРµСЂРІРѕРј Р·Р°РїСѓСЃРєРµ(СЃРјРѕС‚СЂРё РІС‹С€Рµ). Р§С‚РѕР±С‹ СЌС‚РѕРіРѕ РёР·Р±РµР¶Р°С‚СЊ, СѓРґР°Р»СЏРµС‚СЃСЏ РёР·РѕР±СЂР°Р¶РµРЅРёРµ,
-                         * РєРѕС‚РѕСЂРѕРµ Р»РµР¶РёС‚ РІ РїР°РїРєРµ
+                         * Чтобы иметь только один файл фона и не хранить несколько изображений в разном расширении, что
+                         * будет мешать в выборе фона рабочего стола, ведь выбираться он будет по первому вхождению
+                         * нужного расширения при первом запуске(смотри выше). Чтобы этого избежать, удаляется изображение,
+                         * которое лежит в папке
                          */
                         var folderWithImages = new File(DIRPATH + "\\Resources\\Images");
                         File[] contents = folderWithImages.listFiles();
@@ -506,7 +550,7 @@ public class Main extends Application implements Initializable
                             {
                                 if (f.delete())
                                 {
-                                    //Р›РѕРі С‡С‚Рѕ СѓРґР°Р»РёР»РѕСЃСЊ
+                                    //Лог что удалилось
                                 }
                             }
                         }
@@ -521,7 +565,7 @@ public class Main extends Application implements Initializable
                         mediaPlayer.dispose();
                     }
                     /**
-                     * РџСЂРёРІС‹Р±РѕСЂРµ С„РѕС‚РєРё, РѕС‡РёС‰Р°РµРј РїР°РїРєСѓ СЃ РІРёРґРµРѕ, С‡С‚РѕР±С‹ РїСЂРё РїРѕСЃР»РµРґСѓСЋС‰РµРј Р·Р°РїСѓСЃРєРµ Сѓ РЅР°СЃ РѕС‚РєСЂС‹РІР°Р»Р°СЃСЊ РёРјРµРЅРЅРѕ С„РѕС‚РєР°
+                     * Привыборе фотки, очищаем папку с видео, чтобы при последующем запуске у нас открывалась именно фотка
                      */
 
                     if (Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Videos")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Videos")))
@@ -534,7 +578,7 @@ public class Main extends Application implements Initializable
                             {
                                 if (f.delete())
                                 {
-                                    //Р›РѕРі С‡С‚Рѕ СѓРґР°Р»РёР»РѕСЃСЊ
+                                    //Лог что удалилось
                                 }
                             }
                         }

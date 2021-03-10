@@ -100,7 +100,14 @@ public class SchedulerCopySettings extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        CopySettingsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleSettingsRu.fxml")));
+        if (defaultLocale.equals(new Locale("ru","RU")))
+        {
+            CopySettingsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleSettingsRu.fxml")));
+        }
+        else
+        {
+            CopySettingsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleSettingsEn.fxml")));
+        }
         CopySettingsRoot.setAccessibleHelp(String.valueOf(id));
         settingsMap.put(id, this);
 

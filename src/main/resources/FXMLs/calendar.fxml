@@ -623,7 +623,7 @@
       <Button fx:id="calendarCloseButton" layoutX="330.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
       <HBox alignment="CENTER" layoutX="9.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
          <children>
-            <Label text="Пн">
+            <Label fx:id="calendarMondayLabel" text="Пн">
                <font>
                   <Font name="Times New Roman" size="18.0" />
                </font>
@@ -632,7 +632,7 @@
       </HBox>
       <HBox alignment="CENTER" layoutX="57.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
          <children>
-            <Label text="Вт">
+            <Label fx:id="calendarTuesdayLabel" text="Вт">
                <font>
                   <Font name="Times New Roman" size="18.0" />
                </font>
@@ -641,7 +641,7 @@
       </HBox>
       <HBox alignment="CENTER" layoutX="105.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
          <children>
-            <Label text="Ср">
+            <Label fx:id="calendarWednesdayLabel" text="Ср">
                <font>
                   <Font name="Times New Roman" size="18.0" />
                </font>
@@ -650,7 +650,7 @@
       </HBox>
       <HBox alignment="CENTER" layoutX="153.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
          <children>
-            <Label text="Чт">
+            <Label fx:id="calendarThursdayLabel" text="Чт">
                <font>
                   <Font name="Times New Roman" size="18.0" />
                </font>
@@ -659,7 +659,7 @@
       </HBox>
       <HBox alignment="CENTER" layoutX="201.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
          <children>
-            <Label text="Пт">
+            <Label fx:id="calendarFridayLabel" text="Пт">
                <font>
                   <Font name="Times New Roman" size="18.0" />
                </font>
@@ -668,7 +668,7 @@
       </HBox>
       <HBox alignment="CENTER" layoutX="297.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
          <children>
-            <Label text="Вс">
+            <Label fx:id="calendarSundayLabel" text="Вс">
                <font>
                   <Font name="Times New Roman" size="18.0" />
                </font>
@@ -677,7 +677,7 @@
       </HBox>
       <HBox alignment="CENTER" layoutX="249.0" layoutY="119.0" prefHeight="36.0" prefWidth="48.0">
          <children>
-            <Label text="Сб">
+            <Label fx:id="calendarSaturdayLabel" text="Сб">
                <font>
                   <Font name="Times New Roman" size="18.0" />
                </font>

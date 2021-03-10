@@ -57,7 +57,14 @@ public class DeprecatedEvents extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        checkDeprecatedEventsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/deprecatedEventsRu.fxml")));
+        if (defaultLocale.equals(new Locale("ru","RU")))
+        {
+            checkDeprecatedEventsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/deprecatedEventsRu.fxml")));
+        }
+        else
+        {
+            checkDeprecatedEventsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/deprecatedEventsEn.fxml")));
+        }
         checkDeprecatedEventsRoot.setLayoutX(DEFAULT_WIDTH - 512);
         checkDeprecatedEventsRoot.setLayoutY(25);
         updateScrollArea(true, true, true);

@@ -34,6 +34,8 @@ public class CalendarSD extends Application implements Initializable
     private ChoiceBox<String> monthChoiceBox;
     @FXML
     private ComboBox<Integer> yearComboBox;
+    @FXML
+    private Label calendarMondayLabel, calendarTuesdayLabel, calendarWednesdayLabel, calendarThursdayLabel, calendarFridayLabel, calendarSundayLabel, calendarSaturdayLabel;
 
     private boolean load = false;
     private static AnchorPane CalendarRoot;
@@ -75,7 +77,7 @@ public class CalendarSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        CalendarRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarRu.fxml")));
+        CalendarRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendar.fxml")));
         CalendarRoot.setLayoutX(80);
         CalendarRoot.setLayoutY(30);
         updateCalendarTodayLabel();

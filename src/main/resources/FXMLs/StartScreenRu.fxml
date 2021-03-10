@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -19,7 +20,7 @@
    <children>
       <ImageView fx:id="imageViewer" fitHeight="1080.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" />
       <MediaView fx:id="videoViewer" fitHeight="1080.0" fitWidth="1920.0" />
-      <MenuBar prefHeight="26.0" prefWidth="1408.0">
+      <MenuBar maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="1272.0">
         <menus>
           <Menu mnemonicParsing="false" text="Рабочий стол">
             <items>
@@ -34,7 +35,7 @@
             </items>
           </Menu>
           <Menu fx:id="helpMenu" mnemonicParsing="false" text="Справка" />
-            <Menu fx:id="aboutTheProgram" mnemonicParsing="false" text="О программе" />
+            <Menu fx:id="aboutTheProgramMenu" mnemonicParsing="false" text="О программе" />
         </menus>
       </MenuBar>
       <TabPane fx:id="toolBarTabPane" accessibleHelp="ToolTabPane" layoutY="25.0" prefHeight="1055.0" prefWidth="75.0" side="LEFT" tabClosingPolicy="UNAVAILABLE">
@@ -142,5 +143,14 @@
             <ImageView fx:id="deprecatedEventsIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
          </graphic>
       </Button>
+      <MenuButton fx:id="languageMenu" alignment="CENTER" layoutX="1272.0" maxHeight="25.0" minHeight="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="136.0" text="Язык: RU">
+        <items>
+          <MenuItem fx:id="languageRussianMenuItem" mnemonicParsing="false" text="Русский" />
+          <MenuItem fx:id="languageEnglishMenuItem" mnemonicParsing="false" text="English" />
+        </items>
+         <graphic>
+            <ImageView fx:id="languageMenuIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+         </graphic>
+      </MenuButton>
    </children>
 </AnchorPane>
