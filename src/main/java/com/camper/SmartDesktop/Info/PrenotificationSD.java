@@ -6,10 +6,7 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -44,6 +41,8 @@ public class PrenotificationSD extends Application implements Initializable
     private ComboBox<String> prenotificationComboBoxDays;
     @FXML
     private TextArea prenotificationTextArea;
+    @FXML
+    private Label prenotificationRemindInLabel,prenotificationDaysLabel, prenotificationHoursLabel, prenotificationMinutesLabel;
 
     private AnchorPane PrenotificationRoot;
     private int id;
@@ -89,6 +88,14 @@ public class PrenotificationSD extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        prenotificationRemindInLabel.setText(languageBundle.getString("prenotificationRemindInLabel"));
+        prenotificationDaysLabel.setText(languageBundle.getString("prenotificationDaysLabel"));
+        prenotificationHoursLabel.setText(languageBundle.getString("prenotificationHoursLabel"));
+        prenotificationMinutesLabel.setText(languageBundle.getString("prenotificationMinutesLabel"));
+        prenotificationAddButton.setText(languageBundle.getString("prenotificationAddButton"));
+        prenotificationCancelButton.setText(languageBundle.getString("prenotificationCancelButton"));
+
+
         var minutesValues = new ArrayList<String>()
         {{
             addAll(Stream.iterate(0, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));

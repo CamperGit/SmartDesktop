@@ -15,7 +15,7 @@
    <children>
       <ToolBar fx:id="prenotificationToolBar" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="315.0" />
       <Button fx:id="prenotificationCloseButton" layoutX="315.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutY="25.0" prefHeight="25.0" prefWidth="340.0" text="Напомнить за" textAlignment="RIGHT">
+      <Label fx:id="prenotificationRemindInLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="25.0" prefHeight="25.0" prefWidth="340.0" text="Напомнить за" textAlignment="RIGHT">
          <font>
             <Font size="17.0" />
          </font>
@@ -24,11 +24,11 @@
       <HBox layoutY="63.0" maxHeight="25.0" maxWidth="340.0" minHeight="25.0" minWidth="340.0" prefHeight="25.0" prefWidth="340.0" spacing="6.0">
          <children>
             <ComboBox fx:id="prenotificationComboBoxDays" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
-            <Label maxHeight="25.0" minHeight="25.0" prefHeight="25.0" text="Дней" />
+            <Label fx:id="prenotificationDaysLabel" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" text="Дней" />
             <ComboBox fx:id="prenotificationComboBoxHours" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
-            <Label maxHeight="25.0" maxWidth="31.0" minHeight="25.0" minWidth="16.0" prefHeight="25.0" prefWidth="26.0" text="Часа" />
+            <Label fx:id="prenotificationHoursLabel" maxHeight="25.0" maxWidth="31.0" minHeight="25.0" minWidth="16.0" prefHeight="25.0" prefWidth="26.0" text="Часа" />
             <ComboBox fx:id="prenotificationComboBoxMinutes" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
-            <Label maxHeight="25.0" minHeight="25.0" prefHeight="25.0" text="Мин" />
+            <Label fx:id="prenotificationMinutesLabel" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" text="Мин" />
          </children>
          <padding>
             <Insets left="9.0" />

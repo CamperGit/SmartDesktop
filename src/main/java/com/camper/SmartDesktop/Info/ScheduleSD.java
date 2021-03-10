@@ -155,6 +155,8 @@ public class ScheduleSD extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        schedulerSaveButton.setText(languageBundle.getString("schedulerSaveButton"));
+
         scheduleCloseButtonIV.setImage(new Image("Images/delete30.png"));
         scheduleSettingsButtonIV.setImage(new Image("Images/settings30.png"));
         scheduleAddNewLineButtonIV.setImage(new Image("Images/add28.png"));
@@ -626,11 +628,11 @@ public class ScheduleSD extends Application implements Initializable
 
         var spacingBetweenTimeAndCheckBox = new Separator(Orientation.VERTICAL);
         spacingBetweenTimeAndCheckBox.setVisible(false);
-        spacingBetweenTimeAndCheckBox.setPrefWidth(17);
+        spacingBetweenTimeAndCheckBox.setPrefWidth(15);
 
-        var addEventCheckBox = new CheckBox();
+        var addEventCheckBox = new CheckBox(languageBundle.getString("scheduleShowNoticeCheckBox"));
+        Main.setRegion(addEventCheckBox,157,25);
         addEventCheckBox.setLayoutX(5);
-        addEventCheckBox.setText("Показать уведомление");
         addEventCheckBox.getStylesheets().add(Objects.requireNonNull(mainCL.getResource("FXMLs/mediumCheckBox.css")).toExternalForm());
         addEventCheckBox.setSelected(checkBoxState);
 

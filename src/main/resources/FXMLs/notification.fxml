@@ -13,7 +13,7 @@
       <ToolBar fx:id="notificationToolBar" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="316.0" />
       <TextArea fx:id="notificationTextArea" layoutY="116.0" prefHeight="102.0" prefWidth="340.0" wrapText="true" />
       <Button fx:id="notificationAddButton" layoutX="50.0" layoutY="220.0" maxWidth="70.0" minWidth="70.0" mnemonicParsing="false" prefWidth="70.0" text="Добавить" />
-      <Button fx:id="notificationCancelButton" layoutX="220.0" layoutY="220.0" mnemonicParsing="false" text="Отменить" />
+      <Button fx:id="notificationCancelButton" layoutX="220.0" layoutY="220.0" maxWidth="70.0" minWidth="70.0" mnemonicParsing="false" prefWidth="70.0" text="Отменить" />
       <Button fx:id="notificationCloseButton" layoutX="315.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
       <DatePicker fx:id="notificationDatePicker" layoutX="80.0" layoutY="34.0" prefHeight="25.0" prefWidth="180.0" />
       <ComboBox fx:id="notificationComboBoxMinutes" layoutX="190.0" layoutY="73.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />

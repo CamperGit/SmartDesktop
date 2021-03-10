@@ -96,6 +96,9 @@ public class NotificationSD extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        notificationAddButton.setText(languageBundle.getString("notificationAddButton"));
+        notificationCancelButton.setText(languageBundle.getString("notificationCancelButton"));
+
         var hoursValues = new ArrayList<String>()
         {{
             addAll(Stream.iterate(0, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));

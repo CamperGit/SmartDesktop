@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 
 import javax.xml.xpath.XPath;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -85,7 +86,15 @@ public class Weather extends Application implements Initializable
             WeatherRoot = null;
         });
 
-        var site = "https://yandex.ru/pogoda";
+        String site;
+        if (defaultLocale.equals(Locale.ENGLISH))
+        {
+            site = "https://weather.com";
+        }
+        else
+        {
+            site = "https://yandex.ru/pogoda";
+        }
         var engine = weatherWebView.getEngine();
         weatherWebView.getEngine().setUserStyleSheetLocation(Objects.requireNonNull(mainCL.getResource("FXMLs/webView.css")).toExternalForm());
         engine.load(site);

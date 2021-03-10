@@ -11,12 +11,12 @@
    <children>
       <ToolBar fx:id="upcomingEventToolBar" prefHeight="25.0" prefWidth="315.0" />
       <Button fx:id="upcomingEventCloseButton" layoutX="315.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
-      <Label accessibleHelp="upcomingEventTimeLabel" alignment="CENTER" layoutY="54.0" prefHeight="46.0" prefWidth="340.0" style="-fx-background-color: #f4f4f4;" text="00 дд : 00 чч : 00 мм : 00 сс" textAlignment="CENTER">
+      <Label fx:id="upcomingEventTimeLabel" accessibleHelp="upcomingEventTimeLabel" alignment="CENTER" layoutY="54.0" prefHeight="46.0" prefWidth="340.0" style="-fx-background-color: #f4f4f4;" text="00 дд : 00 чч : 00 мм : 00 сс" textAlignment="CENTER">
          <font>
             <Font size="19.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" layoutY="25.0" prefHeight="36.0" prefWidth="340.0" text="До ближайшего события:" textAlignment="CENTER">
+      <Label fx:id="upcomingEventLabel" alignment="CENTER" layoutY="25.0" prefHeight="36.0" prefWidth="340.0" text="До ближайшего события:" textAlignment="CENTER">
          <font>
             <Font name="Times New Roman" size="19.0" />
          </font>

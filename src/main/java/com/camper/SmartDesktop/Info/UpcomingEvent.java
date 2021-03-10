@@ -34,6 +34,8 @@ public class UpcomingEvent extends Application implements Initializable
     private Button upcomingEventCloseButton;
     @FXML
     private ToolBar upcomingEventToolBar;
+    @FXML
+    private Label upcomingEventLabel, upcomingEventTimeLabel;
 
     private static PriorityBlockingQueue<LocalDateTime> eventsOnQueue = new PriorityBlockingQueue<>(5, LocalDateTime::compareTo);
     private static Map<LocalDateTime, EventOfDay> infoOfEvents = new HashMap<>();
@@ -84,6 +86,8 @@ public class UpcomingEvent extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        upcomingEventLabel.setText(languageBundle.getString("upcomingEventLabel"));
+
         upcomingEventToolBar.setOnMouseDragged(event ->
         {
             UpcomingEventInfoRoot = (AnchorPane) (((ToolBar) event.getSource()).getParent());
@@ -142,8 +146,17 @@ public class UpcomingEvent extends Application implements Initializable
 
                                     long seconds = tempDateTime.until(upcomingEvent, ChronoUnit.SECONDS);
 
-                                    String time = MessageFormat.format("{0, choice,0#0{0}| 10#{0}} д : {1, choice,0#0{1}| 10#{1}} ч : {2, choice,0#0{2}| 10#{2}} мин : {3, choice,0#0{3}| 10#{3}} сек",
-                                            days, hours, minutes, seconds);
+                                    String time;
+                                    if (defaultLocale.equals(Locale.ENGLISH))
+                                    {
+                                        time = MessageFormat.format("{0, choice,0#0{0}| 10#{0}} d : {1, choice,0#0{1}| 10#{1}} h : {2, choice,0#0{2}| 10#{2}} min : {3, choice,0#0{3}| 10#{3}} sec",
+                                                days, hours, minutes, seconds);
+                                    }
+                                    else
+                                    {
+                                        time = MessageFormat.format("{0, choice,0#0{0}| 10#{0}} д : {1, choice,0#0{1}| 10#{1}} ч : {2, choice,0#0{2}| 10#{2}} мин : {3, choice,0#0{3}| 10#{3}} сек",
+                                                days, hours, minutes, seconds);
+                                    }
                                     ((Label) node).setText(time);
                                 });
                             }

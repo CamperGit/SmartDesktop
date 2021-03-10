@@ -25,6 +25,9 @@ public class SchedulerCopySettings extends Application implements Initializable
     @FXML
     private RadioButton schedulerForAWeekRadioButton, schedulerForAMonthRadioButton, schedulerForAYearRadioButton;
 
+    @FXML
+    private Label scheduleSettingsRepeatLabel, scheduleSettingsDuringLabel;
+
     public ScheduleSettingsRepeat getRepeatSelected()
     {
         return repeatSelected;
@@ -141,6 +144,17 @@ public class SchedulerCopySettings extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        scheduleSettingsRepeatLabel.setText(languageBundle.getString("scheduleSettingsRepeatLabel"));
+        scheduleSettingsDuringLabel.setText(languageBundle.getString("scheduleSettingsDuringLabel"));
+        scheduleDontRepeatRadioButton.setText(languageBundle.getString("scheduleDontRepeatRadioButton"));
+        scheduleDayRepeatRadioButton.setText(languageBundle.getString("scheduleDayRepeatRadioButton"));
+        scheduleWeekRepeatRadioButton.setText(languageBundle.getString("scheduleWeekRepeatRadioButton"));
+        scheduleMonthRepeatRadioButton.setText(languageBundle.getString("scheduleMonthRepeatRadioButton"));
+        scheduleYearRepeatRadioButton.setText(languageBundle.getString("scheduleYearRepeatRadioButton"));
+        schedulerForAWeekRadioButton.setText(languageBundle.getString("schedulerForAWeekRadioButton"));
+        schedulerForAMonthRadioButton.setText(languageBundle.getString("schedulerForAMonthRadioButton"));
+        schedulerForAYearRadioButton.setText(languageBundle.getString("schedulerForAYearRadioButton"));
+
         var repeat = new ToggleGroup();
         scheduleDontRepeatRadioButton.setToggleGroup(repeat);
         scheduleDayRepeatRadioButton.setToggleGroup(repeat);

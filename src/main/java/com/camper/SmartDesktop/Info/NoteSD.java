@@ -108,6 +108,9 @@ public class NoteSD extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        noteBoldCheckBox.setText(languageBundle.getString("noteBoldCheckBox"));
+        noteItalicCheckBox.setText(languageBundle.getString("noteItalicCheckBox"));
+
         var image = new Image("Images/closeButton40.png", 40, 40, false, false);
         closeButtonImage.setImage(image);
 
