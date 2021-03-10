@@ -142,6 +142,7 @@ public class Main extends Application implements Initializable
     public static Properties saveInfo = new Properties();
     public static Stage Stage;
     public static Locale defaultLocale = new Locale("ru", "RU");
+    public static ResourceBundle languageBundle = ResourceBundle.getBundle("language", defaultLocale);
     public static final int DEFAULT_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
     public static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
     public static final ClassLoader mainCL = Main.class.getClassLoader();
@@ -250,6 +251,8 @@ public class Main extends Application implements Initializable
 
         currencySaveName = loadSave(null);
 
+        languageBundle = ResourceBundle.getBundle("language", defaultLocale);
+
         if (CalendarSD.getRoot() == null)
         {
             try
@@ -309,6 +312,7 @@ public class Main extends Application implements Initializable
             languageMenu.setText("язык: RU");
             languageMenuIV.setImage(new Image("Images/russianFlag25.png"));
             defaultLocale = new Locale("ru", "RU");
+            languageBundle = ResourceBundle.getBundle("language", defaultLocale);
             try
             {
                 saveAll(null);
@@ -325,6 +329,7 @@ public class Main extends Application implements Initializable
             languageMenu.setText("Language: EN");
             languageMenuIV.setImage(new Image("Images/englishFlag25.png"));
             defaultLocale = Locale.ENGLISH;
+            languageBundle = ResourceBundle.getBundle("language", defaultLocale);
             try
             {
                 saveAll(null);

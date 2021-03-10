@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding">
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Info/CalendarSD.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Info/Day.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Info/EventsOfDayInfo.java" charset="windows-1251" />
@@ -11,8 +11,8 @@
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Info/UpcomingEvent.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Loading.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Main.java" charset="windows-1251" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/SaveAndLoadScreen.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/Saving.java" charset="windows-1251" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/camper/SmartDesktop/StandardElements/TableSD.java" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/language_en.properties" charset="UTF-8" />
   </component>
 </project>
