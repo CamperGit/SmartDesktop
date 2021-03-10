@@ -179,7 +179,7 @@ public class ScheduleSD extends Application implements Initializable
 
         scheduleCloseButton.setOnAction(event ->
         {
-            var alert = new Alert(Alert.AlertType.WARNING, "Вы уверены, что хотите удалить расписание?" + "\n" + "(Это удалит все события связанные с данным элементом)", new ButtonType("Да", ButtonBar.ButtonData.YES), new ButtonType("Нет", ButtonBar.ButtonData.NO));
+            var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("scheduleDeleteAlert"), new ButtonType("Да", ButtonBar.ButtonData.YES), new ButtonType("Нет", ButtonBar.ButtonData.NO));
             var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
             if (alertResult.getButtonData().equals(ButtonBar.ButtonData.YES))
             {
@@ -233,7 +233,7 @@ public class ScheduleSD extends Application implements Initializable
                 schedulerSaveButton.setDisable(true);
                 if (scheduleDaysSaveList.size() != 0)
                 {
-                    var alert = new Alert(Alert.AlertType.WARNING, "Вы уверены, что хотите изменить расписание?", new ButtonType("Да", ButtonBar.ButtonData.YES), new ButtonType("Нет", ButtonBar.ButtonData.NO));
+                    var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("scheduleChangeAlert"), new ButtonType("Да", ButtonBar.ButtonData.YES), new ButtonType("Нет", ButtonBar.ButtonData.NO));
                     var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
                     if (alertResult.getButtonData().equals(ButtonBar.ButtonData.YES))
                     {
@@ -309,9 +309,7 @@ public class ScheduleSD extends Application implements Initializable
                 }
             } else
             {
-                //Для локализации
-                String alertText = "Введите дату!";
-                var alert = new Alert(Alert.AlertType.WARNING, alertText, ButtonType.OK);
+                var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("scheduleDateAlert"), ButtonType.OK);
                 alert.showAndWait();
             }
         });

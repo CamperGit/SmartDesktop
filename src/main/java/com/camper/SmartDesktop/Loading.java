@@ -81,7 +81,7 @@ public class Loading
                 //“огда мы загружаем старое сохранение, которое точно будет, потому что мы его только что создали
                 else if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\" + saveInfo.getProperty("lastSaveName"))))
                 {
-                    var alert = new Alert(Alert.AlertType.WARNING, "¬ыбранное сохранение было удалено или переименовано. «агрузка прервана", ButtonType.OK);
+                    var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("loadingSaveErrorAlert"), ButtonType.OK);
                     alert.showAndWait();
 
                     filename = saveInfo.getProperty("lastSaveName");
@@ -90,11 +90,11 @@ public class Loading
 
                     doc = builder.parse(DIRPATH + "\\Resources\\Saves\\" + saveInfo.getProperty("lastSaveName"));
                 }
-                //ѕроверка проходит, если у нас при перивычной загрузке отсутствует файл последнего сохранени€.
+                //ѕроверка проходит, если у нас при первичной загрузке отсутствует файл последнего сохранени€.
                 //“огда мы создаЄм новое пустое сохранение и загружаем его.
                 else
                 {
-                    var alert = new Alert(Alert.AlertType.WARNING, "¬ыбранное сохранение было удалено или переименовано. «агрузка прервана", ButtonType.OK);
+                    var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("loadingSaveErrorAlert"), ButtonType.OK);
                     alert.showAndWait();
 
                     filename = addNewSaveFile();

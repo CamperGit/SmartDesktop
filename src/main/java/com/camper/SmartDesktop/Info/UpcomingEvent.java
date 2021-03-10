@@ -185,7 +185,7 @@ public class UpcomingEvent extends Application implements Initializable
                         if (otherInfoOfEvent.getType().equals(Day.EventType.Task))
                         {
                             alreadyShowing = true;
-                            var alert = new Alert(Alert.AlertType.WARNING, otherInfoOfEvent.getType().toString() + ": " + otherInfoOfEvent.getInfo(), ButtonType.YES, ButtonType.NO);
+                            var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("upcomingEventTaskAlert") + " " + otherInfoOfEvent.getInfo(), ButtonType.YES, ButtonType.NO);
                             var alertResult = alert.showAndWait();
                             GoalSD.updateStateOfGoalCheckBoxes(otherInfoOfEvent, alertResult.orElse(ButtonType.NO) == ButtonType.YES);
                         }
@@ -225,8 +225,17 @@ public class UpcomingEvent extends Application implements Initializable
                                 updateDayIcons(date, day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
                             }
 
+                            String typeOfEvent;
+                            if (otherInfoOfEvent.getType().equals(Day.EventType.Schedule))
+                            {
+                                typeOfEvent = languageBundle.getString("upcomingEventScheduleAlert");
+                            }
+                            else
+                            {
+                                typeOfEvent = languageBundle.getString("upcomingEventNotificationAlert");
+                            }
                             alreadyShowing = true;
-                            var alert = new Alert(Alert.AlertType.WARNING, otherInfoOfEvent.getType().toString() + ": " + otherInfoOfEvent.getInfo(), ButtonType.OK);
+                            var alert = new Alert(Alert.AlertType.WARNING, typeOfEvent + " " + otherInfoOfEvent.getInfo(), ButtonType.OK);
                             alert.showAndWait();
                         }
                     }

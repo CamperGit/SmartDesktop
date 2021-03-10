@@ -183,7 +183,7 @@ public class GoalSD extends Application implements Initializable
 
         goalCloseButton.setOnAction(event ->
         {
-            var alert = new Alert(Alert.AlertType.WARNING, "Вы уверены, что хотите удалить цель?" + "\n" + "(Это удалит все события связанные с данным элементом)", new ButtonType("Да", ButtonBar.ButtonData.YES), new ButtonType("Нет", ButtonBar.ButtonData.NO));
+            var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("goalDeleteAlert"), new ButtonType("Да", ButtonBar.ButtonData.YES), new ButtonType("Нет", ButtonBar.ButtonData.NO));
             var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
             if (alertResult.getButtonData().equals(ButtonBar.ButtonData.YES))
             {
@@ -337,15 +337,13 @@ public class GoalSD extends Application implements Initializable
                         goalEndDatePicker.setEditable(false);
                     } else
                     {
-                        //Для локализации
                         String alertText = "Конечная дата должна быть больше начальной!";
-                        var alert = new Alert(Alert.AlertType.WARNING, alertText, ButtonType.OK);
+                        var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("goalDateAlert"), ButtonType.OK);
                         alert.showAndWait();
                     }
                 } else
                 {
-                    String alertText = "Имя цели обязано быть уникальным!";
-                    var alert = new Alert(Alert.AlertType.WARNING, alertText, ButtonType.OK);
+                    var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("goalNameAlert"), ButtonType.OK);
                     alert.showAndWait();
                 }
 
@@ -675,8 +673,7 @@ public class GoalSD extends Application implements Initializable
                 }
             } else
             {
-                String alertText = "Нельзя сохранять изменения в прошедшем событии!";
-                var alert = new Alert(Alert.AlertType.WARNING, alertText, ButtonType.OK);
+                var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("goalTaskSaveAlert"), ButtonType.OK);
                 alert.showAndWait();
             }
             saveButton.setDisable(true);

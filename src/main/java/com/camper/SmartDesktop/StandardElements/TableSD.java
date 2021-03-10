@@ -109,7 +109,7 @@ public class TableSD extends Application implements Initializable
         {
             var tableSD = tables.get(Integer.parseInt(((AnchorPane) (((Button) event.getSource()).getParent())).getAccessibleHelp()));
             var dialog = new TextInputDialog();
-            dialog.setHeaderText("Введите название столбца");
+            dialog.setHeaderText(languageBundle.getString("tableNewColumnAlert"));
             var result = dialog.showAndWait().orElse(null);
             if (result != null)
             {

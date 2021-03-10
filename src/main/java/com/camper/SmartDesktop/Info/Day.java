@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import static com.camper.SmartDesktop.Info.DeprecatedEvents.getDaysWithDeprecatedEvents;
 import static com.camper.SmartDesktop.Info.DeprecatedEvents.updateBellIcon;
+import static com.camper.SmartDesktop.Main.languageBundle;
 
 public class Day implements Cloneable
 {
@@ -89,12 +90,12 @@ public class Day implements Cloneable
             {
                 if (event.getType().equals(EventType.Notification))
                 {
-                    var alert = new Alert(Alert.AlertType.WARNING, "ƒанное напоминание уже существует. ¬ыберите другую дату, врем€ или текст", ButtonType.OK);
+                    var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("equalsNotificationEventAlert"), ButtonType.OK);
                     alert.showAndWait();
                 }
                 if (event.getType().equals(EventType.Task))
                 {
-                    var alert = new Alert(Alert.AlertType.WARNING, "«адача с такими же данными уже существует. ¬ыберите другую дату, врем€ или текст", ButtonType.OK);
+                    var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("equalsGoalEventAlert"), ButtonType.OK);
                     alert.showAndWait();
                 }
                 return false;

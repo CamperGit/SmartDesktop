@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 import static com.camper.SmartDesktop.Info.UpcomingEvent.disableEventQueue;
 import static com.camper.SmartDesktop.Main.*;
@@ -55,7 +56,15 @@ public class Saving
             filename = currencySaveName;
         } else
         {
-            var alert = new Alert(Alert.AlertType.NONE, "Сохранить изменения?", new ButtonType("Сохранить", ButtonBar.ButtonData.YES), new ButtonType("Не сохранять", ButtonBar.ButtonData.NO), new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE));
+            Alert alert;
+            if (defaultLocale.equals(Locale.ENGLISH))
+            {
+                alert = new Alert(Alert.AlertType.NONE, languageBundle.getString("savingSaveChangesAlert"), new ButtonType("Save", ButtonBar.ButtonData.YES), new ButtonType("Do not save", ButtonBar.ButtonData.NO), new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE));
+            }
+            else
+            {
+                alert = new Alert(Alert.AlertType.NONE, languageBundle.getString("savingSaveChangesAlert"), new ButtonType("Сохранить", ButtonBar.ButtonData.YES), new ButtonType("Не сохранять", ButtonBar.ButtonData.NO), new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE));
+            }
             var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
             if (alertResult.getButtonData() == ButtonBar.ButtonData.YES)
             {
