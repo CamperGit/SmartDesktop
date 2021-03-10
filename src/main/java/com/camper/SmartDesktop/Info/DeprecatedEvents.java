@@ -48,6 +48,12 @@ public class DeprecatedEvents extends Application implements Initializable
         return daysWithDeprecatedEvents;
     }
 
+    public static void clearLastInfo()
+    {
+        daysWithDeprecatedEvents.clear();
+    }
+
+
     @Override
     public void start(Stage primaryStage) throws Exception
     {

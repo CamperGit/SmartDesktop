@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.TextArea?>
@@ -16,11 +15,9 @@
       <Button fx:id="notificationAddButton" layoutX="50.0" layoutY="220.0" maxWidth="70.0" minWidth="70.0" mnemonicParsing="false" prefWidth="70.0" text="Добавить" />
       <Button fx:id="notificationCancelButton" layoutX="220.0" layoutY="220.0" mnemonicParsing="false" text="Отменить" />
       <Button fx:id="notificationCloseButton" layoutX="315.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
-      <DatePicker fx:id="notificationDatePicker" layoutX="8.0" layoutY="34.0" prefHeight="25.0" prefWidth="140.0" />
-      <CheckBox fx:id="notificationCheckBox1" layoutX="193.0" layoutY="35.0" mnemonicParsing="false" styleClass="medium-check-box" stylesheets="@checkbox.css" text="Добавить туда-то" />
-      <CheckBox fx:id="notificationCheckBox2" layoutX="193.0" layoutY="74.0" mnemonicParsing="false" styleClass="medium-check-box" stylesheets="@checkbox.css" text="Добавить сюда-то" />
-      <ComboBox fx:id="notificationComboBoxMinutes" layoutX="78.0" layoutY="73.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
-      <ComboBox fx:id="notificationComboBoxHours" layoutX="8.0" layoutY="73.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
+      <DatePicker fx:id="notificationDatePicker" layoutX="80.0" layoutY="34.0" prefHeight="25.0" prefWidth="180.0" />
+      <ComboBox fx:id="notificationComboBoxMinutes" layoutX="190.0" layoutY="73.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
+      <ComboBox fx:id="notificationComboBoxHours" layoutX="80.0" layoutY="73.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
    </children>
    <effect>
       <DropShadow />

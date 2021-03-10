@@ -13,6 +13,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -52,6 +54,8 @@ public class Main extends Application implements Initializable
 
     @FXML
     private ChoiceBox<String> savesChoiceBox;
+    @FXML
+    private TabPane toolBarTabPane;
     @FXML
     private TabPane mainTabPane;
     @FXML
@@ -108,6 +112,18 @@ public class Main extends Application implements Initializable
     private ImageView calendarIV;
     @FXML
     private ImageView deprecatedEventsIV;
+    @FXML
+    private Menu helpMenu;
+    @FXML
+    private Menu aboutTheProgramMenu;
+    @FXML
+    private MenuItem desktopPhotoSelectorMenuItem;
+    @FXML
+    private MenuItem desktopVideoSelectorMenuItem;
+    @FXML
+    private CheckMenuItem hideLeftTabPaneMenuItem;
+    @FXML
+    private CheckMenuItem hideRightTabPaneMenuItem;
 
     private static MediaPlayer mediaPlayer;
     private static int numberOfImmutableElements;
@@ -147,6 +163,7 @@ public class Main extends Application implements Initializable
         GoalSD.clearSaveList();
         PrenotificationSD.clearSaveList();
         TableSD.clearSaveList();
+        DeprecatedEvents.clearLastInfo();
         UpcomingEvent.clearLastInfo();
         Weather.clearLastInfo();
         CalendarSD.clearLastInfo();
@@ -271,6 +288,9 @@ public class Main extends Application implements Initializable
         addNewPresetButton.setLayoutX(DEFAULT_WIDTH - 345);
         checkDeprecatedEventsButton.setLayoutX(DEFAULT_WIDTH - 512);
 
+        hideLeftTabPaneMenuItem.setOnAction(event -> toolBarTabPane.setVisible(!hideLeftTabPaneMenuItem.isSelected()));
+        hideRightTabPaneMenuItem.setOnAction(event -> mainTabPane.setVisible(!hideRightTabPaneMenuItem.isSelected()));
+
         checkDeprecatedEventsButton.setOnMouseClicked(event ->
         {
             try
@@ -387,7 +407,6 @@ public class Main extends Application implements Initializable
             mediaPlayer.setCycleCount(Integer.MAX_VALUE);
         }
 
-
         videoFileChooserButton.setOnAction(event ->
         {
             var fileChooser = new FileChooser();
@@ -448,6 +467,7 @@ public class Main extends Application implements Initializable
                 }
             }
         });
+        desktopVideoSelectorMenuItem.setOnAction(videoFileChooserButton.getOnAction());
 
         imageFileChooserButton.setOnAction(event ->
         {
@@ -528,6 +548,7 @@ public class Main extends Application implements Initializable
                 }
             }
         });
+        desktopPhotoSelectorMenuItem.setOnAction(imageFileChooserButton.getOnAction());
 
         note.setOnAction(event ->
         {

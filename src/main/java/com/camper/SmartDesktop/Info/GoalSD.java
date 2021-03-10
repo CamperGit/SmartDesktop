@@ -49,6 +49,8 @@ public class GoalSD extends Application implements Initializable
     private TextField goalNameTextField;
     @FXML
     private ToolBar goalToolBar;
+    @FXML
+    private ImageView goalCloseButtonIV;
 
     private boolean load = false;
     private int id;
@@ -167,6 +169,8 @@ public class GoalSD extends Application implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        goalCloseButtonIV.setImage(new Image("Images/delete30.png"));
+
         goalCloseButton.setOnAction(event ->
         {
             var alert = new Alert(Alert.AlertType.WARNING, "Вы уверены, что хотите удалить цель?" + "\n" + "(Это удалит все события связанные с данным элементом)", new ButtonType("Да", ButtonBar.ButtonData.YES), new ButtonType("Нет", ButtonBar.ButtonData.NO));
