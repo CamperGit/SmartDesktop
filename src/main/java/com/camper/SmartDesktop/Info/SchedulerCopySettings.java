@@ -101,6 +101,7 @@ public class SchedulerCopySettings extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("ScheduleCopySettings: begin start method");
         CopySettingsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/scheduleSettings.fxml")));
         CopySettingsRoot.setAccessibleHelp(String.valueOf(id));
         settingsMap.put(id, this);
@@ -132,6 +133,7 @@ public class SchedulerCopySettings extends Application implements Initializable
             {
                 settings.setEntered(false);
                 Main.root.getChildren().remove(settings.getCopySettingsRoot());
+                logger.info("ScheduleCopySettings: close copySettings window");
             }
         });
 
@@ -139,11 +141,13 @@ public class SchedulerCopySettings extends Application implements Initializable
         {
             showSettings(CopySettingsRoot, mouseEvent);
         }
+        logger.info("ScheduleCopySettings: begin start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("ScheduleCopySettings: begin initialize method");
         scheduleSettingsRepeatLabel.setText(languageBundle.getString("scheduleSettingsRepeatLabel"));
         scheduleSettingsDuringLabel.setText(languageBundle.getString("scheduleSettingsDuringLabel"));
         scheduleDontRepeatRadioButton.setText(languageBundle.getString("scheduleDontRepeatRadioButton"));
@@ -288,6 +292,7 @@ public class SchedulerCopySettings extends Application implements Initializable
             settings.periodSelected = ScheduleSettingsPeriod.FOR_A_YEAR;
             settings.saveButton.setDisable(false);
         });
+        logger.info("ScheduleCopySettings: end initialize method");
     }
 
     public void fireSchedulerCopySettingsRadioButton(String buttonName)

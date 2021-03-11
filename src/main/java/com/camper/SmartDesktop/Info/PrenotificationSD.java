@@ -81,6 +81,7 @@ public class PrenotificationSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("PrenotificationSD: begin start method");
         PrenotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/prenotification.fxml")));
         PrenotificationRoot.setLayoutX(DEFAULT_WIDTH / 2 - 340 / 2);
         PrenotificationRoot.setLayoutY(DEFAULT_HEIGHT / 2 - 244 / 2);
@@ -91,11 +92,13 @@ public class PrenotificationSD extends Application implements Initializable
         PrenotificationRoot.setAccessibleHelp(String.valueOf(this.id));
 
         addChild(PrenotificationRoot);
+        logger.info("PrenotificationSD: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("PrenotificationSD: begin initialize method");
         prenotificationRemindInLabel.setText(languageBundle.getString("prenotificationRemindInLabel"));
         prenotificationDaysLabel.setText(languageBundle.getString("prenotificationDaysLabel"));
         prenotificationHoursLabel.setText(languageBundle.getString("prenotificationHoursLabel"));
@@ -136,6 +139,7 @@ public class PrenotificationSD extends Application implements Initializable
             selectedPrenotification = (AnchorPane) (((Button) event.getSource()).getParent());
             prenotifications.remove(Integer.parseInt(selectedPrenotification.getAccessibleHelp()));
             Main.root.getChildren().remove(selectedPrenotification);
+            logger.info("PrenotificationSD: prenotification was closed");
         });
 
         prenotificationCancelButton.setOnAction(prenotificationCloseButton.getOnAction());
@@ -350,7 +354,9 @@ public class PrenotificationSD extends Application implements Initializable
 
                 selectedPrenotification = (AnchorPane) (((Button) event.getSource()).getParent());
                 Main.root.getChildren().remove(selectedPrenotification);
+                logger.info("PrenotificationSD: prenotification was added");
             }
         });
+        logger.info("PrenotificationSD: end initialize method");
     }
 }

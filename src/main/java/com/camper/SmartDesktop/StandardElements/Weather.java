@@ -57,6 +57,7 @@ public class Weather extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("Weather: begin start method");
         WeatherRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/weather.fxml")));
         WeatherRoot.setLayoutX(80);
         WeatherRoot.setLayoutY(30);
@@ -68,11 +69,13 @@ public class Weather extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(WeatherRoot);
         }
+        logger.info("Weather: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("Weather: begin initialize method");
         weatherToolBar.setOnMouseDragged(event ->
         {
             WeatherRoot = (AnchorPane) (((ToolBar) event.getSource()).getParent());
@@ -84,6 +87,7 @@ public class Weather extends Application implements Initializable
             WeatherRoot = (AnchorPane) (((Button) event.getSource()).getParent());
             Main.root.getChildren().remove(WeatherRoot);
             WeatherRoot = null;
+            logger.info("Weather: weather element was closed");
         });
 
         String site;
@@ -97,10 +101,12 @@ public class Weather extends Application implements Initializable
         var engine = weatherWebView.getEngine();
         weatherWebView.getEngine().setUserStyleSheetLocation(Objects.requireNonNull(mainCL.getResource("FXMLs/webView.css")).toExternalForm());
         engine.load(site);
+        logger.info("Weather: end initialize method");
     }
 
     public static void addWeatherInfoToXML(Document doc, boolean createEmptyXML)
     {
+        logger.info("Weather: start saving weather");
         var rootElement = doc.getFirstChild();
 
         var weatherInfoElement = doc.createElement("weatherInfo");
@@ -127,10 +133,12 @@ public class Weather extends Application implements Initializable
             var layoutYValue = doc.createTextNode(String.valueOf((int) (WeatherRoot.getLayoutY())));
             layoutY.appendChild(layoutYValue);
         }
+        logger.info("Weather: end saving weather");
     }
 
     public static void loadWeatherInfoFromXML(Document doc, XPath xPath) throws Exception
     {
+        logger.info("Weather: start loading weather");
         boolean notEmpty = xPath.evaluateExpression("count(/save/weatherInfo/*)", doc, Integer.class) != 0;
         if (notEmpty)
         {
@@ -150,5 +158,6 @@ public class Weather extends Application implements Initializable
             WeatherRoot.setLayoutX(layoutX);
             WeatherRoot.setLayoutY(layoutY);
         }
+        logger.info("Weather: end loading weather");
     }
 }

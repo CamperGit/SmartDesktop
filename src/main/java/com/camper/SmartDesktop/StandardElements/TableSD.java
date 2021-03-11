@@ -60,6 +60,7 @@ public class TableSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("TableSD: begin start method");
         TableRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/table.fxml")));
         TableRoot.setLayoutX(80);
         TableRoot.setLayoutY(30);
@@ -87,16 +88,19 @@ public class TableSD extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(TableRoot);
         }
+        logger.info("TableSD: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("TableSD: begin initialize method");
         tableCloseButton.setOnAction(event ->
         {
             selectedTable = (AnchorPane) (((Button) event.getSource()).getParent());
             tables.remove(Integer.parseInt(selectedTable.getAccessibleHelp()));
             Main.root.getChildren().remove(selectedTable);
+            logger.info("TableSD: table was removed");
         });
 
         tableToolBar.setOnMouseDragged(event ->
@@ -116,6 +120,7 @@ public class TableSD extends Application implements Initializable
                 tableSD.addNewColumnToTheTable(result);
             }
         });
+        logger.info("TableSD: end initialize method");
     }
 
     public void addNewColumnToTheTable(String columnName)
@@ -144,6 +149,7 @@ public class TableSD extends Application implements Initializable
 
     public static void addTablesToXML(Document doc, boolean createEmptyXML)
     {
+        logger.info("TableSD: start tables saving");
         var rootElement = doc.getFirstChild();
 
         var tablesElement = doc.createElement("tables");
@@ -219,10 +225,12 @@ public class TableSD extends Application implements Initializable
                 id++;
             }
         }
+        logger.info("TableSD: end tables saving");
     }
 
     public static void loadTablesFromXML(Document doc, XPath xPath) throws Exception
     {
+        logger.info("TableSD: start tables loading");
         int numberOfTables = xPath.evaluateExpression("count(/save/tables/*)", doc, Integer.class);
         for (int id = 1; id < numberOfTables + 1; id++)
         {
@@ -258,5 +266,6 @@ public class TableSD extends Application implements Initializable
                 }
             }
         }
+        logger.info("TableSD: end tables loading");
     }
 }

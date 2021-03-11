@@ -63,6 +63,7 @@ public class GoalSDProgressInfo extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("GoalSDProgressInfo: begin start method");
         goalProgressRoot.setAccessibleHelp(String.valueOf(id));
         goalProgressRoot.setStyle("-fx-background-color: #f4f4f4");
         Main.setRegion(goalProgressRoot, 400, 320);
@@ -95,8 +96,10 @@ public class GoalSDProgressInfo extends Application
             {
                 progressInfo.setEntered(false);
                 Main.root.getChildren().remove(progressInfo.getGoalProgressRoot());
+                logger.info("GoalSDProgressInfo: close progress info");
             }
         });
+        logger.info("GoalSDProgressInfo: end start method");
     }
 
     public void updatePieChart(Map<CheckBox, List<CheckBox>> groupOfGoalCheckBox, Map<EventOfDay, CheckBox> eventsOfCheckBoxes)

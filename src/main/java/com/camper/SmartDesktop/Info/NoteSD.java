@@ -89,7 +89,7 @@ public class NoteSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        Main.logger.error("note");
+        logger.info("NoteSD: begin start method");
 
         NoteRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/note.fxml")));
         NoteRoot.setLayoutX(80);
@@ -105,11 +105,13 @@ public class NoteSD extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(NoteRoot);
         }
+        logger.info("NoteSD: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("NoteSD: begin initialize method");
         noteBoldCheckBox.setText(languageBundle.getString("noteBoldCheckBox"));
         noteItalicCheckBox.setText(languageBundle.getString("noteItalicCheckBox"));
 
@@ -150,6 +152,7 @@ public class NoteSD extends Application implements Initializable
             selectedNote = (AnchorPane) (((Button) event.getSource()).getParent());
             notes.remove(Integer.parseInt(selectedNote.getAccessibleHelp()));
             Main.root.getChildren().remove(selectedNote);
+            logger.info("NoteSD: note was delete");
         });
 
         noteToolBar.setOnMouseDragged(event ->
@@ -157,10 +160,12 @@ public class NoteSD extends Application implements Initializable
             selectedNote = (AnchorPane) (((ToolBar) event.getSource()).getParent());
             NodeDragger.addDraggingProperty(selectedNote, event);
         });
+        logger.info("NoteSD: end initialize method");
     }
 
     public static void addNotesToXML(Document doc, boolean createEmptyXML)
     {
+        logger.info("NoteSD: start notes saving");
         var rootElement = doc.getFirstChild();
 
         var notesElement = doc.createElement("notes");
@@ -233,10 +238,12 @@ public class NoteSD extends Application implements Initializable
                 id++;
             }
         }
+        logger.info("NoteSD: end notes saving");
     }
 
     public static void loadNotesFromXML(Document doc, XPath xPath) throws Exception
     {
+        logger.info("NoteSD: start notes loading");
         int numberOfNotes = xPath.evaluateExpression("count(/save/notes/*)", doc, Integer.class);
         for (int id = 1; id < numberOfNotes + 1; id++)
         {
@@ -314,5 +321,6 @@ public class NoteSD extends Application implements Initializable
                 }
             }
         }
+        logger.info("NoteSD: end notes loading");
     }
 }

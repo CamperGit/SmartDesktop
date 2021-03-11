@@ -135,6 +135,7 @@ public class ScheduleSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("ScheduleSD: begin start method");
         ScheduleRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/schedule.fxml")));
         ScheduleRoot.setLayoutX(80);
         ScheduleRoot.setLayoutY(30);
@@ -150,11 +151,13 @@ public class ScheduleSD extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(ScheduleRoot);
         }
+        logger.info("ScheduleSD: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("ScheduleSD: begin initialize method");
         schedulerSaveButton.setText(languageBundle.getString("schedulerSaveButton"));
 
         scheduleCloseButtonIV.setImage(new Image("Images/delete30.png"));
@@ -205,6 +208,7 @@ public class ScheduleSD extends Application implements Initializable
                 }
                 scheduleDaysSaveList.clear();
                 Main.root.getChildren().remove(selectedSchedule);
+                logger.info("ScheduleSD: schedule was deleted");
             }
         });
 
@@ -334,7 +338,7 @@ public class ScheduleSD extends Application implements Initializable
                     settings.start(Main.Stage);
                 } catch (Exception e)
                 {
-                    e.printStackTrace();
+                    logger.error("ScheduleSD: schedulerCopySettings FXML load error", e);
                 }
             } else
             {
@@ -343,6 +347,7 @@ public class ScheduleSD extends Application implements Initializable
                 settings.showSettings(settings.getCopySettingsRoot(), event);
             }
         });
+        logger.info("ScheduleSD: end initialize method");
     }
 
     private static void removeScheduleEvent(LocalDate date, EventOfDay event)
@@ -750,6 +755,7 @@ public class ScheduleSD extends Application implements Initializable
 
     public static void addSchedulesToXML(Document doc, boolean createEmptyXML)
     {
+        logger.info("ScheduleSD: start schedules saving");
         var rootElement = doc.getFirstChild();
 
         var schedulesElement = doc.createElement("schedules");
@@ -944,10 +950,12 @@ public class ScheduleSD extends Application implements Initializable
                 id++;
             }
         }
+        logger.info("ScheduleSD: end schedules saving");
     }
 
     public static void loadSchedulesFromXML(Document doc, XPath xPath) throws Exception
     {
+        logger.info("ScheduleSD: start schedules loading");
         int numberOfSchedules = xPath.evaluateExpression("count(/save/schedules/*)", doc, Integer.class);
         for (int id = 1; id < numberOfSchedules + 1; id++)
         {
@@ -1056,5 +1064,6 @@ public class ScheduleSD extends Application implements Initializable
                 createNewLine(content, startTime, endTime, checkBoxState, text, id, saveButton);
             }
         }
+        logger.info("ScheduleSD: end schedules loading");
     }
 }

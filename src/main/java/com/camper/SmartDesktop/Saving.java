@@ -38,6 +38,7 @@ public class Saving
      */
     public static void saveAll(WindowEvent event) throws ParserConfigurationException, TransformerException, IOException, InterruptedException
     {
+        logger.info("Saving: start saving all");
         var factory = DocumentBuilderFactory.newInstance();
         var builder = factory.newDocumentBuilder();
         var doc = builder.newDocument();
@@ -74,16 +75,19 @@ public class Saving
             if (alertResult.getButtonData() == ButtonBar.ButtonData.NO)
             {
                 disableEventQueue(true);
+                logger.info("Saving: saving was canceled");
                 return;
             }
             if (alertResult.getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE)
             {
+                logger.info("Saving: exit was interrupted");
                 event.consume();
                 return;
             }
 
         }
 
+        logger.info("Saving: start saving elements");
         NoteSD.addNotesToXML(doc, false);
         ScheduleSD.addSchedulesToXML(doc, false);
         GoalSD.addGoalsToXML(doc, false);
@@ -91,6 +95,7 @@ public class Saving
         Weather.addWeatherInfoToXML(doc, false);
         UpcomingEvent.addUpcomingEventInfoToXML(doc, false);
         CalendarSD.addCalendarToXML(doc, false);
+        logger.info("Saving: end saving elements");
 
         var rootElement = doc.getFirstChild();
         var lastTabElement = doc.createElement("lastTab");
@@ -100,17 +105,21 @@ public class Saving
         saveInfo.setProperty("lastSaveName", filename);
         saveInfo.setProperty("language", defaultLocale.getLanguage());
         saveInfo.store(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"), "Info of latest save");
+        logger.info("Saving: create new saveInfo.properties");
 
         t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));
+        logger.info("Saving: create save file");
         if (event != null)
         {
             disableEventQueue(true);
         } //Если событие на закрытие дошло до сюда и оно не пустое, значит пользователь
         //подтвердил сохранение и хочет выйти.
+        logger.info("Saving: end saving all");
     }
 
     public static void createEmptyXML(String filename) throws ParserConfigurationException, TransformerException, IOException
     {
+        logger.info("Saving: start creating new empty xml");
         var factory = DocumentBuilderFactory.newInstance();
         var builder = factory.newDocumentBuilder();
         var doc = builder.newDocument();
@@ -118,6 +127,7 @@ public class Saving
         var rootDocument = doc.createElement("save");
         doc.appendChild(rootDocument);
 
+        logger.info("Saving: start creating new empty xml elements on save file");
         NoteSD.addNotesToXML(doc, true);
         ScheduleSD.addSchedulesToXML(doc, true);
         GoalSD.addGoalsToXML(doc, true);
@@ -125,6 +135,7 @@ public class Saving
         Weather.addWeatherInfoToXML(doc, true);
         UpcomingEvent.addUpcomingEventInfoToXML(doc, true);
         CalendarSD.addCalendarToXML(doc, true);
+        logger.info("Saving: end creating new empty xml elements on save file");
 
         var rootElement = doc.getFirstChild();
         var lastTabElement = doc.createElement("lastTab");
@@ -136,6 +147,7 @@ public class Saving
         t.setOutputProperty(OutputKeys.METHOD, "xml");
         t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));
+        logger.info("Saving: end creating new empty xml");
     }
 
     //Создание нового пресета

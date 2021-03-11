@@ -153,6 +153,7 @@ public class GoalSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("GoalSD: begin start method");
         GoalRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/goal.fxml")));
         GoalRoot.setLayoutX(80);
         GoalRoot.setLayoutY(30);
@@ -168,11 +169,13 @@ public class GoalSD extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(GoalRoot);
         }
+        logger.info("GoalSD: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("GoalSD: begin initialize method");
         goalNameTextField.setPromptText(languageBundle.getString("goalNamePromptTextTextField"));
         goalFromLabel.setText(languageBundle.getString("goalFromLabel"));
         goalToLabel.setText(languageBundle.getString("goalToLabel"));
@@ -208,6 +211,7 @@ public class GoalSD extends Application implements Initializable
                 }
                 checkBoxes.clear();
                 Main.root.getChildren().remove(selectedGoal);
+                logger.info("GoalSD: delete goal");
             }
         });
 
@@ -272,7 +276,7 @@ public class GoalSD extends Application implements Initializable
 
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("GoalSD: progress FXML load error");
             }
         });
 
@@ -337,7 +341,6 @@ public class GoalSD extends Application implements Initializable
                         goalEndDatePicker.setEditable(false);
                     } else
                     {
-                        String alertText = " онечна€ дата должна быть больше начальной!";
                         var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("goalDateAlert"), ButtonType.OK);
                         alert.showAndWait();
                     }
@@ -349,6 +352,7 @@ public class GoalSD extends Application implements Initializable
 
             }
         });
+        logger.info("GoalSD: end initialize method");
     }
 
     /**
@@ -629,7 +633,7 @@ public class GoalSD extends Application implements Initializable
                 new PrenotificationSD(LocalDateTime.of(date, timeOfEvent), textField.getText()).start(Stage);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("GoalSD: prenotification FXML load error ", e);
             }
         });
 
@@ -708,6 +712,7 @@ public class GoalSD extends Application implements Initializable
 
     public static void addGoalsToXML(Document doc, boolean createEmptyXML)
     {
+        logger.info("GoalSD: start goals saving");
         var rootElement = doc.getFirstChild();
 
         var goalsElement = doc.createElement("goals");
@@ -865,10 +870,12 @@ public class GoalSD extends Application implements Initializable
                 }
             }
         }
+        logger.info("GoalSD: end goals saving");
     }
 
     public static void loadGoalsFromXML(Document doc, XPath xPath) throws Exception
     {
+        logger.info("GoalSD: start goals loading");
         int numberOfGoals = xPath.evaluateExpression("count(/save/goals/*)", doc, Integer.class);
         for (int id = 1; id < numberOfGoals + 1; id++)
         {
@@ -972,5 +979,6 @@ public class GoalSD extends Application implements Initializable
                 rootOfLoadingGoal.getChildren().add(scrollPane);
             }
         }
+        logger.info("GoalSD: end goals loading");
     }
 }

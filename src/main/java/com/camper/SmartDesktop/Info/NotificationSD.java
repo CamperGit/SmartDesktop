@@ -81,6 +81,7 @@ public class NotificationSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("NotificationSD: begin start method");
         NotificationRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/notification.fxml")));
         NotificationRoot.setLayoutX(DEFAULT_WIDTH / 2 - 340 / 2);
         NotificationRoot.setLayoutY(DEFAULT_HEIGHT / 2 - 248 / 2);
@@ -91,11 +92,13 @@ public class NotificationSD extends Application implements Initializable
         NotificationRoot.setAccessibleHelp(String.valueOf(this.id));
 
         addChild(NotificationRoot);
+        logger.info("NotificationSD: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("NotificationSD: begin initialize method");
         notificationAddButton.setText(languageBundle.getString("notificationAddButton"));
         notificationCancelButton.setText(languageBundle.getString("notificationCancelButton"));
 
@@ -121,6 +124,7 @@ public class NotificationSD extends Application implements Initializable
             selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
             notifications.remove(Integer.parseInt(selectedNotification.getAccessibleHelp()));
             Main.root.getChildren().remove(selectedNotification);
+            logger.info("NotificationSD: notification was closed");
         });
 
         notificationCancelButton.setOnAction(notificationCloseButton.getOnAction());
@@ -206,9 +210,11 @@ public class NotificationSD extends Application implements Initializable
 
                     selectedNotification = (AnchorPane) (((Button) event.getSource()).getParent());
                     Main.root.getChildren().remove(selectedNotification);
+                    logger.info("NotificationSD: notification was added");
                 }
             }
         });
+        logger.info("NotificationSD: end initialize method");
     }
 
     public static void removeNotificationFromEventList(LocalDate date, EventOfDay notificationEvent)

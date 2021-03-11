@@ -70,6 +70,7 @@ public class UpcomingEvent extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("UpcomingEvent: begin start method");
         UpcomingEventInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/upcomingEvent.fxml")));
         UpcomingEventInfoRoot.setLayoutX(80);
         UpcomingEventInfoRoot.setLayoutY(30);
@@ -81,11 +82,13 @@ public class UpcomingEvent extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(UpcomingEventInfoRoot);
         }
+        logger.info("UpcomingEvent: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("UpcomingEvent: begin initialize method");
         upcomingEventLabel.setText(languageBundle.getString("upcomingEventLabel"));
 
         upcomingEventToolBar.setOnMouseDragged(event ->
@@ -99,7 +102,9 @@ public class UpcomingEvent extends Application implements Initializable
             UpcomingEventInfoRoot = (AnchorPane) (((Button) event.getSource()).getParent());
             Main.root.getChildren().remove(UpcomingEventInfoRoot);
             UpcomingEventInfoRoot = null;
+            logger.info("UpcomingEvent: close upcoming event window");
         });
+        logger.info("UpcomingEvent: end initialize method");
     }
 
     private static Task<Integer> returnTask()
@@ -187,6 +192,7 @@ public class UpcomingEvent extends Application implements Initializable
                             alreadyShowing = true;
                             var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("upcomingEventTaskAlert") + " " + otherInfoOfEvent.getInfo(), ButtonType.YES, ButtonType.NO);
                             var alertResult = alert.showAndWait();
+                            logger.info("UpcomingEvent: an event has occurred - Task");
                             GoalSD.updateStateOfGoalCheckBoxes(otherInfoOfEvent, alertResult.orElse(ButtonType.NO) == ButtonType.YES);
                         }
                         if (otherInfoOfEvent.getType().equals(Day.EventType.Goal))
@@ -211,7 +217,7 @@ public class UpcomingEvent extends Application implements Initializable
                                     }
                                 }
                             }
-
+                            logger.info("UpcomingEvent: an event has occurred - Goal");
                             alreadyShowing = true;
                         }
                         if (!(otherInfoOfEvent.getType().equals(Day.EventType.Task)) && !(otherInfoOfEvent.getType().equals(Day.EventType.Goal)))
@@ -237,6 +243,7 @@ public class UpcomingEvent extends Application implements Initializable
                             alreadyShowing = true;
                             var alert = new Alert(Alert.AlertType.WARNING, typeOfEvent + " " + otherInfoOfEvent.getInfo(), ButtonType.OK);
                             alert.showAndWait();
+                            logger.info("UpcomingEvent: an event has occurred - " + typeOfEvent);
                         }
                     }
                 });
@@ -246,6 +253,7 @@ public class UpcomingEvent extends Application implements Initializable
 
         task.setOnSucceeded(event ->
         {
+            logger.info("UpcomingEvent: thread task are succeeded");
             alreadyShowing = false;
             infoOfEvents.remove(eventsOnQueue.peek());
             eventsOnQueue.remove();
@@ -332,10 +340,12 @@ public class UpcomingEvent extends Application implements Initializable
     public static void runEventTask()
     {
         executorService.execute(returnTask());
+        logger.info("UpcomingEvent: new task has been started");
     }
 
     public static void addUpcomingEventInfoToXML(Document doc, boolean createEmptyXML)
     {
+        logger.info("UpcomingEvent: start saving upcoming event element");
         var rootElement = doc.getFirstChild();
 
         var upcomingEventInfoElement = doc.createElement("upcomingEventInfo");
@@ -362,10 +372,12 @@ public class UpcomingEvent extends Application implements Initializable
             var layoutYValue = doc.createTextNode(String.valueOf((int) (UpcomingEventInfoRoot.getLayoutY())));
             layoutY.appendChild(layoutYValue);
         }
+        logger.info("UpcomingEvent: end saving upcoming event element");
     }
 
     public static void loadUpcomingEventInfoFromXML(Document doc, XPath xPath) throws Exception
     {
+        logger.info("UpcomingEvent: start loading upcoming event element");
         boolean notEmpty = xPath.evaluateExpression("count(/save/upcomingEventInfo/*)", doc, Integer.class) != 0;
         if (notEmpty)
         {
@@ -385,5 +397,6 @@ public class UpcomingEvent extends Application implements Initializable
             UpcomingEventInfoRoot.setLayoutX(layoutX);
             UpcomingEventInfoRoot.setLayoutY(layoutY);
         }
+        logger.info("UpcomingEvent: end loading upcoming event element");
     }
 }
