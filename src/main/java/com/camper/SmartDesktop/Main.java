@@ -25,6 +25,8 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -146,6 +148,7 @@ public class Main extends Application implements Initializable
     public static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
     public static final ClassLoader mainCL = Main.class.getClassLoader();
     public static final String DIRPATH = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
+    private static final Logger logger = LogManager.getLogger();
 
     public static void addChild(Parent node)
     {
@@ -223,6 +226,8 @@ public class Main extends Application implements Initializable
     @Override
     public void start(Stage stage) throws Exception
     {
+        //logger.error("main");
+
         stage.setOnCloseRequest((event) ->
         {
             try
