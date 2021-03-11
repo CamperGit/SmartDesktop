@@ -3,12 +3,18 @@ package com.camper.SmartDesktop.Info;
 import com.camper.SmartDesktop.Main;
 import com.camper.SmartDesktop.NodeDragger;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 
@@ -50,6 +56,7 @@ public class PrenotificationSD extends Application implements Initializable
     private int selectedHour;
     private int selectedDay;
     private static LocalDateTime dateTime = null;
+    private static String taskText = null;
     private static AnchorPane selectedPrenotification;
     private static Map<Integer, PrenotificationSD> prenotifications = new HashMap<>();
     private static int nextId = 1;
@@ -58,9 +65,10 @@ public class PrenotificationSD extends Application implements Initializable
     {
     }
 
-    public PrenotificationSD(LocalDateTime date)
+    public PrenotificationSD(LocalDateTime date, String taskText)
     {
         PrenotificationSD.dateTime = date;
+        PrenotificationSD.taskText = taskText;
     }
 
     public static void clearSaveList()
@@ -98,7 +106,7 @@ public class PrenotificationSD extends Application implements Initializable
 
         var minutesValues = new ArrayList<String>()
         {{
-            addAll(Stream.iterate(0, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
+            addAll(Stream.iterate(1, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
             addAll(IntStream.iterate(10, n -> n < 60, n -> ++n).mapToObj(Integer::toString).collect(Collectors.toList()));
         }};
         prenotificationComboBoxMinutes.getItems().addAll(minutesValues);
@@ -141,9 +149,9 @@ public class PrenotificationSD extends Application implements Initializable
         {
             int deltaY = (int) event.getDeltaY() / 25;
             int result = Integer.parseInt(prenotificationComboBoxMinutes.getValue()) + deltaY;
-            if (result < 0)
+            if (result < 1)
             {
-                result = 0;
+                result = 1;
             }
             if (result > 59)
             {
@@ -223,6 +231,97 @@ public class PrenotificationSD extends Application implements Initializable
             var prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
             prenotificationSD.selectedDay = Integer.parseInt(prenotificationComboBoxDays.getValue());
         });
+
+        if (defaultLocale.equals(Locale.ENGLISH))
+        {
+            prenotificationTextArea.appendText("In 5 minutes the event will begin: " + taskText);
+        }
+        else
+        {
+            prenotificationTextArea.appendText("Через 5 минут начнётся событие: " + taskText);
+        }
+
+        EventHandler<ActionEvent> listener = event ->
+        {
+            String days = prenotificationComboBoxDays.getValue();
+            String hours = prenotificationComboBoxHours.getValue();
+            String minutes = prenotificationComboBoxMinutes.getValue();
+            prenotificationTextArea.setText("");
+            if (defaultLocale.equals(Locale.ENGLISH))
+            {
+                prenotificationTextArea.appendText("In ");
+                if (!days.equals("00"))
+                {
+                    if (days.equals("01"))
+                    {
+                        prenotificationTextArea.appendText(days + " day, ");
+                    }
+                    else
+                    {
+                        prenotificationTextArea.appendText(days + " days, ");
+                    }
+                }
+                if (!hours.equals("00"))
+                {
+                    if (hours.equals("01"))
+                    {
+                        prenotificationTextArea.appendText(hours + " hour and ");
+                    }
+                    else
+                    {
+                        prenotificationTextArea.appendText(hours + " hours and ");
+                    }
+                }
+                if (minutes.equals("01"))
+                {
+                    prenotificationTextArea.appendText(minutes + " minute ");
+                }
+                else
+                {
+                    prenotificationTextArea.appendText(minutes + " minutes ");
+                }
+                prenotificationTextArea.appendText("the event will begin: " + taskText);
+            }
+            else
+            {
+                prenotificationTextArea.appendText("Через ");
+                if (!days.equals("00"))
+                {
+                    if (days.equals("01"))
+                    {
+                        prenotificationTextArea.appendText(days + " день, ");
+                    }
+                    else
+                    {
+                        prenotificationTextArea.appendText(days + " дней, ");
+                    }
+                }
+                if (!hours.equals("00"))
+                {
+                    if (hours.equals("01"))
+                    {
+                        prenotificationTextArea.appendText(hours + " час и ");
+                    }
+                    else
+                    {
+                        prenotificationTextArea.appendText(hours + " часов и ");
+                    }
+                }
+                if (minutes.equals("01"))
+                {
+                    prenotificationTextArea.appendText(minutes + " минуту ");
+                }
+                else
+                {
+                    prenotificationTextArea.appendText(minutes + " минут ");
+                }
+                prenotificationTextArea.appendText("начнётся событие: " + taskText);
+            }
+        };
+
+        prenotificationComboBoxDays.setOnAction(listener);
+        prenotificationComboBoxHours.setOnAction(listener);
+        prenotificationComboBoxMinutes.setOnAction(listener);
 
         prenotificationAddButton.setOnAction(event ->
         {

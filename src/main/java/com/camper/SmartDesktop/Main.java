@@ -211,11 +211,11 @@ public class Main extends Application implements Initializable
         desktopTab.setText(languageBundle.getString("mainDesktopTab"));
         standardToolsTab.setText(languageBundle.getString("mainStandardToolsTab"));
         String preSave = languageBundle.getString("mainPreSaveTab");
-        tab1.setText(preSave + " 1");
-        tab2.setText(preSave + " 2");
-        tab3.setText(preSave + " 3");
-        tab4.setText(preSave + " 4");
-        tab5.setText(preSave + " 5");
+        tab1.setText("             " + preSave + " 1");
+        tab2.setText("             " + preSave + " 2");
+        tab3.setText("             " + preSave + " 3");
+        tab4.setText("             " + preSave + " 4");
+        tab5.setText("             " + preSave + " 5");
         checkDeprecatedEventsButton.setText(languageBundle.getString("mainCheckDeprecatedEventsButton"));
         loginButton.setText(languageBundle.getString("mainLoginButton"));
     }
@@ -331,8 +331,7 @@ public class Main extends Application implements Initializable
         {
             languageMenu.setText("Language: EN");
             languageMenuIV.setImage(new Image("Images/englishFlag25.png"));
-        }
-        else
+        } else
         {
             languageMenu.setText("язык: RU");
             languageMenuIV.setImage(new Image("Images/russianFlag25.png"));

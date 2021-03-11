@@ -626,7 +626,7 @@ public class GoalSD extends Application implements Initializable
             try
             {
                 var timeOfEvent = LocalTime.of(Integer.parseInt(hours.getValue()), Integer.parseInt(minutes.getValue()));
-                new PrenotificationSD(LocalDateTime.of(date, timeOfEvent)).start(Stage);
+                new PrenotificationSD(LocalDateTime.of(date, timeOfEvent), textField.getText()).start(Stage);
             } catch (Exception e)
             {
                 e.printStackTrace();
