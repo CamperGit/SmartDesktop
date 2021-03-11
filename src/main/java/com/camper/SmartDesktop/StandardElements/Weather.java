@@ -90,8 +90,7 @@ public class Weather extends Application implements Initializable
         if (defaultLocale.equals(Locale.ENGLISH))
         {
             site = "https://weather.com";
-        }
-        else
+        } else
         {
             site = "https://yandex.ru/pogoda";
         }

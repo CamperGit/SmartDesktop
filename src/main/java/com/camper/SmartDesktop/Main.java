@@ -28,13 +28,11 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -148,7 +146,7 @@ public class Main extends Application implements Initializable
     public static final int DEFAULT_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
     public static final ClassLoader mainCL = Main.class.getClassLoader();
     public static final String DIRPATH = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent();
-    private static final Logger logger = LogManager.getLogger();
+    public static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void addChild(Parent node)
     {
@@ -226,8 +224,7 @@ public class Main extends Application implements Initializable
     @Override
     public void start(Stage stage) throws Exception
     {
-        //logger.error("main");
-
+        logger.info("Main: main start method is begin");
         stage.setOnCloseRequest((event) ->
         {
             try
@@ -235,22 +232,25 @@ public class Main extends Application implements Initializable
                 saveAll(event);
             } catch (ParserConfigurationException | TransformerException | IOException | InterruptedException e)
             {
-                e.printStackTrace();
+                logger.error("Main: close error:", e);
             }
         });
 
         if (!(Files.isDirectory(Paths.get(DIRPATH + "\\Resources")) && Files.exists(Paths.get(DIRPATH + "\\Resources"))))
         {
+            logger.info("Main: create Resources directory");
             Files.createDirectory(Paths.get(DIRPATH + "\\Resources"));
         }
 
         if (!(Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Saves")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves"))))
         {
+            logger.info("Main: create Saves directory");
             Files.createDirectory(Paths.get(DIRPATH + "\\Resources\\Saves"));
         }
 
         if (!Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\saveInfo.properties")))
         {
+            logger.info("Main: create saveInfo.properties");
             saveInfo.setProperty("lastSaveName", "save1.xml");
             saveInfo.setProperty("language", "ru");
             saveInfo.store(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"), "Info of latest save");
@@ -259,6 +259,7 @@ public class Main extends Application implements Initializable
         {
             saveInfo.load(io);
         }
+        logger.info("Main: load defaultLocale and languageBundle");
         defaultLocale = Locale.forLanguageTag(saveInfo.getProperty("language"));
         languageBundle = ResourceBundle.getBundle("language", defaultLocale);
 
@@ -289,7 +290,7 @@ public class Main extends Application implements Initializable
                 new CalendarSD().start(stage);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("Main: calendar FXML load error ", e);
             }
         }
 
@@ -306,12 +307,16 @@ public class Main extends Application implements Initializable
 
         stage.setScene(scene);
         stage.setTitle("SmartDesktop");
+        logger.info("Main: show stage");
         stage.show();
+        logger.info("Main: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("Main: initialize main screen");
+
         noteIV.setImage(new Image("Images/note35.png"));
         scheduleIV.setImage(new Image("Images/schedule35.png"));
         goalIV.setImage(new Image("Images/goal42.png"));
@@ -345,6 +350,7 @@ public class Main extends Application implements Initializable
 
         languageRussianMenuItem.setOnAction(event ->
         {
+            logger.info("Main: change language to Russian");
             languageMenu.setText("язык: RU");
             languageMenuIV.setImage(new Image("Images/russianFlag25.png"));
             defaultLocale = new Locale("ru");
@@ -358,11 +364,12 @@ public class Main extends Application implements Initializable
                 loadSave(null);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("Main: " , e);
             }
         });
         languageEnglishMenuItem.setOnAction(event ->
         {
+            logger.info("Main: change language to English");
             languageMenu.setText("Language: EN");
             languageMenuIV.setImage(new Image("Images/englishFlag25.png"));
             defaultLocale = Locale.ENGLISH;
@@ -376,7 +383,7 @@ public class Main extends Application implements Initializable
                 loadSave(null);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("Main:" , e);
             }
         });
 
@@ -388,7 +395,7 @@ public class Main extends Application implements Initializable
                 DeprecatedEvents.updateBellIcon(false);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("Main: deprecated events FXML load error ", e);
             }
         });
 
@@ -400,6 +407,7 @@ public class Main extends Application implements Initializable
         {
             try
             {
+                logger.info("Main: create new save");
                 loadSavesToSavesList(savesChoiceBox);
                 String nameNewSave = addNewSaveFile();
                 savesChoiceBox.getItems().add(nameNewSave);
@@ -407,7 +415,7 @@ public class Main extends Application implements Initializable
                 savesChoiceBox.setValue(nameNewSave);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("Main: ", e);
             }
         });
         savesChoiceBox.setOnAction(event ->
@@ -415,6 +423,7 @@ public class Main extends Application implements Initializable
             try
             {
                 //¬ызываетс€ и при создании нового пресета и при загрузке уже существующего
+                logger.info("Main: load new save from saves choice box");
                 saveAll(null);
                 deleteAllNewElements();
                 clearTab();
@@ -423,7 +432,7 @@ public class Main extends Application implements Initializable
                 selectionModel.select(idOfSelectedTab - 1);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("Main: ", e);
             }
         });
         tab1.setOnSelectionChanged((event) ->
@@ -521,7 +530,7 @@ public class Main extends Application implements Initializable
                             {
                                 if (f.delete())
                                 {
-                                    //Ћог что удалилось
+
                                 }
                             }
                         }
@@ -536,15 +545,17 @@ public class Main extends Application implements Initializable
                             {
                                 if (f.delete())
                                 {
-                                    //Ћог что удалилось
+
                                 }
                             }
                         }
                     } else
                     {
                         Files.createDirectory(Paths.get(DIRPATH + "\\Resources\\Videos"));
+                        logger.info("Main: create Videos directory");
                     }
                     Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH + "\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
+                    logger.info("Main: copy Video to Videos folder");
                     var mediaFromFirstLaunch = new Media("file:/" + result.getAbsolutePath().replace("\\", "/"));
                     mediaPlayer = new MediaPlayer(mediaFromFirstLaunch);
                     videoViewer.setMediaPlayer(mediaPlayer);
@@ -602,6 +613,7 @@ public class Main extends Application implements Initializable
                         Files.copy(Paths.get(result.getAbsolutePath()), Paths.get(DIRPATH + "\\Resources\\Images\\image" + extensionOnFirstLaunch), StandardCopyOption.REPLACE_EXISTING);
                     } else
                     {
+                        logger.info("Main: create Images directory");
                         Files.createDirectory(Paths.get(DIRPATH + "\\Resources\\Images"));
                         Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH + "\\Resources\\Images\\image" + extensionOnFirstLaunch), StandardCopyOption.REPLACE_EXISTING);
                     }
@@ -633,7 +645,7 @@ public class Main extends Application implements Initializable
                     imageViewer.setImage(image);
                 } catch (IOException e)
                 {
-                    e.printStackTrace();
+                    logger.error("Main",e);
                 }
             }
         });
@@ -646,7 +658,7 @@ public class Main extends Application implements Initializable
                 new NoteSD().start(Stage);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("Main: note FXML load error ", e);
             }
         });
 
@@ -657,7 +669,7 @@ public class Main extends Application implements Initializable
                 new ScheduleSD().start(Stage);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("Main: schedule FXML load error ", e);
             }
         });
 
@@ -668,7 +680,7 @@ public class Main extends Application implements Initializable
                 new GoalSD().start(Stage);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("Main: goal FXML load error ", e);
             }
         });
 
@@ -679,7 +691,7 @@ public class Main extends Application implements Initializable
                 new NotificationSD().start(Stage);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("Main: notification FXML load error ", e);
             }
         });
 
@@ -699,7 +711,7 @@ public class Main extends Application implements Initializable
                     new UpcomingEvent().start(Stage);
                 } catch (Exception e)
                 {
-                    e.printStackTrace();
+                    logger.error("Main: upcoming event FXML load error ", e);
                 }
             }
         });
@@ -711,7 +723,7 @@ public class Main extends Application implements Initializable
                 new TableSD().start(Stage);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("Main: table FXML load error ", e);
             }
         });
 
@@ -731,7 +743,7 @@ public class Main extends Application implements Initializable
                     new Weather().start(Stage);
                 } catch (Exception e)
                 {
-                    e.printStackTrace();
+                    logger.error("Main: weather FXML load error ", e);
                 }
             }
         });
@@ -752,6 +764,7 @@ public class Main extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(calendar);
         }));
+        logger.info("Main: end initialize method");
     }
 }
 

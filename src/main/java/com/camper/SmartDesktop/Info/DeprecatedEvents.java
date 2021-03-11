@@ -58,6 +58,7 @@ public class DeprecatedEvents extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("Deprecated Events: begin start method");
         checkDeprecatedEventsRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/deprecatedEvents.fxml")));
         checkDeprecatedEventsRoot.setLayoutX(DEFAULT_WIDTH - 512);
         checkDeprecatedEventsRoot.setLayoutY(25);
@@ -71,15 +72,18 @@ public class DeprecatedEvents extends Application implements Initializable
                 entered = false;
                 Main.root.getChildren().remove(checkDeprecatedEventsRoot);
                 updateBellIcon(false);
+                logger.info("Deprecated Events: close window");
             }
         });
 
         addChild(checkDeprecatedEventsRoot);
+        logger.info("Deprecated Events: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("Deprecated Events: begin initialize method");
         deprecatedEventsLabel.setText(languageBundle.getString("deprecatedEventsLabel"));
         deprecatedEventsShowLabel.setText(languageBundle.getString("deprecatedEventsShowLabel"));
         notificationCheckBox.setText(languageBundle.getString("deprecatedEventsNotificationCheckBox"));
@@ -145,6 +149,8 @@ public class DeprecatedEvents extends Application implements Initializable
         notificationCheckBox.setSelected(true);
         goalsCheckBox.setSelected(true);
         schedulerCheckBox.setSelected(true);
+
+        logger.info("Deprecated Events: end initialize method");
     }
 
     public static void increaseTheNumberOfEvent(int countOfEvent)
@@ -282,6 +288,7 @@ public class DeprecatedEvents extends Application implements Initializable
             }
         }
         childList.add(scroller);
+        logger.info("Deprecated Events: update scroll area");
     }
 
     private HBox addInfoOfEvent(EventOfDay event, ImageView icon)

@@ -75,6 +75,7 @@ public class EventsOfDayInfo extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("EventsOfDayInfo: begin start method");
         paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfo.fxml")));
         int leftDownCornerX = (int) (mouseEvent.getSceneX() - mouseEvent.getX());
         int leftDownCornerY = (int) (mouseEvent.getSceneY() - mouseEvent.getY()) + 38 + 4;//38 - высота кнопки
@@ -105,6 +106,7 @@ public class EventsOfDayInfo extends Application implements Initializable
                 Main.root.getChildren().remove(paneOfInfoRoot);
                 paneOfInfoRoot = null;
                 date = null;
+                logger.info("EventsOfDayInfo: close window");
             }
         });
         Main.root.setOnMouseClicked(event ->
@@ -117,15 +119,18 @@ public class EventsOfDayInfo extends Application implements Initializable
                     Main.root.getChildren().remove(paneOfInfoRoot);
                     paneOfInfoRoot = null;
                     date = null;
+                    logger.info("EventsOfDayInfo: bclose window");
                 }
             }
         });
         addChild(paneOfInfoRoot);
+        logger.info("EventsOfDayInfo: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("EventsOfDayInfo: begin initialize method");
         allTypesCheckBox.setText(languageBundle.getString("eventOfDayInfoAllTypesCheckBox"));
         addNotificationButton.setText(languageBundle.getString("eventOfDayInfoNotificationCheckBox"));
         addGoalsButton.setText(languageBundle.getString("eventOfDayInfoGoalsCheckBox"));
@@ -142,7 +147,7 @@ public class EventsOfDayInfo extends Application implements Initializable
                 new NotificationSD(date).start(Stage);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("EventsOfDayInfo: notification FXML load error", e);
             }
         });
 
@@ -153,7 +158,7 @@ public class EventsOfDayInfo extends Application implements Initializable
                 new GoalSD().start(Stage);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("EventsOfDayInfo: notification FXML load error", e);
             }
 
         });
@@ -165,7 +170,7 @@ public class EventsOfDayInfo extends Application implements Initializable
                 new ScheduleSD(date).start(Stage);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("EventsOfDayInfo: notification FXML load error", e);
             }
         });
 
@@ -320,6 +325,7 @@ public class EventsOfDayInfo extends Application implements Initializable
             }
         }
         childList.add(scroller);
+        logger.info("EventsOfDayInfo: update scroll area");
         return;
     }
 

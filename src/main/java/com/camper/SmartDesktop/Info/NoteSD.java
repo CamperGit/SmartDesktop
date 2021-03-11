@@ -17,8 +17,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 
 import javax.xml.xpath.XPath;
@@ -91,6 +89,8 @@ public class NoteSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        Main.logger.error("note");
+
         NoteRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/note.fxml")));
         NoteRoot.setLayoutX(80);
         NoteRoot.setLayoutY(30);

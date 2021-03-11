@@ -79,6 +79,7 @@ public class CalendarSD extends Application implements Initializable
     @Override
     public void start(Stage primaryStage) throws Exception
     {
+        logger.info("CalendarSD: begin start method");
         CalendarRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendar.fxml")));
         CalendarRoot.setLayoutX(80);
         CalendarRoot.setLayoutY(30);
@@ -90,11 +91,13 @@ public class CalendarSD extends Application implements Initializable
             CalendarRoot.setAccessibleText("-1");
             CalendarRoot.setVisible(false);
         }
+        logger.info("CalendarSD: end start method");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        logger.info("CalendarSD: begin initialize method");
         calendarMondayLabel.setText(languageBundle.getString("calendarMondayLabel"));
         calendarTuesdayLabel.setText(languageBundle.getString("calendarTuesdayLabel"));
         calendarWednesdayLabel.setText(languageBundle.getString("calendarWednesdayLabel"));
@@ -211,13 +214,17 @@ public class CalendarSD extends Application implements Initializable
             var elementsOfSelectedTab = tabs.get(Integer.parseInt(CalendarRoot.getAccessibleText()));
             elementsOfSelectedTab.remove(CalendarRoot);
             CalendarRoot.setAccessibleText("-1");
+            logger.info("CalendarSD: close calendar");
         });
 
         calendarToolBar.setOnMouseDragged(event -> NodeDragger.addDraggingProperty(CalendarRoot, event));
+
+        logger.info("CalendarSD: end initialize method");
     }
 
     public static void addCalendarToXML(Document doc, boolean createEmptyXML)
     {
+        logger.info("CalendarSD: start calendar saving");
         var rootElement = doc.getFirstChild();
 
         var calendarElement = doc.createElement("calendar");
@@ -309,10 +316,12 @@ public class CalendarSD extends Application implements Initializable
                 }
             }
         }
+        logger.info("CalendarSD: end calendar saving");
     }
 
     public static void loadCalendarFromXML(Document doc, XPath xPath) throws Exception
     {
+        logger.info("CalendarSD: start calendar loading");
         int countOfDaysWithEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/*)", doc, Integer.class);
         for (int numberOfDay = 1; numberOfDay < countOfDaysWithEvents + 1; numberOfDay++)
         {
@@ -372,6 +381,7 @@ public class CalendarSD extends Application implements Initializable
         double layoutY = Double.parseDouble(xPath.evaluate("/save/calendar/layout/layoutY/text()", doc));
         rootOfLoadingCalendar.setLayoutX(layoutX);
         rootOfLoadingCalendar.setLayoutY(layoutY);
+        logger.info("CalendarSD: end calendar loading");
     }
 
     private void deletingUnnecessaryDaysInCalendar()
@@ -754,7 +764,7 @@ public class CalendarSD extends Application implements Initializable
                         new EventsOfDayInfo(event, day).start(Stage);
                     } catch (Exception e)
                     {
-                        e.printStackTrace();
+                        logger.error("CalendarSD: events of day info FXML load error", e);
                     }
                     haveEvents = true;
                     break;
@@ -767,7 +777,7 @@ public class CalendarSD extends Application implements Initializable
                     new EventsOfDayInfo(event, new Day(dayOfThisButton)).start(Stage);
                 } catch (Exception e)
                 {
-                    e.printStackTrace();
+                    logger.error("CalendarSD: events of day info FXML load error", e);
                 }
             }
         } else
@@ -777,7 +787,7 @@ public class CalendarSD extends Application implements Initializable
                 new EventsOfDayInfo(event, new Day(dayOfThisButton)).start(Stage);
             } catch (Exception e)
             {
-                e.printStackTrace();
+                logger.error("CalendarSD: events of day info FXML load error", e);
             }
         }
     }
