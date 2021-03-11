@@ -33,6 +33,7 @@ public class Loading
      */
     public static String loadSave(ChoiceBox<String> saves) throws Exception
     {
+        logger.info("Loading: start loading save");
         String saveNameFromChoiceBox = null;
         if (saves != null)
         {
@@ -65,12 +66,14 @@ public class Loading
                     if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\" + saveInfo.getProperty("lastSaveName"))))
                     {
                         filename = saveInfo.getProperty("lastSaveName");
+                        logger.info("Loading: the last save file exists");
                     }
                 } else
                 {
                     if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\" + saveNameFromChoiceBox)))
                     {
                         filename = saveNameFromChoiceBox;
+                        logger.info("Loading: save file from choice box exist");
                     }
                 }
 
@@ -105,8 +108,10 @@ public class Loading
                     saveInfo.setProperty("lastSaveName", filename);
                     saveInfo.setProperty("language", "ru");
                     saveInfo.store(new FileOutputStream(DIRPATH + "\\Resources\\Saves\\saveInfo.properties"), "Info of latest save");
+                    logger.info("Loading: create new saveInfo.properties");
                 }
 
+                logger.info("Loading: start elements loading");
                 NoteSD.loadNotesFromXML(doc, xPath);
                 ScheduleSD.loadSchedulesFromXML(doc, xPath);
                 GoalSD.loadGoalsFromXML(doc, xPath);
@@ -115,12 +120,14 @@ public class Loading
                 UpcomingEvent.loadUpcomingEventInfoFromXML(doc, xPath);
                 //Календарь всегда должен грузиться последним!!!
                 CalendarSD.loadCalendarFromXML(doc, xPath);
+                logger.info("Loading: end elements loading");
 
                 idOfSelectedTab = Integer.parseInt(xPath.evaluate("save/lastTab/@tab", doc));
             }
             //Создание пустого файла сохранения при самом первом запуске или в папке есть файл properties, но нет сейвов вообще
             else
             {
+                logger.info("Loading: saves folder are empty");
                 filename = "save1.xml";
                 createEmptyXML(filename);
                 saveInfo.setProperty("lastSaveName", filename);
@@ -129,8 +136,10 @@ public class Loading
                 runEventTask();
             }
             currencySaveName = filename;
+            logger.info("Loading: end loading save");
             return filename;
         }
+        logger.info("Loading: end loading save");
         return "";
     }
 
