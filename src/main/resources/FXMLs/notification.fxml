@@ -6,6 +6,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="248.0" prefWidth="340.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.NotificationSD">
@@ -14,7 +15,10 @@
       <TextArea fx:id="notificationTextArea" layoutY="116.0" prefHeight="102.0" prefWidth="340.0" wrapText="true" />
       <Button fx:id="notificationAddButton" layoutX="50.0" layoutY="220.0" maxWidth="70.0" minWidth="70.0" mnemonicParsing="false" prefWidth="70.0" text="Добавить" />
       <Button fx:id="notificationCancelButton" layoutX="220.0" layoutY="220.0" maxWidth="70.0" minWidth="70.0" mnemonicParsing="false" prefWidth="70.0" text="Отменить" />
-      <Button fx:id="notificationCloseButton" layoutX="315.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" />
+      <Button fx:id="notificationCloseButton" layoutX="315.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
+         <graphic>
+            <ImageView fx:id="notificationCloseButtonIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+         </graphic></Button>
       <DatePicker fx:id="notificationDatePicker" layoutX="80.0" layoutY="34.0" prefHeight="25.0" prefWidth="180.0" />
       <ComboBox fx:id="notificationComboBoxMinutes" layoutX="190.0" layoutY="73.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />
       <ComboBox fx:id="notificationComboBoxHours" layoutX="80.0" layoutY="73.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" prefHeight="25.0" prefWidth="70.0" />

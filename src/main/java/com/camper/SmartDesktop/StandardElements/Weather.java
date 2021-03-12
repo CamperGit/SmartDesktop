@@ -9,6 +9,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -30,6 +32,8 @@ public class Weather extends Application implements Initializable
     private ToolBar weatherToolBar;
     @FXML
     private WebView weatherWebView;
+    @FXML
+    private ImageView weatherCloseButtonIV;
 
     private static AnchorPane WeatherRoot = null;
     private boolean load = false;
@@ -76,6 +80,7 @@ public class Weather extends Application implements Initializable
     public void initialize(URL location, ResourceBundle resources)
     {
         logger.info("Weather: begin initialize method");
+        weatherCloseButtonIV.setImage(new Image("Images/delete30.png"));
         weatherToolBar.setOnMouseDragged(event ->
         {
             WeatherRoot = (AnchorPane) (((ToolBar) event.getSource()).getParent());

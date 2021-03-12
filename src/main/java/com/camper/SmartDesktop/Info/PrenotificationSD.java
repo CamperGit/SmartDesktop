@@ -10,6 +10,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -49,6 +51,8 @@ public class PrenotificationSD extends Application implements Initializable
     private TextArea prenotificationTextArea;
     @FXML
     private Label prenotificationRemindInLabel,prenotificationDaysLabel, prenotificationHoursLabel, prenotificationMinutesLabel;
+    @FXML
+    private ImageView prenotificationCloseButtonIV;
 
     private AnchorPane PrenotificationRoot;
     private int id;
@@ -105,7 +109,7 @@ public class PrenotificationSD extends Application implements Initializable
         prenotificationMinutesLabel.setText(languageBundle.getString("prenotificationMinutesLabel"));
         prenotificationAddButton.setText(languageBundle.getString("prenotificationAddButton"));
         prenotificationCancelButton.setText(languageBundle.getString("prenotificationCancelButton"));
-
+        prenotificationCloseButtonIV.setImage(new Image("Images/delete30.png"));
 
         var minutesValues = new ArrayList<String>()
         {{

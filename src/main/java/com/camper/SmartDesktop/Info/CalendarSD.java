@@ -38,6 +38,8 @@ public class CalendarSD extends Application implements Initializable
     private ComboBox<Integer> yearComboBox;
     @FXML
     private Label calendarMondayLabel, calendarTuesdayLabel, calendarWednesdayLabel, calendarThursdayLabel, calendarFridayLabel, calendarSundayLabel, calendarSaturdayLabel;
+    @FXML
+    private ImageView calendarCloseButtonIV;
 
     private boolean load = false;
     private static AnchorPane CalendarRoot;
@@ -105,7 +107,7 @@ public class CalendarSD extends Application implements Initializable
         calendarFridayLabel.setText(languageBundle.getString("calendarFridayLabel"));
         calendarSundayLabel.setText(languageBundle.getString("calendarSundayLabel"));
         calendarSaturdayLabel.setText(languageBundle.getString("calendarSaturdayLabel"));
-
+        calendarCloseButtonIV.setImage(new Image("Images/delete30.png"));
 
         this.addIconsToLists();
         for (int i = 1981; i <= 2100; i++)

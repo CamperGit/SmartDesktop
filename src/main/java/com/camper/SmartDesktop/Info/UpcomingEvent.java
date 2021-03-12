@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
@@ -36,6 +38,8 @@ public class UpcomingEvent extends Application implements Initializable
     private ToolBar upcomingEventToolBar;
     @FXML
     private Label upcomingEventLabel, upcomingEventTimeLabel;
+    @FXML
+    private ImageView upcomingEventCloseButtonIV;
 
     private static PriorityBlockingQueue<LocalDateTime> eventsOnQueue = new PriorityBlockingQueue<>(5, LocalDateTime::compareTo);
     private static Map<LocalDateTime, EventOfDay> infoOfEvents = new HashMap<>();
@@ -90,6 +94,7 @@ public class UpcomingEvent extends Application implements Initializable
     {
         logger.info("UpcomingEvent: begin initialize method");
         upcomingEventLabel.setText(languageBundle.getString("upcomingEventLabel"));
+        upcomingEventCloseButtonIV.setImage(new Image("Images/delete30.png"));
 
         upcomingEventToolBar.setOnMouseDragged(event ->
         {

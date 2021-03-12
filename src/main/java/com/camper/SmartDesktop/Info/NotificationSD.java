@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -40,6 +42,8 @@ public class NotificationSD extends Application implements Initializable
     private TextArea notificationTextArea;
     @FXML
     private ToolBar notificationToolBar;
+    @FXML
+    private ImageView notificationCloseButtonIV;
 
     private AnchorPane NotificationRoot;
     private int id;
@@ -101,6 +105,7 @@ public class NotificationSD extends Application implements Initializable
         logger.info("NotificationSD: begin initialize method");
         notificationAddButton.setText(languageBundle.getString("notificationAddButton"));
         notificationCancelButton.setText(languageBundle.getString("notificationCancelButton"));
+        notificationCloseButtonIV.setImage(new Image("Images/delete30.png"));
 
         var hoursValues = new ArrayList<String>()
         {{

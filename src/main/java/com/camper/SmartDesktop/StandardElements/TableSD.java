@@ -9,6 +9,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
@@ -28,6 +30,8 @@ public class TableSD extends Application implements Initializable
     private Button tableCloseButton;
     @FXML
     private ToolBar tableToolBar;
+    @FXML
+    private ImageView tableAddNewColumnIV, tableCloseButtonIV;
 
     private boolean load = false;
     private AnchorPane TableRoot;
@@ -95,6 +99,8 @@ public class TableSD extends Application implements Initializable
     public void initialize(URL location, ResourceBundle resources)
     {
         logger.info("TableSD: begin initialize method");
+        tableAddNewColumnIV.setImage(new Image("Images/add28.png"));
+        tableCloseButtonIV.setImage(new Image("Images/delete30.png"));
         tableCloseButton.setOnAction(event ->
         {
             selectedTable = (AnchorPane) (((Button) event.getSource()).getParent());

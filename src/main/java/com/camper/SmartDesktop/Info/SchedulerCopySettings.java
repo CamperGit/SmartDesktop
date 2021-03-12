@@ -88,8 +88,8 @@ public class SchedulerCopySettings extends Application implements Initializable
     public SchedulerCopySettings(String repeat, String period, boolean load, int idOfSchedule, Button saveButton)
     {
         this(null, idOfSchedule, saveButton);
-        repeatSelected = SchedulerCopySettings.ScheduleSettingsRepeat.valueOf(repeat);
-        periodSelected = SchedulerCopySettings.ScheduleSettingsPeriod.valueOf(period);
+        repeatSelected = ScheduleSettingsRepeat.valueOf(repeat);
+        periodSelected = ScheduleSettingsPeriod.valueOf(period);
         this.load = load;
     }
 
