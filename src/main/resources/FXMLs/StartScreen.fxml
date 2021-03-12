@@ -34,8 +34,10 @@
                   <CheckMenuItem fx:id="hideRightTabPaneMenuItem" mnemonicParsing="false" text="Скрыть панель рабочих столов" />
             </items>
           </Menu>
-          <Menu fx:id="helpMenu" mnemonicParsing="false" text="Справка" />
-            <Menu fx:id="aboutTheProgramMenu" mnemonicParsing="false" text="О программе" />
+          <Menu fx:id="helpMenu" mnemonicParsing="false" text="Справка">
+               <items>
+                  <MenuItem fx:id="aboutTheProgramMenu" mnemonicParsing="false" text="О программе" />
+               </items></Menu>
         </menus>
       </MenuBar>
       <TabPane fx:id="toolBarTabPane" accessibleHelp="ToolTabPane" layoutY="25.0" prefHeight="1055.0" prefWidth="75.0" side="LEFT" tabClosingPolicy="UNAVAILABLE">

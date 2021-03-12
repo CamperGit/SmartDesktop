@@ -2,6 +2,7 @@ package com.camper.SmartDesktop;
 
 
 import com.camper.SmartDesktop.Info.*;
+import com.camper.SmartDesktop.StandardElements.About;
 import com.camper.SmartDesktop.StandardElements.TableSD;
 import com.camper.SmartDesktop.StandardElements.Weather;
 import javafx.application.Application;
@@ -116,21 +117,17 @@ public class Main extends Application implements Initializable
     @FXML
     private ImageView languageMenuIV;
     @FXML
-    private Menu desktopMenu, viewMenu, helpMenu, aboutTheProgramMenu;
+    private Menu desktopMenu, viewMenu, helpMenu;
     @FXML
     private MenuButton languageMenu;
     @FXML
-    private MenuItem desktopPhotoSelectorMenuItem;
+    private MenuItem desktopPhotoSelectorMenuItem, desktopVideoSelectorMenuItem;
     @FXML
-    private MenuItem desktopVideoSelectorMenuItem;
+    private CheckMenuItem hideLeftTabPaneMenuItem, hideRightTabPaneMenuItem;
     @FXML
-    private CheckMenuItem hideLeftTabPaneMenuItem;
+    private MenuItem languageRussianMenuItem, languageEnglishMenuItem;
     @FXML
-    private CheckMenuItem hideRightTabPaneMenuItem;
-    @FXML
-    private MenuItem languageRussianMenuItem;
-    @FXML
-    private MenuItem languageEnglishMenuItem;
+    private MenuItem aboutTheProgramMenu;
 
     private static MediaPlayer mediaPlayer;
     private static int numberOfImmutableElements;
@@ -384,6 +381,22 @@ public class Main extends Application implements Initializable
             } catch (Exception e)
             {
                 logger.error("Main:" , e);
+            }
+        });
+
+        aboutTheProgramMenu.setOnAction(event->
+        {
+            try
+            {
+                var aboutRoot = About.getAboutRoot();
+                if (aboutRoot != null)
+                {
+                    root.getChildren().remove(aboutRoot);
+                }
+                new About().start(Stage);
+            } catch (Exception e)
+            {
+                logger.error("Main: about FXML load error ", e);
             }
         });
 

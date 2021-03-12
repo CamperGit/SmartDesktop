@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="188.0" prefWidth="360.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.StandardElements.About">
+   <children>
+      <ToolBar fx:id="aboutToolBar" prefHeight="25.0" prefWidth="335.0" />
+      <Button fx:id="aboutCloseButton" layoutX="335.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
+         <graphic>
+            <ImageView fx:id="aboutCloseButtonIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+         </graphic></Button>
+      <Label alignment="TOP_LEFT" layoutX="6.0" layoutY="34.0" prefHeight="20.0" prefWidth="354.0" text="SmartDesktop - это проект умного рабочего стола">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label alignment="TOP_LEFT" layoutX="6.0" layoutY="54.0" prefHeight="17.0" prefWidth="354.0" text="cтола с функциями планировщика и возможностью">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label alignment="TOP_LEFT" layoutX="6.0" layoutY="74.0" prefHeight="17.0" prefWidth="354.0" text="хранить множество информации на одном экране">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="aboutVKIV" fitHeight="35.0" fitWidth="35.0" layoutX="8.0" layoutY="100.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="aboutCodeIV" fitHeight="35.0" fitWidth="35.0" layoutX="8.0" layoutY="143.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="50.0" layoutY="100.0" prefHeight="35.0" prefWidth="275.0" text="https://vk.com/dumb_ass2007">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="50.0" layoutY="143.0" prefHeight="35.0" prefWidth="286.0" text="https://github.com/CamperGit/SmartDesktop">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+   </children>
+   <effect>
+      <DropShadow />
+   </effect>
+</AnchorPane>
