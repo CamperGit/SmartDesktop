@@ -142,6 +142,8 @@ public class NoteSD extends Application implements Initializable
             noteSD.fontPosture = fontPosture;
         };
 
+        noteTextArea.setWrapText(true);
+
         noteFamilyComboBox.setOnAction(listener);
         noteBoldCheckBox.setOnAction(listener);
         noteItalicCheckBox.setOnAction(listener);

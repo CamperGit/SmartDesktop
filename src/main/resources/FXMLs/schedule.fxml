@@ -4,6 +4,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.effect.Glow?>
@@ -11,7 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="248.0" maxWidth="460.0" minHeight="248.0" minWidth="460.0" prefHeight="248.0" prefWidth="460.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.ScheduleSD">
+<AnchorPane maxHeight="273.0" maxWidth="460.0" minHeight="273.0" minWidth="460.0" prefHeight="273.0" prefWidth="460.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.ScheduleSD">
    <children>
       <ToolBar fx:id="scheduleToolBar" layoutX="25.0" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="289.0" />
       <Button fx:id="scheduleSettingsButton" layoutX="314.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
@@ -22,7 +23,7 @@
          <graphic>
             <ImageView fx:id="scheduleCloseButtonIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
          </graphic></Button>
-      <ScrollPane hbarPolicy="NEVER" layoutY="25.0" prefHeight="200.0" prefWidth="460.0">
+      <ScrollPane hbarPolicy="NEVER" layoutY="50.0" prefHeight="200.0" prefWidth="460.0">
          <content>
             <VBox fx:id="scheduleContentVbox" alignment="TOP_CENTER" prefHeight="198.0" prefWidth="460.0">
                <children>
@@ -36,12 +37,14 @@
             <ImageView fx:id="scheduleAddNewLineButtonIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
          </graphic>
       </Button>
-      <Separator layoutY="225.0" prefHeight="3.0" prefWidth="460.0" />
-      <Button fx:id="schedulerSaveButton" accessibleHelp="scheduleSaveButton" layoutY="225.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="460.0" text="Сохранить" />
+      <Separator layoutY="250.0" prefHeight="3.0" prefWidth="460.0" />
+      <Button fx:id="schedulerSaveButton" accessibleHelp="scheduleSaveButton" layoutY="250.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="460.0" text="Сохранить" />
       <DatePicker fx:id="schedulerDatePicker" layoutX="339.0" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="96.0">
          <effect>
             <Glow level="0.0" />
          </effect></DatePicker>
+      <TextField fx:id="scheduleNameTextField" alignment="CENTER" layoutY="25.0" prefHeight="25.0" prefWidth="460.0" promptText="Расписание" />
+      <Separator layoutY="50.0" prefWidth="460.0" />
    </children>
    <effect>
       <DropShadow />

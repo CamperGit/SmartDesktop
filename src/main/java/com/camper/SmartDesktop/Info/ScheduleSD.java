@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
+import org.w3c.dom.Text;
 
 import javax.xml.xpath.XPath;
 import java.net.URL;
@@ -55,12 +56,15 @@ public class ScheduleSD extends Application implements Initializable
     private VBox scheduleContentVbox;
     @FXML
     private DatePicker schedulerDatePicker;
+    @FXML
+    private TextField scheduleNameTextField;
 
     private boolean load = false;
     private AnchorPane ScheduleRoot;
     private final Map<CheckBox, EventOfDay> eventsOfSchedule = new HashMap<>();
     private final List<Day> scheduleDaysSaveList = new ArrayList<>();
     private int id;
+    private String nameOfSchedule = null;
     private LocalDate date = null;
     private SchedulerCopySettings copySettings = null;
     private static AnchorPane selectedSchedule;
@@ -158,6 +162,7 @@ public class ScheduleSD extends Application implements Initializable
     public void initialize(URL location, ResourceBundle resources)
     {
         logger.info("ScheduleSD: begin initialize method");
+        scheduleNameTextField.setPromptText(languageBundle.getString("scheduleNamePromptTextField"));
         schedulerSaveButton.setText(languageBundle.getString("schedulerSaveButton"));
 
         scheduleCloseButtonIV.setImage(new Image("Images/delete30.png"));
@@ -179,6 +184,12 @@ public class ScheduleSD extends Application implements Initializable
         });
 
         scheduleContentVbox.setSpacing(10);
+        scheduleNameTextField.setOnKeyTyped(event ->
+        {
+            var scheduleRoot = (AnchorPane) (((TextField) event.getSource()).getParent());
+            var scheduleSD = schedules.get(Integer.parseInt(scheduleRoot.getAccessibleHelp()));
+            scheduleSD.nameOfSchedule = scheduleNameTextField.getText();
+        });
 
         scheduleCloseButton.setOnAction(event ->
         {
@@ -791,6 +802,19 @@ public class ScheduleSD extends Application implements Initializable
                 var layoutYValue = doc.createTextNode(String.valueOf((int) (schedule.getLayoutY())));
                 layoutY.appendChild(layoutYValue);
 
+                var nameOfScheduleElement = doc.createElement("nameOfSchedule");
+                scheduleElement.appendChild(nameOfScheduleElement);
+                Text nameOfScheduleElementValue;
+                if (scheduleSD.nameOfSchedule != null)
+                {
+                    nameOfScheduleElementValue = doc.createTextNode(scheduleSD.nameOfSchedule);
+                }
+                else
+                {
+                    nameOfScheduleElementValue = doc.createTextNode("");
+                }
+                nameOfScheduleElement.appendChild(nameOfScheduleElementValue);
+
                 var copySettingsElement = doc.createElement("copySettings");
                 scheduleElement.appendChild(copySettingsElement);
                 if (scheduleSD.getCopySettings() != null)
@@ -1049,6 +1073,10 @@ public class ScheduleSD extends Application implements Initializable
                 if (node instanceof ScrollPane)
                 {
                     content = (VBox) (((ScrollPane) node).getContent());
+                }
+                if (node instanceof TextField)
+                {
+                    ((TextField) node).setText(xPath.evaluate("save/schedules/schedule" + id + "/nameOfSchedule/text()", doc));
                 }
             }
 
