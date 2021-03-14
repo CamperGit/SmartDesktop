@@ -9,11 +9,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="251.0" maxWidth="246.0" minHeight="251.0" minWidth="246.0" prefHeight="251.0" prefWidth="246.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.SchedulerCopySettings">
+<AnchorPane maxHeight="277.0" maxWidth="246.0" minHeight="277.0" minWidth="246.0" prefHeight="277.0" prefWidth="246.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.camper.SmartDesktop.Info.SchedulerCopySettings">
    <children>
-      <ToolBar maxHeight="251.0" maxWidth="246.0" minHeight="251.0" minWidth="246.0" prefHeight="251.0" prefWidth="246.0">
+      <ToolBar maxHeight="277.0" maxWidth="246.0" minHeight="251.0" minWidth="246.0" prefHeight="277.0" prefWidth="246.0">
          <items>
-            <VBox alignment="TOP_CENTER" prefHeight="238.0" prefWidth="110.0" spacing="14.0">
+            <VBox alignment="TOP_CENTER" prefHeight="238.0" prefWidth="110.0" spacing="18.0">
                <children>
                   <Label fx:id="scheduleSettingsRepeatLabel" alignment="CENTER" contentDisplay="CENTER" maxWidth="85.0" minWidth="85.0" prefWidth="85.0" text="Повторять:" textAlignment="CENTER">
                      <font>
@@ -33,7 +33,7 @@
                   <Insets left="123.0" />
                </opaqueInsets>
             </Separator>
-            <VBox alignment="TOP_CENTER" maxWidth="110.0" minWidth="110.0" prefHeight="200.0" prefWidth="110.0" spacing="14.0">
+            <VBox alignment="TOP_CENTER" maxWidth="110.0" minWidth="110.0" prefHeight="200.0" prefWidth="110.0" spacing="18.0">
                <children>
                   <Label fx:id="scheduleSettingsDuringLabel" alignment="CENTER" contentDisplay="CENTER" maxWidth="79.0" minWidth="79.0" prefWidth="79.0" text="В течение:">
                      <font>
