@@ -145,7 +145,7 @@
             <ImageView fx:id="deprecatedEventsIV" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
          </graphic>
       </Button>
-      <MenuButton fx:id="languageMenu" alignment="CENTER" layoutX="1272.0" maxHeight="25.0" minHeight="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="136.0" text="Язык: RU">
+      <MenuButton fx:id="languageMenu" alignment="CENTER" layoutX="1272.0" maxHeight="25.0" maxWidth="136.0" minHeight="25.0" minWidth="136.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="136.0" text="Язык: RU">
         <items>
           <MenuItem fx:id="languageRussianMenuItem" mnemonicParsing="false" text="Русский" />
           <MenuItem fx:id="languageEnglishMenuItem" mnemonicParsing="false" text="English" />

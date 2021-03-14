@@ -330,6 +330,7 @@ public class Main extends Application implements Initializable
         savesChoiceBox.setLayoutX(DEFAULT_WIDTH - 320);
         addNewPresetButton.setLayoutX(DEFAULT_WIDTH - 345);
         checkDeprecatedEventsButton.setLayoutX(DEFAULT_WIDTH - 512);
+        languageMenu.setLayoutX(DEFAULT_WIDTH - 648);
 
         hideLeftTabPaneMenuItem.setOnAction(event -> toolBarTabPane.setVisible(!hideLeftTabPaneMenuItem.isSelected()));
         hideRightTabPaneMenuItem.setOnAction(event -> mainTabPane.setVisible(!hideRightTabPaneMenuItem.isSelected()));
@@ -569,7 +570,7 @@ public class Main extends Application implements Initializable
                     }
                     Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH + "\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
                     logger.info("Main: copy Video to Videos folder");
-                    var mediaFromFirstLaunch = new Media("file:/" + result.getAbsolutePath().replace("\\", "/"));
+                    var mediaFromFirstLaunch = new Media(new File(result.getAbsolutePath().replace("\\", System.getProperty("file.separator"))).toURI().toASCIIString());
                     mediaPlayer = new MediaPlayer(mediaFromFirstLaunch);
                     videoViewer.setMediaPlayer(mediaPlayer);
                     mediaPlayer.setAutoPlay(true);
