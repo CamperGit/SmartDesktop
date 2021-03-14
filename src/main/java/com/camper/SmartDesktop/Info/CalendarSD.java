@@ -105,8 +105,8 @@ public class CalendarSD extends Application implements Initializable
         calendarWednesdayLabel.setText(languageBundle.getString("calendarWednesdayLabel"));
         calendarThursdayLabel.setText(languageBundle.getString("calendarThursdayLabel"));
         calendarFridayLabel.setText(languageBundle.getString("calendarFridayLabel"));
-        calendarSundayLabel.setText(languageBundle.getString("calendarSundayLabel"));
         calendarSaturdayLabel.setText(languageBundle.getString("calendarSaturdayLabel"));
+        calendarSundayLabel.setText(languageBundle.getString("calendarSundayLabel"));
         calendarCloseButtonIV.setImage(new Image("Images/delete30.png"));
 
         this.addIconsToLists();
