@@ -180,7 +180,7 @@ public class NoteSD extends Application implements Initializable
                 var noteSD = entry.getValue();
                 var note = noteSD.getNoteRoot();
                 var noteElement = doc.createElement("note" + id);
-                //Получить значение таба, при котором был создан элемент
+                //РџРѕР»СѓС‡РёС‚СЊ Р·РЅР°С‡РµРЅРёРµ С‚Р°Р±Р°, РїСЂРё РєРѕС‚РѕСЂРѕРј Р±С‹Р» СЃРѕР·РґР°РЅ СЌР»РµРјРµРЅС‚
                 noteElement.setAttribute("tab", note.getAccessibleText());
 
                 notesElement.appendChild(noteElement);
@@ -254,7 +254,7 @@ public class NoteSD extends Application implements Initializable
             var rootOfLoadingNote = loadingNote.getNoteRoot();
 
             int numberOfTab = Integer.parseInt(xPath.evaluate("/save/notes/note" + id + "/@tab", doc));
-            //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
+            //РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РІ СЃРѕР·РґР°РЅРЅС‹Р№ СЌР»РµРјРµРЅС‚ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ С‚РµРєСЃС‚, РІ РєРѕС‚РѕСЂРѕРј Р±СѓРґРµС‚ Р»РµР¶Р°С‚СЊ Р·РЅР°С‡РµРЅРёРµ С‚РѕРіРѕ С‚Р°Р±Р°, РЅР° РєРѕС‚РѕСЂРѕРј СЌР»РµРјРµРЅС‚ Р±С‹Р» СЃРѕР·РґР°РЅ
             rootOfLoadingNote.setAccessibleText(String.valueOf(numberOfTab));
 
             var tab = tabs.get(numberOfTab);
