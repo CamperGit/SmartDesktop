@@ -34,6 +34,6 @@
 В будущем есть планы на интеграцию приложения с телефоном для отправки уведомлений на телефон, создания новых элементов через телефон на компьютере и наоборот. А также
 другие элементы, которые будут интегрированы с смартфоном(шагомер, счётчик каллорий и т.д)
 
-[![](https://drive.google.com/file/d/1CoT9v0vm3WnZmyj1_pZ-11gBS2aaBimM/view?usp=sharing)](https://drive.google.com/file/d/1CoT9v0vm3WnZmyj1_pZ-11gBS2aaBimM/view?usp=sharing)
+[![](https://i.imgur.com/61LsZ3g.png)](https://i.imgur.com/61LsZ3g.png)
 
 P.s: различные иконки были взяты с приложения icons8 https://icons8.com
