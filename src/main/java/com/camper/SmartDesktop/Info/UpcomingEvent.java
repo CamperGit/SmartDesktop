@@ -177,7 +177,7 @@ public class UpcomingEvent extends Application implements Initializable
                         Thread.sleep(100);
                     } catch (InterruptedException e)
                     {
-                        e.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
                 }
                 Platform.runLater(() ->
