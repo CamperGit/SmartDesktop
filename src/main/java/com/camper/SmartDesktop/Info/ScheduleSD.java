@@ -205,14 +205,13 @@ public class ScheduleSD extends Application implements Initializable
                     var date = dayFromSaveList.getDate();
                     for (var eventOfDay : dayFromSaveList.getEvents())
                     {
-                        removeScheduleEvent(date,eventOfDay);
+                        removeScheduleEvent(date, eventOfDay);
                     }
                     var day = CalendarSD.checkUsingOfThisDateOnEventList(date);
                     if (day != null)
                     {
                         updateDayIcons(date, day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
-                    }
-                    else
+                    } else
                     {
                         updateDayIcons(date, false, false, false);
                     }
@@ -478,14 +477,13 @@ public class ScheduleSD extends Application implements Initializable
                     {
                         if (event.equals(scheduleEvent))
                         {
-                            removeScheduleEvent(date,event);
+                            removeScheduleEvent(date, event);
                             day.getEvents().remove(event);
                             var dayFromEventsList = CalendarSD.checkUsingOfThisDateOnEventList(date);
                             if (dayFromEventsList != null)
                             {
                                 updateDayIcons(date, dayFromEventsList.isHaveNotification(), dayFromEventsList.isHaveGoal(), dayFromEventsList.isHaveSchedule());
-                            }
-                            else
+                            } else
                             {
                                 updateDayIcons(date, false, false, false);
                             }
@@ -645,7 +643,7 @@ public class ScheduleSD extends Application implements Initializable
         spacingBetweenTimeAndCheckBox.setPrefWidth(15);
 
         var addEventCheckBox = new CheckBox(languageBundle.getString("scheduleShowNoticeCheckBox"));
-        Main.setRegion(addEventCheckBox,157,25);
+        Main.setRegion(addEventCheckBox, 157, 25);
         addEventCheckBox.setLayoutX(5);
         addEventCheckBox.getStylesheets().add(Objects.requireNonNull(mainCL.getResource("FXMLs/mediumCheckBox.css")).toExternalForm());
         addEventCheckBox.setSelected(checkBoxState);
@@ -737,7 +735,7 @@ public class ScheduleSD extends Application implements Initializable
                     if (eventFromSaveListDay.equals(scheduleEvent))
                     {
                         dayFromSaveList.getEvents().remove(eventFromSaveListDay);
-                        removeScheduleEvent(dayFromSaveList.getDate(),eventFromSaveListDay);
+                        removeScheduleEvent(dayFromSaveList.getDate(), eventFromSaveListDay);
                         var dayFromEventList = CalendarSD.checkUsingOfThisDateOnEventList(dayFromSaveList.getDate());
                         if (dayFromEventList != null)
                         {
@@ -808,8 +806,7 @@ public class ScheduleSD extends Application implements Initializable
                 if (scheduleSD.nameOfSchedule != null)
                 {
                     nameOfScheduleElementValue = doc.createTextNode(scheduleSD.nameOfSchedule);
-                }
-                else
+                } else
                 {
                     nameOfScheduleElementValue = doc.createTextNode("");
                 }
@@ -1044,11 +1041,10 @@ public class ScheduleSD extends Application implements Initializable
             for (var dayFromSaveList : daysSaveList)
             {
                 var dayFromEventList = CalendarSD.checkUsingOfThisDateOnEventList(dayFromSaveList.getDate());
-                if (dayFromEventList==null)
+                if (dayFromEventList == null)
                 {
                     daysWithEvents.add(dayFromSaveList.clone());
-                }
-                else
+                } else
                 {
                     for (var eventFromSaveList : dayFromEventList.getEvents())
                     {
@@ -1076,7 +1072,10 @@ public class ScheduleSD extends Application implements Initializable
                 }
                 if (node instanceof TextField)
                 {
-                    ((TextField) node).setText(xPath.evaluate("save/schedules/schedule" + id + "/nameOfSchedule/text()", doc));
+                    String scheduleName = xPath.evaluate("save/schedules/schedule" + id + "/nameOfSchedule/text()", doc);
+                    ((TextField) node).setText(scheduleName);
+                    loadingSchedule.nameOfSchedule = scheduleName;
+
                 }
             }
 
