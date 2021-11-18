@@ -21,7 +21,9 @@ import javafx.stage.Stage;
 
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -111,25 +113,20 @@ public class PrenotificationSD extends Application implements Initializable
         prenotificationCancelButton.setText(languageBundle.getString("prenotificationCancelButton"));
         prenotificationCloseButtonIV.setImage(new Image("Images/delete30.png"));
 
-        var minutesValues = new ArrayList<String>()
-        {{
-            addAll(Stream.iterate(1, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
-            addAll(IntStream.iterate(10, n -> n < 60, n -> ++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        }};
+        List<String> minutesValues = new ArrayList<>();
+        minutesValues.addAll(Stream.iterate(0, n -> ++n).limit(10).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
+        minutesValues.addAll(IntStream.iterate(10, n -> ++n).limit(51).mapToObj(Integer::toString).collect(Collectors.toList()));
+
         prenotificationComboBoxMinutes.getItems().addAll(minutesValues);
 
-        var hoursValues = new ArrayList<String>()
-        {{
-            addAll(Stream.iterate(0, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
-            addAll(IntStream.iterate(10, n -> n < 24, n -> ++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        }};
+        List<String> hoursValues = new ArrayList<>();
+        hoursValues.addAll(Stream.iterate(0,  n -> ++n).limit(10).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
+        hoursValues.addAll(IntStream.iterate(10, n -> ++n).limit(15).mapToObj(Integer::toString).collect(Collectors.toList()));
         prenotificationComboBoxHours.getItems().addAll(hoursValues);
 
-        var daysValue = new ArrayList<String>()
-        {{
-            addAll(Stream.iterate(0, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
-            addAll(IntStream.iterate(10, n -> n < 31, n -> ++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        }};
+        List<String> daysValue = new ArrayList<>();
+        daysValue.addAll(Stream.iterate(0, n -> ++n).limit(10).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
+        daysValue.addAll(IntStream.iterate(10, n -> ++n).limit(22).mapToObj(Integer::toString).collect(Collectors.toList()));
         prenotificationComboBoxDays.getItems().addAll(daysValue);
 
         prenotificationToolBar.setOnMouseDragged(event ->
@@ -171,14 +168,14 @@ public class PrenotificationSD extends Application implements Initializable
                 resultString = "0" + result;
             }
             prenotificationComboBoxMinutes.setValue(resultString);
-            var prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
-            var prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
+            AnchorPane prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
+            PrenotificationSD prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
             prenotificationSD.selectedMinute = Integer.parseInt(prenotificationComboBoxMinutes.getValue());
         });
         prenotificationComboBoxMinutes.setOnAction(event ->
         {
-            var prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
-            var prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
+            AnchorPane prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
+            PrenotificationSD prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
             prenotificationSD.selectedMinute = Integer.parseInt(prenotificationComboBoxMinutes.getValue());
         });
 
@@ -200,14 +197,14 @@ public class PrenotificationSD extends Application implements Initializable
                 resultString = "0" + result;
             }
             prenotificationComboBoxHours.setValue(resultString);
-            var prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
-            var prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
+            AnchorPane prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
+            PrenotificationSD prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
             prenotificationSD.selectedHour = Integer.parseInt(prenotificationComboBoxHours.getValue());
         });
         prenotificationComboBoxHours.setOnAction(event ->
         {
-            var prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
-            var prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
+            AnchorPane prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
+            PrenotificationSD prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
             prenotificationSD.selectedHour = Integer.parseInt(prenotificationComboBoxHours.getValue());
         });
 
@@ -229,14 +226,14 @@ public class PrenotificationSD extends Application implements Initializable
                 resultString = "0" + result;
             }
             prenotificationComboBoxDays.setValue(resultString);
-            var prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
-            var prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
+            AnchorPane prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
+            PrenotificationSD prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
             prenotificationSD.selectedDay = Integer.parseInt(prenotificationComboBoxDays.getValue());
         });
         prenotificationComboBoxDays.setOnAction(event ->
         {
-            var prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
-            var prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
+            AnchorPane prenotificationRoot = (AnchorPane)((HBox) (((ComboBox<String>) event.getSource()).getParent())).getParent();
+            PrenotificationSD prenotificationSD = prenotifications.get(Integer.parseInt(prenotificationRoot.getAccessibleHelp()));
             prenotificationSD.selectedDay = Integer.parseInt(prenotificationComboBoxDays.getValue());
         });
 
@@ -334,18 +331,18 @@ public class PrenotificationSD extends Application implements Initializable
         prenotificationAddButton.setOnAction(event ->
         {
             selectedPrenotification = (AnchorPane) (((Button) event.getSource()).getParent());
-            var prenotificationSD = prenotifications.get(Integer.parseInt(selectedPrenotification.getAccessibleHelp()));
-            var dateTimeOfEvent = dateTime.minusDays(prenotificationSD.selectedDay).minusHours(prenotificationSD.selectedHour).minusMinutes(prenotificationSD.selectedMinute);
-            var dateOfEvent = dateTimeOfEvent.toLocalDate();
-            var timeOfEvent = dateTimeOfEvent.toLocalTime();
-            var daysWithEvents = getDaysWithEvents();
-            var day = checkUsingOfThisDateOnEventList(dateOfEvent);
+            PrenotificationSD prenotificationSD = prenotifications.get(Integer.parseInt(selectedPrenotification.getAccessibleHelp()));
+            LocalDateTime dateTimeOfEvent = dateTime.minusDays(prenotificationSD.selectedDay).minusHours(prenotificationSD.selectedHour).minusMinutes(prenotificationSD.selectedMinute);
+            LocalDate dateOfEvent = dateTimeOfEvent.toLocalDate();
+            LocalTime timeOfEvent = dateTimeOfEvent.toLocalTime();
+            List<Day> daysWithEvents = getDaysWithEvents();
+            Day day = checkUsingOfThisDateOnEventList(dateOfEvent);
             {
                 if (day == null)
                 {
                     day = new Day(dateOfEvent);
                 }
-                var eventOfDay = new EventOfDay(timeOfEvent, Day.EventType.Notification, prenotificationTextArea.getText());
+                EventOfDay eventOfDay = new EventOfDay(timeOfEvent, Day.EventType.Notification, prenotificationTextArea.getText());
                 if (day.addEvent(eventOfDay))
                 {
                     UpcomingEvent.addEventToQueue(day.getDate(), eventOfDay);

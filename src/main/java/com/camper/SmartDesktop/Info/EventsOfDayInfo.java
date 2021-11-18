@@ -2,12 +2,14 @@ package com.camper.SmartDesktop.Info;
 
 import com.camper.SmartDesktop.Main;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,8 +27,7 @@ import java.util.*;
 
 import static com.camper.SmartDesktop.Main.*;
 
-public class EventsOfDayInfo extends Application implements Initializable
-{
+public class EventsOfDayInfo extends Application implements Initializable {
     @FXML
     private CheckBox notificationCheckBox;
     @FXML
@@ -54,14 +55,11 @@ public class EventsOfDayInfo extends Application implements Initializable
     private MouseEvent mouseEvent;
 
 
-    public EventsOfDayInfo()
-    {
+    public EventsOfDayInfo() {
     }
 
-    public EventsOfDayInfo(MouseEvent mouseEvent, Day dayWithEvents)
-    {
-        if (paneOfInfoRoot != null)
-        {
+    public EventsOfDayInfo(MouseEvent mouseEvent, Day dayWithEvents) {
+        if (paneOfInfoRoot != null) {
             events.clear();
             Main.root.getChildren().remove(paneOfInfoRoot);
             paneOfInfoRoot = null;
@@ -73,8 +71,7 @@ public class EventsOfDayInfo extends Application implements Initializable
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception
-    {
+    public void start(Stage primaryStage) throws Exception {
         logger.info("EventsOfDayInfo: begin start method");
         paneOfInfoRoot = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/calendarEventsOfDayInfo.fxml")));
         int leftDownCornerX = (int) (mouseEvent.getSceneX() - mouseEvent.getX());
@@ -84,23 +81,20 @@ public class EventsOfDayInfo extends Application implements Initializable
         int width = 460;
         int height = 280;
 
-        if (leftDownCornerX + width > DEFAULT_WIDTH)
-        {
+        if (leftDownCornerX + width > DEFAULT_WIDTH) {
             layoutX = leftDownCornerX - width;
         }
-        if (leftDownCornerY + height > DEFAULT_HEIGHT)
-        {
+        if (leftDownCornerY + height > DEFAULT_HEIGHT) {
             layoutY = leftDownCornerY - height - 38;
         }
         paneOfInfoRoot.setLayoutX(layoutX);
         paneOfInfoRoot.setLayoutY(layoutY);
-        updateScrollArea(date,true, true, true);
+        updateScrollArea(date, true, true, true);
 
         paneOfInfoRoot.setOnMouseEntered(event -> entered = true);
         paneOfInfoRoot.setOnMouseExited(event ->
         {
-            if (entered)
-            {
+            if (entered) {
                 entered = false;
                 events.clear();
                 Main.root.getChildren().remove(paneOfInfoRoot);
@@ -111,10 +105,8 @@ public class EventsOfDayInfo extends Application implements Initializable
         });
         Main.root.setOnMouseClicked(event ->
         {
-            if (paneOfInfoRoot != null && Main.root.getChildren().contains(paneOfInfoRoot))
-            {
-                if (!(paneOfInfoRoot.contains(event.getX(), event.getY())))
-                {
+            if (paneOfInfoRoot != null && Main.root.getChildren().contains(paneOfInfoRoot)) {
+                if (!(paneOfInfoRoot.contains(event.getX(), event.getY()))) {
                     events.clear();
                     Main.root.getChildren().remove(paneOfInfoRoot);
                     paneOfInfoRoot = null;
@@ -128,8 +120,7 @@ public class EventsOfDayInfo extends Application implements Initializable
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources)
-    {
+    public void initialize(URL location, ResourceBundle resources) {
         logger.info("EventsOfDayInfo: begin initialize method");
         allTypesCheckBox.setText(languageBundle.getString("eventOfDayInfoAllTypesCheckBox"));
         addNotificationButton.setText(languageBundle.getString("eventOfDayInfoNotificationCheckBox"));
@@ -142,22 +133,18 @@ public class EventsOfDayInfo extends Application implements Initializable
 
         addNotificationButton.setOnAction(event ->
         {
-            try
-            {
+            try {
                 new NotificationSD(date).start(Stage);
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 logger.error("EventsOfDayInfo: notification FXML load error", e);
             }
         });
 
         addGoalsButton.setOnAction(event ->
         {
-            try
-            {
+            try {
                 new GoalSD().start(Stage);
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 logger.error("EventsOfDayInfo: notification FXML load error", e);
             }
 
@@ -165,68 +152,58 @@ public class EventsOfDayInfo extends Application implements Initializable
 
         addScheduleButton.setOnAction(event ->
         {
-            try
-            {
+            try {
                 new ScheduleSD(date).start(Stage);
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 logger.error("EventsOfDayInfo: notification FXML load error", e);
             }
         });
 
         notificationCheckBox.setOnAction(event ->
         {
-            updateScrollArea(date,notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
-            if (!notificationCheckBox.isSelected())
-            {
+            updateScrollArea(date, notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            if (!notificationCheckBox.isSelected()) {
                 allTypesCheckBox.setSelected(false);
             }
-            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected())
-            {
+            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected()) {
                 allTypesCheckBox.setSelected(true);
             }
         });
 
         goalsCheckBox.setOnAction(event ->
         {
-            updateScrollArea(date,notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
-            if (!goalsCheckBox.isSelected())
-            {
+            updateScrollArea(date, notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            if (!goalsCheckBox.isSelected()) {
                 allTypesCheckBox.setSelected(false);
             }
-            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected())
-            {
+            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected()) {
                 allTypesCheckBox.setSelected(true);
             }
         });
 
         schedulerCheckBox.setOnAction(event ->
         {
-            updateScrollArea(date,notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
-            if (!schedulerCheckBox.isSelected())
-            {
+            updateScrollArea(date, notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            if (!schedulerCheckBox.isSelected()) {
                 allTypesCheckBox.setSelected(false);
             }
-            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected())
-            {
+            if (notificationCheckBox.isSelected() && goalsCheckBox.isSelected() && schedulerCheckBox.isSelected()) {
                 allTypesCheckBox.setSelected(true);
             }
         });
 
         allTypesCheckBox.setOnAction(event ->
         {
-            if (allTypesCheckBox.isSelected())
-            {
+            if (allTypesCheckBox.isSelected()) {
                 notificationCheckBox.setSelected(true);
                 goalsCheckBox.setSelected(true);
                 schedulerCheckBox.setSelected(true);
-            } else
-            {
+            } else {
                 notificationCheckBox.setSelected(false);
                 goalsCheckBox.setSelected(false);
                 schedulerCheckBox.setSelected(false);
             }
-            updateScrollArea(date,notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
+            updateScrollArea(date, notificationCheckBox.isSelected(), goalsCheckBox.isSelected(), schedulerCheckBox.isSelected());
         });
         allTypesCheckBox.setSelected(true);
         notificationCheckBox.setSelected(true);
@@ -234,54 +211,45 @@ public class EventsOfDayInfo extends Application implements Initializable
         schedulerCheckBox.setSelected(true);
     }
 
-    private static void updateScrollArea(LocalDate date, boolean notification, boolean goal, boolean schedule)
-    {
-        var content = new VBox(8);
+    private static void updateScrollArea(LocalDate date, boolean notification, boolean goal, boolean schedule) {
+        VBox content = new VBox(8);
         content.setMaxWidth(459);
         content.setMaxHeight(252);
         content.setPrefWidth(459);
         content.setPrefHeight(252);
         content.setMinWidth(459);
 
-        var goalsWithTask = new HashMap<String, List<EventOfDay>>();
+        Map<String, List<EventOfDay>> goalsWithTask = new HashMap<>();
 
-        if (events != null && events.size() != 0)
-        {
+        if (events != null && events.size() != 0) {
             events.sort(Comparator.comparing(EventOfDay::getTime));
-            for (var event : events)
-            {
-                var type = event.getType();
+            for (EventOfDay event : events) {
+                Day.EventType type = event.getType();
 
-                var icon = new ImageView();
+                ImageView icon = new ImageView();
                 icon.setFitWidth(35);
                 icon.setFitHeight(35);
                 icon.setLayoutX(2);
-                if (type == Day.EventType.Notification && notification)
-                {
+                if (type == Day.EventType.Notification && notification) {
                     icon.setImage(new Image("Images/notification25.png"));
                     icon.setFitHeight(25);
                     icon.setFitWidth(25);
                     addInfoOfEvent(date, event, icon, content);
                 }
-                if (type == Day.EventType.Goal && goal)
-                {
-                    if (!(goalsWithTask.containsKey(event.getInfo())))
-                    {
+                if (type == Day.EventType.Goal && goal) {
+                    if (!(goalsWithTask.containsKey(event.getInfo()))) {
                         goalsWithTask.put(event.getInfo(), new ArrayList<>());
                     }
                 }
-                if (type == Day.EventType.Schedule && schedule)
-                {
+                if (type == Day.EventType.Schedule && schedule) {
                     icon.setImage(new Image("Images/schedule35.png"));
                     icon.setFitHeight(25);
                     icon.setFitWidth(25);
                     addInfoOfEvent(date, event, icon, content);
                 }
-                if (type == Day.EventType.Task)
-                {
+                if (type == Day.EventType.Task) {
                     String goalName = GoalSD.getGoalNameOfEventTask(event);
-                    if (!(goalsWithTask.containsKey(goalName)))
-                    {
+                    if (!(goalsWithTask.containsKey(goalName))) {
                         goalsWithTask.put(goalName, new ArrayList<>());
                     }
                     goalsWithTask.get(goalName).add(event);
@@ -289,36 +257,29 @@ public class EventsOfDayInfo extends Application implements Initializable
             }
         }
 
-        if (goal && goalsWithTask.size() != 0)
-        {
-            for (var entry : goalsWithTask.entrySet())
-            {
+        if (goal && goalsWithTask.size() != 0) {
+            for (Map.Entry<String, List<EventOfDay>> entry : goalsWithTask.entrySet()) {
                 GoalSD goalSD = null;
-                for (var g : GoalSD.getGoals().values())
-                {
-                    if (g.getNameOfGoal().equals(entry.getKey()))
-                    {
+                for (GoalSD g : GoalSD.getGoals().values()) {
+                    if (g.getNameOfGoal().equals(entry.getKey())) {
                         goalSD = g;
                         break;
                     }
                 }
-                if (goalSD != null)
-                {
-                    var line = addGoalOnScrollPane(entry.getKey(), entry.getValue());
+                if (goalSD != null) {
+                    VBox line = addGoalOnScrollPane(entry.getKey(), entry.getValue());
                     content.getChildren().add(line);
                 }
             }
         }
 
-        var scroller = new ScrollPane(content);
+        ScrollPane scroller = new ScrollPane(content);
         scroller.setVisible(true);
         scroller.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scroller.setLayoutY(40);
-        var childList = paneOfInfoRoot.getChildren();
-        for (var node : childList)
-        {
-            if (node instanceof ScrollPane)
-            {
+        ObservableList<Node> childList = paneOfInfoRoot.getChildren();
+        for (Node node : childList) {
+            if (node instanceof ScrollPane) {
                 childList.remove(node);
                 childList.add(scroller);
                 return;
@@ -326,28 +287,26 @@ public class EventsOfDayInfo extends Application implements Initializable
         }
         childList.add(scroller);
         logger.info("EventsOfDayInfo: update scroll area");
-        return;
     }
 
-    private static void addInfoOfEvent(LocalDate date, EventOfDay event, ImageView icon, VBox content)
-    {
-        var time = new TextField(event.getTime().toString());
+    private static void addInfoOfEvent(LocalDate date, EventOfDay event, ImageView icon, VBox content) {
+        TextField time = new TextField(event.getTime().toString());
         Main.setRegion(time, 45, 25);
         time.setEditable(false);
 
-        var vSeparator = new Separator(Orientation.VERTICAL);
+        Separator vSeparator = new Separator(Orientation.VERTICAL);
         Main.setRegion(vSeparator, 4, 25);
 
-        var info = new TextField(event.getInfo());
+        TextField info = new TextField(event.getInfo());
         Main.setRegion(info, 314, 25);
         info.setEditable(false);
 
-        var deleteButton = new Button();
+        Button deleteButton = new Button();
         Main.setRegion(deleteButton, 25, 25);
         deleteButton.setGraphic(new ImageView(new Image("Images/delete35.png")));
         deleteButton.setStyle("-fx-background-color: #f4f4f4");
 
-        var hbox = new HBox(6, icon, time, vSeparator, info, deleteButton);
+        HBox hbox = new HBox(6, icon, time, vSeparator, info, deleteButton);
         Main.setRegion(hbox, 460, 25);
         hbox.setPadding(new Insets(0, 8, 0, 8));
 
@@ -355,73 +314,67 @@ public class EventsOfDayInfo extends Application implements Initializable
 
         deleteButton.setOnAction(e ->
         {
-            if (event.getType().equals(Day.EventType.Schedule))
-            {
-                ScheduleSD.removeEventFromEventList(date,event);
+            if (event.getType().equals(Day.EventType.Schedule)) {
+                ScheduleSD.removeEventFromEventList(date, event);
             }
-            if (event.getType().equals(Day.EventType.Notification))
-            {
-                NotificationSD.removeNotificationFromEventList(date,event);
+            if (event.getType().equals(Day.EventType.Notification)) {
+                NotificationSD.removeNotificationFromEventList(date, event);
             }
             content.getChildren().remove(hbox);
         });
     }
 
-    private static VBox addGoalOnScrollPane(String nameOfGoal, List<EventOfDay> tasks)
-    {
-        var line = new VBox(3);
+    private static VBox addGoalOnScrollPane(String nameOfGoal, List<EventOfDay> tasks) {
+        VBox line = new VBox(3);
         line.setPadding(new Insets(4, 0, 0, 0));
-        var childList = line.getChildren();
+        ObservableList<Node> childList = line.getChildren();
 
-        var nameOfGoalLabel = new Label(nameOfGoal);
+        Label nameOfGoalLabel = new Label(nameOfGoal);
         Main.setRegion(nameOfGoalLabel, 379, 25);
         nameOfGoalLabel.setFont(Font.font("Times New Roman", FontWeight.BOLD, 16));
         nameOfGoalLabel.setAlignment(Pos.CENTER);
 
-        var icon = new ImageView(new Image("Images/target25.png"));
+        ImageView icon = new ImageView(new Image("Images/target25.png"));
         icon.setFitWidth(25);
         icon.setFitHeight(25);
 
-        var hbox1 = new HBox(12, icon, nameOfGoalLabel);
+        HBox hbox1 = new HBox(12, icon, nameOfGoalLabel);
         Main.setRegion(hbox1, 460, 25);
         hbox1.setPadding(new Insets(0, 8, 0, 8));
 
-        var hSeparator = new Separator(Orientation.HORIZONTAL);
+        Separator hSeparator = new Separator(Orientation.HORIZONTAL);
         Main.setRegion(hSeparator, 460, 4);
 
         childList.addAll(hbox1, hSeparator);
 
-        for (var task : tasks)
-        {
-            var time = new TextField(task.getTime().toString());
+        for (EventOfDay task : tasks) {
+            TextField time = new TextField(task.getTime().toString());
             Main.setRegion(time, 45, 25);
             time.setEditable(false);
 
-            var vSeparator = new Separator(Orientation.VERTICAL);
+            Separator vSeparator = new Separator(Orientation.VERTICAL);
             Main.setRegion(vSeparator, 4, 25);
 
-            var info = new TextField(task.getInfo());
+            TextField info = new TextField(task.getInfo());
             Main.setRegion(info, 314, 25);
             info.setEditable(false);
 
-            var deleteButton = new Button();
+            Button deleteButton = new Button();
             Main.setRegion(deleteButton, 25, 25);
             deleteButton.setGraphic(new ImageView(new Image("Images/delete35.png")));
             deleteButton.setStyle("-fx-background-color: #f4f4f4");
 
-            var checkBox = new CheckBox();
+            CheckBox checkBox = new CheckBox();
             checkBox.getStylesheets().add(Objects.requireNonNull(mainCL.getResource("FXMLs/mediumCheckBox.css")).toExternalForm());
             Main.setRegion(checkBox, 25, 25);
-            var goalSD = GoalSD.getGoalFromGoalName(nameOfGoal);
-            if (goalSD != null)
-            {
+            GoalSD goalSD = GoalSD.getGoalFromGoalName(nameOfGoal);
+            if (goalSD != null) {
                 checkBox.setSelected(goalSD.getCheckBoxes().get(task).isSelected());
-            } else
-            {
+            } else {
                 checkBox.setSelected(false);
             }
 
-            var taskInfo = new HBox(6, time, vSeparator, info, checkBox, deleteButton);
+            HBox taskInfo = new HBox(6, time, vSeparator, info, checkBox, deleteButton);
             Main.setRegion(taskInfo, 460, 25);
             taskInfo.setPadding(new Insets(0, 8, 0, 8));
 
@@ -430,14 +383,11 @@ public class EventsOfDayInfo extends Application implements Initializable
             checkBox.setOnAction(event -> GoalSD.updateStateOfGoalCheckBoxes(task, checkBox.isSelected()));
             deleteButton.setOnAction(event ->
             {
-                if (goalSD != null)
-                {
+                if (goalSD != null) {
                     childList.remove(taskInfo);
-                    var checkBoxInGoalRoot = goalSD.getCheckBoxes().get(task);
-                    for (var node : ((HBox) (checkBoxInGoalRoot.getParent())).getChildren())
-                    {
-                        if (node instanceof Button && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("taskDeleteButton"))
-                        {
+                    CheckBox checkBoxInGoalRoot = goalSD.getCheckBoxes().get(task);
+                    for (Node node : ((HBox) (checkBoxInGoalRoot.getParent())).getChildren()) {
+                        if (node instanceof Button && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("taskDeleteButton")) {
                             ((Button) node).fire();
                         }
                     }
@@ -445,7 +395,7 @@ public class EventsOfDayInfo extends Application implements Initializable
             });
         }
 
-        var endHSeparator = new Separator(Orientation.HORIZONTAL);
+        Separator endHSeparator = new Separator(Orientation.HORIZONTAL);
         Main.setRegion(endHSeparator, 460, 4);
         childList.add(endHSeparator);
 

@@ -9,14 +9,20 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import org.w3c.dom.Document;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.camper.SmartDesktop.Info.UpcomingEvent.runEventTask;
 import static com.camper.SmartDesktop.Main.*;
@@ -40,7 +46,7 @@ public class Loading
             saveNameFromChoiceBox = saves.getValue();
         }
         String filename = "";
-        var folderWithSaves = new File(DIRPATH + "\\Resources\\Saves");
+        File folderWithSaves = new File(DIRPATH + "\\Resources\\Saves");
 
         File[] contents = folderWithSaves.listFiles();
         if (contents != null && contents.length != 0)
@@ -56,10 +62,10 @@ public class Loading
             }
             if (countOfSaves != 0)
             {
-                var factory = DocumentBuilderFactory.newInstance();
-                var builder = factory.newDocumentBuilder();
-                var xPathFactory = XPathFactory.newInstance();
-                var xPath = xPathFactory.newXPath();
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                XPathFactory xPathFactory = XPathFactory.newInstance();
+                XPath xPath = xPathFactory.newXPath();
 
                 if (saveNameFromChoiceBox == null)
                 {
@@ -86,7 +92,7 @@ public class Loading
                 //“огда мы загружаем старое сохранение, которое точно будет, потому что мы его только что создали
                 else if (Files.exists(Paths.get(DIRPATH + "\\Resources\\Saves\\" + saveInfo.getProperty("lastSaveName"))))
                 {
-                    var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("loadingSaveErrorAlert"), ButtonType.OK);
+                    Alert alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("loadingSaveErrorAlert"), ButtonType.OK);
                     alert.showAndWait();
 
                     filename = saveInfo.getProperty("lastSaveName");
@@ -99,7 +105,7 @@ public class Loading
                 //“огда мы создаЄм новое пустое сохранение и загружаем его.
                 else
                 {
-                    var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("loadingSaveErrorAlert"), ButtonType.OK);
+                    Alert alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("loadingSaveErrorAlert"), ButtonType.OK);
                     alert.showAndWait();
 
                     filename = addNewSaveFile();
@@ -112,13 +118,13 @@ public class Loading
                 }
 
                 logger.info("Loading: start elements loading");
+                // алендарь всегда должен грузитьс€ последним!!!
                 NoteSD.loadNotesFromXML(doc, xPath);
                 ScheduleSD.loadSchedulesFromXML(doc, xPath);
                 GoalSD.loadGoalsFromXML(doc, xPath);
                 TableSD.loadTablesFromXML(doc, xPath);
                 Weather.loadWeatherInfoFromXML(doc, xPath);
                 UpcomingEvent.loadUpcomingEventInfoFromXML(doc, xPath);
-                // алендарь всегда должен грузитьс€ последним!!!
                 CalendarSD.loadCalendarFromXML(doc, xPath);
                 logger.info("Loading: end elements loading");
 
@@ -146,7 +152,7 @@ public class Loading
     public static void loadSavesToSavesList(ChoiceBox<String> saves)
     {
         saves.getItems().clear();
-        var folderWithSaves = new File(DIRPATH + "\\Resources\\Saves");
+        File folderWithSaves = new File(DIRPATH + "\\Resources\\Saves");
         File[] contents = folderWithSaves.listFiles();
         if (contents != null && contents.length != 0)
         {
@@ -162,12 +168,12 @@ public class Loading
 
     public static void updateElementsVisibility(int numberOfTab)
     {
-        var tabToDisableVisible = tabs.get(idOfSelectedTab);
+        List<Node> tabToDisableVisible = tabs.get(idOfSelectedTab);
         for (Node node : tabToDisableVisible)
         {
             node.setVisible(false);
         }
-        var tabToEnableVisible = tabs.get(numberOfTab);
+        List<Node> tabToEnableVisible = tabs.get(numberOfTab);
         for (Node node : tabToEnableVisible)
         {
             node.setVisible(true);

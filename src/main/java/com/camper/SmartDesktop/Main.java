@@ -6,6 +6,7 @@ import com.camper.SmartDesktop.StandardElements.About;
 import com.camper.SmartDesktop.StandardElements.TableSD;
 import com.camper.SmartDesktop.StandardElements.Weather;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -162,7 +163,7 @@ public class Main extends Application implements Initializable
 
     private static void deleteAllNewElements()
     {
-        var list = root.getChildren();
+        ObservableList<Node> list = root.getChildren();
         list.remove(numberOfImmutableElements, list.size());
         NoteSD.clearSaveList();
         NotificationSD.clearSaveList();
@@ -182,7 +183,7 @@ public class Main extends Application implements Initializable
         {
             parent = parent.getParent();
         }
-        var pane = (AnchorPane) parent;
+        AnchorPane pane = (AnchorPane) parent;
         return Integer.parseInt(pane.getAccessibleHelp());
     }
 
@@ -260,11 +261,11 @@ public class Main extends Application implements Initializable
         defaultLocale = Locale.forLanguageTag(saveInfo.getProperty("language"));
         languageBundle = ResourceBundle.getBundle("language", defaultLocale);
 
-        var elementsOfTab1 = new ArrayList<Node>();
-        var elementsOfTab2 = new ArrayList<Node>();
-        var elementsOfTab3 = new ArrayList<Node>();
-        var elementsOfTab4 = new ArrayList<Node>();
-        var elementsOfTab5 = new ArrayList<Node>();
+        List<Node> elementsOfTab1 = new ArrayList<>();
+        List<Node> elementsOfTab2 = new ArrayList<>();
+        List<Node> elementsOfTab3 = new ArrayList<>();
+        List<Node> elementsOfTab4 = new ArrayList<>();
+        List<Node> elementsOfTab5 = new ArrayList<>();
         tabs.put(1, elementsOfTab1);
         tabs.put(2, elementsOfTab2);
         tabs.put(3, elementsOfTab3);
@@ -274,7 +275,7 @@ public class Main extends Application implements Initializable
         Stage = stage;
 
         root = FXMLLoader.load(Objects.requireNonNull(mainCL.getResource("FXMLs/StartScreen.fxml")));
-        var scene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT - 66);
+        Scene scene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT - 66);
 
         numberOfImmutableElements = root.getChildren().size();
 
@@ -296,7 +297,7 @@ public class Main extends Application implements Initializable
         {
             if (node instanceof TabPane && node.getAccessibleHelp().equals("Presaves tab pane"))
             {
-                var selectionModel = ((TabPane) node).getSelectionModel();
+                SingleSelectionModel<Tab> selectionModel = ((TabPane) node).getSelectionModel();
                 selectionModel.select(idOfSelectedTab - 1);
                 break;
             }
@@ -389,7 +390,7 @@ public class Main extends Application implements Initializable
         {
             try
             {
-                var aboutRoot = About.getAboutRoot();
+                AnchorPane aboutRoot = About.getAboutRoot();
                 if (aboutRoot != null)
                 {
                     root.getChildren().remove(aboutRoot);
@@ -413,7 +414,7 @@ public class Main extends Application implements Initializable
             }
         });
 
-        var selectionModel = mainTabPane.getSelectionModel();
+        SingleSelectionModel<Tab> selectionModel = mainTabPane.getSelectionModel();
         loadSavesToSavesList(savesChoiceBox);
         //”станавливаем значение пресета в загрузочном списке
         savesChoiceBox.setValue(saveInfo.getProperty("lastSaveName"));
@@ -512,7 +513,7 @@ public class Main extends Application implements Initializable
         }
         if (VUrl != null)
         {
-            var mediaFromLoadLaunch = new Media(VUrl);
+            Media mediaFromLoadLaunch = new Media(VUrl);
             mediaPlayer = new MediaPlayer(mediaFromLoadLaunch);
             videoViewer.setMediaPlayer(mediaPlayer);
             mediaPlayer.setAutoPlay(true);
@@ -521,10 +522,10 @@ public class Main extends Application implements Initializable
 
         videoFileChooserButton.setOnAction(event ->
         {
-            var fileChooser = new FileChooser();
-            var imageFilters = new FileChooser.ExtensionFilter("Video filters", "*.mp4");
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter imageFilters = new FileChooser.ExtensionFilter("Video filters", "*.mp4");
             fileChooser.getExtensionFilters().add(imageFilters);
-            var result = fileChooser.showOpenDialog(Stage);
+            File result = fileChooser.showOpenDialog(Stage);
             if (result != null)
             {
                 try
@@ -536,7 +537,7 @@ public class Main extends Application implements Initializable
                     }
                     if (Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Images")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Images")))
                     {
-                        var folderWithImages = new File(DIRPATH + "\\Resources\\Images");
+                        File folderWithImages = new File(DIRPATH + "\\Resources\\Images");
                         File[] contents = folderWithImages.listFiles();
                         if (contents != null)
                         {
@@ -551,7 +552,7 @@ public class Main extends Application implements Initializable
                     }
                     if (Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Videos")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Videos")))
                     {
-                        var folderWithVideo = new File(DIRPATH + "\\Resources\\Videos");
+                        File folderWithVideo = new File(DIRPATH + "\\Resources\\Videos");
                         File[] contents = folderWithVideo.listFiles();
                         if (contents != null)
                         {
@@ -570,7 +571,7 @@ public class Main extends Application implements Initializable
                     }
                     Files.copy(Paths.get(result.getPath()), Paths.get(DIRPATH + "\\Resources\\Videos\\video.mp4"), StandardCopyOption.REPLACE_EXISTING);
                     logger.info("Main: copy Video to Videos folder");
-                    var mediaFromFirstLaunch = new Media(new File(result.getAbsolutePath().replace("\\", System.getProperty("file.separator"))).toURI().toASCIIString());
+                    Media mediaFromFirstLaunch = new Media(new File(result.getAbsolutePath().replace("\\", System.getProperty("file.separator"))).toURI().toASCIIString());
                     mediaPlayer = new MediaPlayer(mediaFromFirstLaunch);
                     videoViewer.setMediaPlayer(mediaPlayer);
                     mediaPlayer.setAutoPlay(true);
@@ -585,10 +586,10 @@ public class Main extends Application implements Initializable
 
         imageFileChooserButton.setOnAction(event ->
         {
-            var fileChooser = new FileChooser();
-            var imageFilters = new FileChooser.ExtensionFilter("Image filters", "*.jpg", "*.png", "*.gif");
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter imageFilters = new FileChooser.ExtensionFilter("Image filters", "*.jpg", "*.png", "*.gif");
             fileChooser.getExtensionFilters().add(imageFilters);
-            var result = fileChooser.showOpenDialog(Stage);
+            File result = fileChooser.showOpenDialog(Stage);
             String extensionOnFirstLaunch;
             if (result != null)
             {
@@ -612,7 +613,7 @@ public class Main extends Application implements Initializable
                          * нужного расширени€ при первом запуске(смотри выше). „тобы этого избежать, удал€етс€ изображение,
                          * которое лежит в папке
                          */
-                        var folderWithImages = new File(DIRPATH + "\\Resources\\Images");
+                        File folderWithImages = new File(DIRPATH + "\\Resources\\Images");
                         File[] contents = folderWithImages.listFiles();
                         if (contents != null)
                         {
@@ -641,7 +642,7 @@ public class Main extends Application implements Initializable
 
                     if (Files.isDirectory(Paths.get(DIRPATH + "\\Resources\\Videos")) && Files.exists(Paths.get(DIRPATH + "\\Resources\\Videos")))
                     {
-                        var folderWithVideo = new File(DIRPATH + "\\Resources\\Videos");
+                        File folderWithVideo = new File(DIRPATH + "\\Resources\\Videos");
                         File[] contents = folderWithVideo.listFiles();
                         if (contents != null)
                         {
@@ -655,7 +656,7 @@ public class Main extends Application implements Initializable
                         }
                     }
 
-                    var image = new Image("file:/" + result.getAbsolutePath(), DEFAULT_WIDTH, DEFAULT_HEIGHT, false, false);
+                    Image image = new Image("file:/" + result.getAbsolutePath(), DEFAULT_WIDTH, DEFAULT_HEIGHT, false, false);
                     imageViewer.setImage(image);
                 } catch (IOException e)
                 {
@@ -711,7 +712,7 @@ public class Main extends Application implements Initializable
 
         upcomingEventInfo.setOnAction(event ->
         {
-            var upcomingEventInfo = UpcomingEvent.getUpcomingEventInfoRoot();
+            AnchorPane upcomingEventInfo = UpcomingEvent.getUpcomingEventInfoRoot();
             if (upcomingEventInfo != null)
             {
                 upcomingEventInfo.setVisible(true);
@@ -743,7 +744,7 @@ public class Main extends Application implements Initializable
 
         weather.setOnAction(event ->
         {
-            var weather = Weather.getWeatherRoot();
+            AnchorPane weather = Weather.getWeatherRoot();
             if (weather != null)
             {
                 weather.setVisible(true);
@@ -764,18 +765,18 @@ public class Main extends Application implements Initializable
 
         calendar.setOnAction((event ->
         {
-            var calendar = CalendarSD.getRoot();
+            AnchorPane calendar = CalendarSD.getRoot();
             calendar.setVisible(true);
 
             int tabNumber = Integer.parseInt(calendar.getAccessibleText());
             if (tabNumber != -1)
             {
-                var oldTab = tabs.get(tabNumber);
+                List<Node> oldTab = tabs.get(tabNumber);
                 oldTab.remove(calendar);
             }
 
             calendar.setAccessibleText(String.valueOf(idOfSelectedTab));
-            var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
+            List<Node> elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(calendar);
         }));
         logger.info("Main: end initialize method");

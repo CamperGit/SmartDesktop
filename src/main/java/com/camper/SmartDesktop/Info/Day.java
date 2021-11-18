@@ -74,7 +74,7 @@ public class Day implements Cloneable
 
     public boolean addEvent(LocalTime time, EventType type, String info)
     {
-        var event = new EventOfDay(time, type, info);
+        EventOfDay event = new EventOfDay(time, type, info);
         return this.addEvent(event);
     }
 
@@ -84,18 +84,18 @@ public class Day implements Cloneable
      */
     public boolean addEvent(EventOfDay event)
     {
-        for (var eventOfDay : events)
+        for (EventOfDay eventOfDay : events)
         {
             if (eventOfDay.getType().equals(event.getType()) && eventOfDay.getTime() == event.getTime() && eventOfDay.getInfo().equals(event.getInfo()))
             {
                 if (event.getType().equals(EventType.Notification))
                 {
-                    var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("equalsNotificationEventAlert"), ButtonType.OK);
+                    Alert alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("equalsNotificationEventAlert"), ButtonType.OK);
                     alert.showAndWait();
                 }
                 if (event.getType().equals(EventType.Task))
                 {
-                    var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("equalsGoalEventAlert"), ButtonType.OK);
+                    Alert alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("equalsGoalEventAlert"), ButtonType.OK);
                     alert.showAndWait();
                 }
                 return false;
@@ -122,17 +122,17 @@ public class Day implements Cloneable
      */
     public static boolean checkOfDeprecatedEvents(Day day, boolean addToDeprecatedEventsList)
     {
-        var events = day.getEvents();
-        var deprecatedEventsOfThisDay = new ArrayList<EventOfDay>();
-        for (var event : events)
+        List<EventOfDay> events = day.getEvents();
+        List<EventOfDay> deprecatedEventsOfThisDay = new ArrayList<>();
+        for (EventOfDay event : events)
         {
-            var eventTime = LocalDateTime.of(day.getDate(), event.getTime());
+            LocalDateTime eventTime = LocalDateTime.of(day.getDate(), event.getTime());
             if (eventTime.isBefore(LocalDateTime.now()))
             {
                 deprecatedEventsOfThisDay.add(event);
             }
         }
-        for (var deprecatedEvent : deprecatedEventsOfThisDay)
+        for (EventOfDay deprecatedEvent : deprecatedEventsOfThisDay)
         {
             events.remove(deprecatedEvent);
         }
@@ -140,8 +140,8 @@ public class Day implements Cloneable
         if (deprecatedEventsOfThisDay.size() != 0 && addToDeprecatedEventsList)
         {
             Day dayWithDeprecatedEvents = null;
-            var daysWithDeprecatedEvents = DeprecatedEvents.getDaysWithDeprecatedEvents();
-            for(var dayFromList : daysWithDeprecatedEvents)
+            List<Day> daysWithDeprecatedEvents = getDaysWithDeprecatedEvents();
+            for(Day dayFromList : daysWithDeprecatedEvents)
             {
                 if (dayFromList.getDate().equals(day.getDate()))
                 {
@@ -166,7 +166,7 @@ public class Day implements Cloneable
             return false;
         } else
         {
-            for (var otherEvent : events)
+            for (EventOfDay otherEvent : events)
             {
                 if (otherEvent.getType() == EventType.Notification)
                 {
@@ -194,12 +194,12 @@ public class Day implements Cloneable
     public static Day removeEventFromDay(LocalDate date, EventOfDay event)
     {
         Day day = null;
-        var daysWithEvents = CalendarSD.getDaysWithEvents();
-        for (var dayWithEvent : daysWithEvents)
+        List<Day> daysWithEvents = CalendarSD.getDaysWithEvents();
+        for (Day dayWithEvent : daysWithEvents)
         {
             if (dayWithEvent.getDate().equals(date))
             {
-                var events = dayWithEvent.getEvents();
+                List<EventOfDay> events = dayWithEvent.getEvents();
                 events.remove(event);
                 if (events.size() != 0)
                 {
@@ -207,7 +207,7 @@ public class Day implements Cloneable
                     day.setHaveNotification(false);
                     day.setHaveGoal(false);
                     day.setHaveSchedule(false);
-                    for (var eventFromList : events)
+                    for (EventOfDay eventFromList : events)
                     {
                         if (eventFromList.getType() == EventType.Notification)
                         {
@@ -235,7 +235,7 @@ public class Day implements Cloneable
     @Override
     public Day clone() throws CloneNotSupportedException
     {
-        var clonedDay = (Day) super.clone();
+        Day clonedDay = (Day) super.clone();
         clonedDay.events = new ArrayList<>(this.getEvents());
         return clonedDay;
     }

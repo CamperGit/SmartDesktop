@@ -12,12 +12,19 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import java.net.URL;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -70,7 +77,7 @@ public class Weather extends Application implements Initializable
         if (!load)
         {
             WeatherRoot.setAccessibleText(String.valueOf(idOfSelectedTab));
-            var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
+            List<javafx.scene.Node> elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(WeatherRoot);
         }
         logger.info("Weather: end start method");
@@ -103,7 +110,7 @@ public class Weather extends Application implements Initializable
         {
             site = "https://yandex.ru/pogoda";
         }
-        var engine = weatherWebView.getEngine();
+        WebEngine engine = weatherWebView.getEngine();
         weatherWebView.getEngine().setUserStyleSheetLocation(Objects.requireNonNull(mainCL.getResource("FXMLs/webView.css")).toExternalForm());
         engine.load(site);
         logger.info("Weather: end initialize method");
@@ -112,30 +119,30 @@ public class Weather extends Application implements Initializable
     public static void addWeatherInfoToXML(Document doc, boolean createEmptyXML)
     {
         logger.info("Weather: start saving weather");
-        var rootElement = doc.getFirstChild();
+        Node rootElement = doc.getFirstChild();
 
-        var weatherInfoElement = doc.createElement("weatherInfo");
+        Element weatherInfoElement = doc.createElement("weatherInfo");
         rootElement.appendChild(weatherInfoElement);
         if (!createEmptyXML && WeatherRoot != null)
         {
             weatherInfoElement.setAttribute("tab", WeatherRoot.getAccessibleText());
 
-            var visibilityElement = doc.createElement("visibility");
+            Element visibilityElement = doc.createElement("visibility");
             weatherInfoElement.appendChild(visibilityElement);
-            var visibilityValue = doc.createTextNode(String.valueOf(WeatherRoot.isVisible()));
+            Text visibilityValue = doc.createTextNode(String.valueOf(WeatherRoot.isVisible()));
             visibilityElement.appendChild(visibilityValue);
 
-            var layoutElement = doc.createElement("layout");
+            Element layoutElement = doc.createElement("layout");
             weatherInfoElement.appendChild(layoutElement);
 
-            var layoutX = doc.createElement("layoutX");
+            Element layoutX = doc.createElement("layoutX");
             layoutElement.appendChild(layoutX);
-            var layoutXValue = doc.createTextNode(String.valueOf((int) (WeatherRoot.getLayoutX())));
+            Text layoutXValue = doc.createTextNode(String.valueOf((int) (WeatherRoot.getLayoutX())));
             layoutX.appendChild(layoutXValue);
 
-            var layoutY = doc.createElement("layoutY");
+            Element layoutY = doc.createElement("layoutY");
             layoutElement.appendChild(layoutY);
-            var layoutYValue = doc.createTextNode(String.valueOf((int) (WeatherRoot.getLayoutY())));
+            Text layoutYValue = doc.createTextNode(String.valueOf((int) (WeatherRoot.getLayoutY())));
             layoutY.appendChild(layoutYValue);
         }
         logger.info("Weather: end saving weather");
@@ -144,16 +151,17 @@ public class Weather extends Application implements Initializable
     public static void loadWeatherInfoFromXML(Document doc, XPath xPath) throws Exception
     {
         logger.info("Weather: start loading weather");
-        boolean notEmpty = xPath.evaluateExpression("count(/save/weatherInfo/*)", doc, Integer.class) != 0;
+        XPathExpression weatherCompile = xPath.compile("count(/save/weatherInfo/*)");
+        boolean notEmpty = Integer.parseInt((String)weatherCompile.evaluate(doc, XPathConstants.STRING)) != 0;
         if (notEmpty)
         {
-            var loadingWeatherInfo = new Weather(true);
+            Weather loadingWeatherInfo = new Weather(true);
             loadingWeatherInfo.start(Stage);
 
             int numberOfTab = Integer.parseInt(xPath.evaluate("/save/weatherInfo/@tab", doc));
             WeatherRoot.setAccessibleText(String.valueOf(numberOfTab));
 
-            var tab = tabs.get(numberOfTab);
+            List<javafx.scene.Node> tab = tabs.get(numberOfTab);
             tab.add(WeatherRoot);
             boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/weatherInfo/visibility/text()", doc));
             WeatherRoot.setVisible(visibility);

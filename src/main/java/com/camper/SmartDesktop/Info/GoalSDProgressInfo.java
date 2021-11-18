@@ -91,7 +91,7 @@ public class GoalSDProgressInfo extends Application
             {
                 id = Main.returnAnchorId(((Node) event.getSource()).getParent());
             }
-            var progressInfo = progressInfoMap.get(id);
+            GoalSDProgressInfo progressInfo = progressInfoMap.get(id);
             if (progressInfo.isEntered())
             {
                 progressInfo.setEntered(false);
@@ -105,7 +105,7 @@ public class GoalSDProgressInfo extends Application
     public void updatePieChart(Map<CheckBox, List<CheckBox>> groupOfGoalCheckBox, Map<EventOfDay, CheckBox> eventsOfCheckBoxes)
     {
         sortCheckBoxes(groupOfGoalCheckBox, eventsOfCheckBoxes, this);
-        var chart = new PieChart();
+        PieChart chart = new PieChart();
         chart.getData().addAll(
                 new PieChart.Data(languageBundle.getString("goalProgressInfoPieChartNotDone"), notDone),
                 new PieChart.Data(languageBundle.getString("goalProgressInfoPieChartUnderway"), underway),
@@ -134,19 +134,19 @@ public class GoalSDProgressInfo extends Application
         this.done = 0;
         this.underway = 0;
         this.notDone = 0;
-        var map = new HashMap<CheckBox, EventOfDay>();
-        for (var entry : eventsOfCheckBoxes.entrySet())
+        Map<CheckBox, EventOfDay> map = new HashMap<>();
+        for (Map.Entry<EventOfDay, CheckBox> entry :  eventsOfCheckBoxes.entrySet())
         {
             map.put(entry.getValue(), entry.getKey());
         }
 
-        for (var entry : groupOfGoalCheckBox.entrySet())
+        for (Map.Entry<CheckBox, List<CheckBox>> entry : groupOfGoalCheckBox.entrySet())
         {
-            for (var checkBoxOfTask : entry.getValue())
+            for (CheckBox checkBoxOfTask : entry.getValue())
             {
-                var time = map.get(checkBoxOfTask).getTime();
-                var date = LocalDate.parse(checkBoxOfTask.getAccessibleText());
-                var dateTime = LocalDateTime.of(date, time);
+                LocalTime time = map.get(checkBoxOfTask).getTime();
+                LocalDate date = LocalDate.parse(checkBoxOfTask.getAccessibleText());
+                LocalDateTime dateTime = LocalDateTime.of(date, time);
                 if (!(checkBoxOfTask.isSelected()) && dateTime.isBefore(LocalDateTime.now()))
                 {
                     progressInfo.notDone++;
@@ -162,10 +162,10 @@ public class GoalSDProgressInfo extends Application
             }
             if (entry.getValue().size() == 0)
             {
-                var selectAllCheckBox = entry.getKey();
-                var time = map.get(selectAllCheckBox).getTime();
-                var date = LocalDate.parse(selectAllCheckBox.getAccessibleText());
-                var dateTime = LocalDateTime.of(date, time);
+                CheckBox selectAllCheckBox = entry.getKey();
+                LocalTime time = map.get(selectAllCheckBox).getTime();
+                LocalDate date = LocalDate.parse(selectAllCheckBox.getAccessibleText());
+                LocalDateTime dateTime = LocalDateTime.of(date, time);
                 if (!(selectAllCheckBox.isSelected()) && dateTime.isBefore(LocalDateTime.now()))
                 {
                     progressInfo.notDone++;

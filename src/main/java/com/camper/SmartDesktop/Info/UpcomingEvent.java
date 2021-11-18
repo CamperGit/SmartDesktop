@@ -8,14 +8,19 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.time.LocalDate;
@@ -83,7 +88,7 @@ public class UpcomingEvent extends Application implements Initializable
         if (!load)
         {
             UpcomingEventInfoRoot.setAccessibleText(String.valueOf(idOfSelectedTab));
-            var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
+            List<Node> elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(UpcomingEventInfoRoot);
         }
         logger.info("UpcomingEvent: end start method");
@@ -114,15 +119,14 @@ public class UpcomingEvent extends Application implements Initializable
 
     private static Task<Integer> returnTask()
     {
-        task = new Task<>()
+        task = new Task<Integer>()
         {
             @Override
-            protected Integer call()
-            {
-                var now = LocalDateTime.now();
+            protected Integer call() throws InterruptedException {
+                LocalDateTime now = LocalDateTime.now();
                 while (eventsOnQueue.size() == 0)
                 {
-                    Thread.onSpinWait();
+                    Thread.sleep(100);
                 }
                 upcomingEvent = eventsOnQueue.peek();
                 while (now.isBefore(upcomingEvent))
@@ -130,7 +134,7 @@ public class UpcomingEvent extends Application implements Initializable
                     now = LocalDateTime.now();
                     if (UpcomingEventInfoRoot != null && UpcomingEventInfoRoot.isVisible())
                     {
-                        for (var node : UpcomingEventInfoRoot.getChildren())
+                        for (Node node : UpcomingEventInfoRoot.getChildren())
                         {
                             if (node instanceof Label && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("upcomingEventTimeLabel"))
                             {
@@ -184,9 +188,9 @@ public class UpcomingEvent extends Application implements Initializable
                 {
                     if (!alreadyShowing)
                     {
-                        var otherInfoOfEvent = infoOfEvents.get(upcomingEvent);
-                        var date = upcomingEvent.toLocalDate();
-                        var dayWithEvent = CalendarSD.checkUsingOfThisDateOnEventList(date);
+                        EventOfDay otherInfoOfEvent = infoOfEvents.get(upcomingEvent);
+                        LocalDate date = upcomingEvent.toLocalDate();
+                        Day dayWithEvent = CalendarSD.checkUsingOfThisDateOnEventList(date);
                         if (dayWithEvent != null)
                         {
                             Day.checkOfDeprecatedEvents(dayWithEvent,true);
@@ -195,14 +199,14 @@ public class UpcomingEvent extends Application implements Initializable
                         if (otherInfoOfEvent.getType().equals(Day.EventType.Task))
                         {
                             alreadyShowing = true;
-                            var alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("upcomingEventTaskAlert") + " " + otherInfoOfEvent.getInfo(), ButtonType.YES, ButtonType.NO);
-                            var alertResult = alert.showAndWait();
+                            Alert alert = new Alert(Alert.AlertType.WARNING, languageBundle.getString("upcomingEventTaskAlert") + " " + otherInfoOfEvent.getInfo(), ButtonType.YES, ButtonType.NO);
+                            Optional<ButtonType> alertResult = alert.showAndWait();
                             logger.info("UpcomingEvent: an event has occurred - Task");
                             GoalSD.updateStateOfGoalCheckBoxes(otherInfoOfEvent, alertResult.orElse(ButtonType.NO) == ButtonType.YES);
                         }
                         if (otherInfoOfEvent.getType().equals(Day.EventType.Goal))
                         {
-                            var day = Day.removeEventFromDay(date, otherInfoOfEvent);
+                            Day day = Day.removeEventFromDay(date, otherInfoOfEvent);
                             if (day == null)
                             {
                                 updateDayIcons(date, false, false, false);
@@ -211,10 +215,10 @@ public class UpcomingEvent extends Application implements Initializable
                                 updateDayIcons(date, day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
                             }
 
-                            var goalSD = GoalSD.getGoalFromGoalName(otherInfoOfEvent.getInfo());
+                            GoalSD goalSD = GoalSD.getGoalFromGoalName(otherInfoOfEvent.getInfo());
                             if (goalSD != null)
                             {
-                                for (var node : goalSD.getTasksOfDay().get(date).getChildren())
+                                for (Node node : goalSD.getTasksOfDay().get(date).getChildren())
                                 {
                                     if (node instanceof Button && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("addNewTaskButton"))
                                     {
@@ -227,7 +231,7 @@ public class UpcomingEvent extends Application implements Initializable
                         }
                         if (!(otherInfoOfEvent.getType().equals(Day.EventType.Task)) && !(otherInfoOfEvent.getType().equals(Day.EventType.Goal)))
                         {
-                            var day = Day.removeEventFromDay(date, otherInfoOfEvent);
+                            Day day = Day.removeEventFromDay(date, otherInfoOfEvent);
                             if (day == null)
                             {
                                 updateDayIcons(date, false, false, false);
@@ -246,7 +250,7 @@ public class UpcomingEvent extends Application implements Initializable
                                 typeOfEvent = languageBundle.getString("upcomingEventNotificationAlert");
                             }
                             alreadyShowing = true;
-                            var alert = new Alert(Alert.AlertType.WARNING, typeOfEvent + " " + otherInfoOfEvent.getInfo(), ButtonType.OK);
+                            Alert alert = new Alert(Alert.AlertType.WARNING, typeOfEvent + " " + otherInfoOfEvent.getInfo(), ButtonType.OK);
                             alert.showAndWait();
                             logger.info("UpcomingEvent: an event has occurred - " + typeOfEvent);
                         }
@@ -275,12 +279,12 @@ public class UpcomingEvent extends Application implements Initializable
     {
         if (daysWithEvents.size() != 0)
         {
-            for (var day : daysWithEvents)
+            for (Day day : daysWithEvents)
             {
-                var events = day.getEvents();
-                var date = day.getDate();
+                List<EventOfDay> events = day.getEvents();
+                LocalDate date = day.getDate();
 
-                for (var event : events)
+                for (EventOfDay event : events)
                 {
                     addEventToQueue(date, event);
                 }
@@ -294,7 +298,7 @@ public class UpcomingEvent extends Application implements Initializable
 
     public static void addEventToQueue(LocalDate date, EventOfDay event)
     {
-        var dateAndTime = LocalDateTime.of(date, event.getTime());
+        LocalDateTime dateAndTime = LocalDateTime.of(date, event.getTime());
         while (infoOfEvents.containsKey(dateAndTime))
         {
             dateAndTime = dateAndTime.plusNanos(1);
@@ -335,7 +339,7 @@ public class UpcomingEvent extends Application implements Initializable
         if (task!=null)
         {
             task.cancel();
-            var localDateTime = LocalDateTime.of(date, eventOfDay.getTime());
+            LocalDateTime localDateTime = LocalDateTime.of(date, eventOfDay.getTime());
             eventsOnQueue.remove(localDateTime);
             infoOfEvents.remove(localDateTime);
             runEventTask();
@@ -351,30 +355,30 @@ public class UpcomingEvent extends Application implements Initializable
     public static void addUpcomingEventInfoToXML(Document doc, boolean createEmptyXML)
     {
         logger.info("UpcomingEvent: start saving upcoming event element");
-        var rootElement = doc.getFirstChild();
+        org.w3c.dom.Node rootElement = doc.getFirstChild();
 
-        var upcomingEventInfoElement = doc.createElement("upcomingEventInfo");
+        Element upcomingEventInfoElement = doc.createElement("upcomingEventInfo");
         rootElement.appendChild(upcomingEventInfoElement);
         if (!createEmptyXML && UpcomingEventInfoRoot != null)
         {
             upcomingEventInfoElement.setAttribute("tab", UpcomingEventInfoRoot.getAccessibleText());
 
-            var visibilityElement = doc.createElement("visibility");
+            Element visibilityElement = doc.createElement("visibility");
             upcomingEventInfoElement.appendChild(visibilityElement);
-            var visibilityValue = doc.createTextNode(String.valueOf(UpcomingEventInfoRoot.isVisible()));
+            Text visibilityValue = doc.createTextNode(String.valueOf(UpcomingEventInfoRoot.isVisible()));
             visibilityElement.appendChild(visibilityValue);
 
-            var layoutElement = doc.createElement("layout");
+            Element layoutElement = doc.createElement("layout");
             upcomingEventInfoElement.appendChild(layoutElement);
 
-            var layoutX = doc.createElement("layoutX");
+            Element layoutX = doc.createElement("layoutX");
             layoutElement.appendChild(layoutX);
-            var layoutXValue = doc.createTextNode(String.valueOf((int) (UpcomingEventInfoRoot.getLayoutX())));
+            Text layoutXValue = doc.createTextNode(String.valueOf((int) (UpcomingEventInfoRoot.getLayoutX())));
             layoutX.appendChild(layoutXValue);
 
-            var layoutY = doc.createElement("layoutY");
+            Element layoutY = doc.createElement("layoutY");
             layoutElement.appendChild(layoutY);
-            var layoutYValue = doc.createTextNode(String.valueOf((int) (UpcomingEventInfoRoot.getLayoutY())));
+            Text layoutYValue = doc.createTextNode(String.valueOf((int) (UpcomingEventInfoRoot.getLayoutY())));
             layoutY.appendChild(layoutYValue);
         }
         logger.info("UpcomingEvent: end saving upcoming event element");
@@ -383,16 +387,17 @@ public class UpcomingEvent extends Application implements Initializable
     public static void loadUpcomingEventInfoFromXML(Document doc, XPath xPath) throws Exception
     {
         logger.info("UpcomingEvent: start loading upcoming event element");
-        boolean notEmpty = xPath.evaluateExpression("count(/save/upcomingEventInfo/*)", doc, Integer.class) != 0;
+        XPathExpression upcomingEventInfoCompile = xPath.compile("count(/save/upcomingEventInfo/*)");
+        boolean notEmpty = Integer.parseInt((String)upcomingEventInfoCompile.evaluate(doc, XPathConstants.STRING)) != 0;
         if (notEmpty)
         {
-            var loadingUpcomingEventInfo = new UpcomingEvent(true);
+            UpcomingEvent loadingUpcomingEventInfo = new UpcomingEvent(true);
             loadingUpcomingEventInfo.start(Stage);
 
             int numberOfTab = Integer.parseInt(xPath.evaluate("/save/upcomingEventInfo/@tab", doc));
             UpcomingEventInfoRoot.setAccessibleText(String.valueOf(numberOfTab));
 
-            var tab = tabs.get(numberOfTab);
+            List<Node> tab = tabs.get(numberOfTab);
             tab.add(UpcomingEventInfoRoot);
             boolean visibility = Boolean.parseBoolean(xPath.evaluate("/save/upcomingEventInfo/visibility/text()", doc));
             UpcomingEventInfoRoot.setVisible(visibility);

@@ -4,16 +4,21 @@ import com.camper.SmartDesktop.Main;
 import com.camper.SmartDesktop.NodeDragger;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import jdk.nashorn.internal.runtime.regexp.joni.ast.StringNode;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 
 import javax.xml.xpath.XPath;
@@ -89,7 +94,7 @@ public class TableSD extends Application implements Initializable
         if (!load)
         {
             TableRoot.setAccessibleText(String.valueOf(idOfSelectedTab));
-            var elementsOfSelectedTab = tabs.get(idOfSelectedTab);
+            List<Node> elementsOfSelectedTab = tabs.get(idOfSelectedTab);
             elementsOfSelectedTab.add(TableRoot);
         }
         logger.info("TableSD: end start method");
@@ -117,10 +122,10 @@ public class TableSD extends Application implements Initializable
 
         tableAddColumnButton.setOnAction(event ->
         {
-            var tableSD = tables.get(Integer.parseInt(((AnchorPane) (((Button) event.getSource()).getParent())).getAccessibleHelp()));
-            var dialog = new TextInputDialog();
+            TableSD tableSD = tables.get(Integer.parseInt(((AnchorPane) (((Button) event.getSource()).getParent())).getAccessibleHelp()));
+            TextInputDialog dialog = new TextInputDialog();
             dialog.setHeaderText(languageBundle.getString("tableNewColumnAlert"));
-            var result = dialog.showAndWait().orElse(null);
+            String result = dialog.showAndWait().orElse(null);
             if (result != null)
             {
                 tableSD.addNewColumnToTheTable(result);
@@ -131,13 +136,14 @@ public class TableSD extends Application implements Initializable
 
     public void addNewColumnToTheTable(String columnName)
     {
-        var newColumn = new TableColumn<List<String>, String>(columnName);
+        TableColumn newColumn = new TableColumn<List<String>, String>(columnName);
         this.table.getColumns().add(newColumn);
-        for (var row : this.table.getItems())
+        for (List<String> row : this.table.getItems())
         {
             row.add(row.size(), "");
         }
         int index = this.table.getColumns().size() - 1;
+        /*newColumn.setCellValueFactory(param ->  new SimpleStringProperty(param.getValue().get(index)) );
         newColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(index)));
         newColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         newColumn.setOnEditCommit((TableColumn.CellEditEvent<List<String>, String> editEvent) ->
@@ -150,76 +156,76 @@ public class TableSD extends Application implements Initializable
             int numberOfCol = pos.getColumn();
             List<String> editList = editEvent.getTableView().getItems().get(numberOfRow);
             editList.set(numberOfCol, newValue);
-        });
+        });*/
     }
 
     public static void addTablesToXML(Document doc, boolean createEmptyXML)
     {
         logger.info("TableSD: start tables saving");
-        var rootElement = doc.getFirstChild();
+        org.w3c.dom.Node rootElement = doc.getFirstChild();
 
-        var tablesElement = doc.createElement("tables");
+        Element tablesElement = doc.createElement("tables");
         rootElement.appendChild(tablesElement);
         if (!createEmptyXML)
         {
             int id = 1;
-            for (var entry : tables.entrySet())
+            for (Map.Entry<Integer, TableSD> entry : tables.entrySet())
             {
-                var tableSD = entry.getValue();
-                var table = tableSD.getTableRoot();
-                var tableElement = doc.createElement("table" + id);
+                TableSD tableSD = entry.getValue();
+                AnchorPane table = tableSD.getTableRoot();
+                Element tableElement = doc.createElement("table" + id);
                 tableElement.setAttribute("tab", table.getAccessibleText());
 
                 tablesElement.appendChild(tableElement);
 
-                var visibilityElement = doc.createElement("visibility");
+                Element visibilityElement = doc.createElement("visibility");
                 tableElement.appendChild(visibilityElement);
-                var visibilityValue = doc.createTextNode(String.valueOf(table.isVisible()));
+                Text visibilityValue = doc.createTextNode(String.valueOf(table.isVisible()));
                 visibilityElement.appendChild(visibilityValue);
 
-                var layoutElement = doc.createElement("layout");
+                Element layoutElement = doc.createElement("layout");
                 tableElement.appendChild(layoutElement);
 
-                var layoutX = doc.createElement("layoutX");
+                Element layoutX = doc.createElement("layoutX");
                 layoutElement.appendChild(layoutX);
-                var layoutXValue = doc.createTextNode(String.valueOf((int) (table.getLayoutX())));
+                Text layoutXValue = doc.createTextNode(String.valueOf((int) (table.getLayoutX())));
                 layoutX.appendChild(layoutXValue);
 
-                var layoutY = doc.createElement("layoutY");
+                Element layoutY = doc.createElement("layoutY");
                 layoutElement.appendChild(layoutY);
-                var layoutYValue = doc.createTextNode(String.valueOf((int) (table.getLayoutY())));
+                Text layoutYValue = doc.createTextNode(String.valueOf((int) (table.getLayoutY())));
                 layoutY.appendChild(layoutYValue);
 
-                var columnsElement = doc.createElement("columns");
+                Element columnsElement = doc.createElement("columns");
                 tableElement.appendChild(columnsElement);
 
                 if (tableSD.table != null)
                 {
                     int numberOfColumn = 1;
-                    for (var column : tableSD.table.getColumns())
+                    for (TableColumn<List<String>, ?> column : tableSD.table.getColumns())
                     {
-                        var columnElement = doc.createElement("column" + numberOfColumn);
+                        Element columnElement = doc.createElement("column" + numberOfColumn);
                         columnsElement.appendChild(columnElement);
 
-                        var columnNameElement = doc.createElement("columnName");
+                        Element columnNameElement = doc.createElement("columnName");
                         columnElement.appendChild(columnNameElement);
-                        var columnElementValue = doc.createTextNode(column.getText());
+                        Text columnElementValue = doc.createTextNode(column.getText());
                         columnNameElement.appendChild(columnElementValue);
 
-                        var rowsElement = doc.createElement("rows");
+                        Element rowsElement = doc.createElement("rows");
                         columnElement.appendChild(rowsElement);
 
                         int numberOfRowWithValue = 1;
                         int numberOfRow = 0;
-                        for (var row : tableSD.table.getItems())
+                        for (List<String> row : tableSD.table.getItems())
                         {
-                            var value = row.get(numberOfColumn - 1);
+                            String value = row.get(numberOfColumn - 1);
                             if (!value.equals(""))
                             {
-                                var rowElement = doc.createElement("row" + numberOfRowWithValue);
+                                Element rowElement = doc.createElement("row" + numberOfRowWithValue);
                                 rowsElement.appendChild(rowElement);
                                 rowElement.setAttribute("numberOfRow", String.valueOf(numberOfRow));
-                                var rowElementValue = doc.createTextNode(value);
+                                Text rowElementValue = doc.createTextNode(value);
                                 rowElement.appendChild(rowElementValue);
                                 numberOfRowWithValue++;
                             }
@@ -236,7 +242,7 @@ public class TableSD extends Application implements Initializable
 
     public static void loadTablesFromXML(Document doc, XPath xPath) throws Exception
     {
-        logger.info("TableSD: start tables loading");
+        /*logger.info("TableSD: start tables loading");
         int numberOfTables = xPath.evaluateExpression("count(/save/tables/*)", doc, Integer.class);
         for (int id = 1; id < numberOfTables + 1; id++)
         {
@@ -272,6 +278,6 @@ public class TableSD extends Application implements Initializable
                 }
             }
         }
-        logger.info("TableSD: end tables loading");
+        logger.info("TableSD: end tables loading");*/
     }
 }

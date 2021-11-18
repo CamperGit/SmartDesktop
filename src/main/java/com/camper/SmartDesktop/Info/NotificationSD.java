@@ -107,16 +107,13 @@ public class NotificationSD extends Application implements Initializable
         notificationCancelButton.setText(languageBundle.getString("notificationCancelButton"));
         notificationCloseButtonIV.setImage(new Image("Images/delete30.png"));
 
-        var hoursValues = new ArrayList<String>()
-        {{
-            addAll(Stream.iterate(0, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
-            addAll(IntStream.iterate(10, n -> n < 24, n -> ++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        }};
-        var minutesValues = new ArrayList<String>()
-        {{
-            addAll(Stream.iterate(0, n -> n < 10, n -> ++n).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
-            addAll(IntStream.iterate(10, n -> n < 60, n -> ++n).mapToObj(Integer::toString).collect(Collectors.toList()));
-        }};
+
+        List<String> hoursValues = new ArrayList<>();
+        hoursValues.addAll(Stream.iterate(0,  n -> ++n).limit(10).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
+        hoursValues.addAll(IntStream.iterate(10, n -> ++n).limit(15).mapToObj(Integer::toString).collect(Collectors.toList()));
+        List<String> minutesValues = new ArrayList<>();
+        minutesValues.addAll(Stream.iterate(0, n -> ++n).limit(10).map(Object::toString).map(n -> "0" + n).collect(Collectors.toList()));
+        minutesValues.addAll(IntStream.iterate(10, n -> ++n).limit(51).mapToObj(Integer::toString).collect(Collectors.toList()));
 
         notificationToolBar.setOnMouseDragged(event ->
         {
@@ -191,18 +188,18 @@ public class NotificationSD extends Application implements Initializable
 
         notificationAddButton.setOnAction(event ->
         {
-            var dateOfEvent = notificationDatePicker.getValue();
-            var timeOfEvent = LocalTime.of(Integer.parseInt(notificationComboBoxHours.getValue()), Integer.parseInt(notificationComboBoxMinutes.getValue()));
-            var daysWithEvents = getDaysWithEvents();
+            LocalDate dateOfEvent = notificationDatePicker.getValue();
+            LocalTime timeOfEvent = LocalTime.of(Integer.parseInt(notificationComboBoxHours.getValue()), Integer.parseInt(notificationComboBoxMinutes.getValue()));
+            List<Day> daysWithEvents = getDaysWithEvents();
             if (dateOfEvent != null)
             {
-                var day = checkUsingOfThisDateOnEventList(dateOfEvent);
+                Day day = checkUsingOfThisDateOnEventList(dateOfEvent);
                 {
                     if (day == null)
                     {
                         day = new Day(dateOfEvent);
                     }
-                    var eventOfDay = new EventOfDay(timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
+                    EventOfDay eventOfDay = new EventOfDay(timeOfEvent, Day.EventType.Notification, notificationTextArea.getText());
                     if (day.addEvent(eventOfDay))
                     {
                         UpcomingEvent.addEventToQueue(day.getDate(), eventOfDay);
@@ -224,7 +221,7 @@ public class NotificationSD extends Application implements Initializable
 
     public static void removeNotificationFromEventList(LocalDate date, EventOfDay notificationEvent)
     {
-        var day = CalendarSD.checkUsingOfThisDateOnEventList(date);
+        Day day = CalendarSD.checkUsingOfThisDateOnEventList(date);
         UpcomingEvent.removeEventFromQueue(date, notificationEvent);
         Day.removeEventFromDay(date, notificationEvent);
         if (day != null)

@@ -3,9 +3,11 @@ package com.camper.SmartDesktop.Info;
 import com.camper.SmartDesktop.Main;
 import com.camper.SmartDesktop.NodeDragger;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 import javax.xml.xpath.XPath;
@@ -89,7 +92,7 @@ public class CalendarSD extends Application implements Initializable
         addChild(CalendarRoot);
         if (!load)
         {
-            //Если это не загрузка
+            //???? ??? ?? ????????
             CalendarRoot.setAccessibleText("-1");
             CalendarRoot.setVisible(false);
         }
@@ -116,15 +119,17 @@ public class CalendarSD extends Application implements Initializable
         }
         yearComboBox.setVisibleRowCount(8);
 
-        var currentYear = LocalDate.now().getYear();
+        int currentYear = LocalDate.now().getYear();
         selectedYear = currentYear;
         yearComboBox.setValue(currentYear);
+
+
 
         String currentMonth;
         int dayInMonth;
         if (!defaultLocale.equals(Locale.ENGLISH))
         {
-            monthChoiceBox.getItems().addAll(List.of(Month.values()).stream().map(month -> month.getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ru"))).map(month -> (month.substring(0, 1).toUpperCase() + month.substring(1))).collect(Collectors.toList()));
+            monthChoiceBox.getItems().addAll(new ArrayList<>(Arrays.asList(Month.values())).stream().map(month -> month.getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ru"))).map(month -> (month.substring(0, 1).toUpperCase() + month.substring(1))).collect(Collectors.toList()));
             currentMonth = LocalDate.now().getMonth().getDisplayName(TextStyle.FULL_STANDALONE, new Locale("ru"));
             currentMonth = currentMonth.substring(0, 1).toUpperCase() + currentMonth.substring(1);
             selectedMonth = getNumberOfRussianMonth(currentMonth);
@@ -134,7 +139,7 @@ public class CalendarSD extends Application implements Initializable
         }
         else
         {
-            monthChoiceBox.getItems().addAll(List.of(Month.values()).stream().map(Enum::toString).map(month->(month.charAt(0) + month.substring(1).toLowerCase(Locale.ENGLISH))).collect(Collectors.toList()));
+            monthChoiceBox.getItems().addAll(new ArrayList<>(Arrays.asList(Month.values())).stream().map(Enum::toString).map(month->(month.charAt(0) + month.substring(1).toLowerCase(Locale.ENGLISH))).collect(Collectors.toList()));
             currentMonth = LocalDate.now().getMonth().toString().toLowerCase();
             currentMonth = currentMonth.substring(0, 1).toUpperCase() + currentMonth.substring(1);
             selectedMonth = LocalDate.now().getMonth().getValue();
@@ -173,7 +178,7 @@ public class CalendarSD extends Application implements Initializable
         });
         yearComboBox.setOnAction(event ->
         {
-            //Для русского
+            //??? ????????
             selectedYear = yearComboBox.getValue();
             deletingUnnecessaryDaysInCalendar();
         });
@@ -213,7 +218,7 @@ public class CalendarSD extends Application implements Initializable
         calendarCloseButton.setOnAction(event ->
         {
             CalendarRoot.setVisible(false);
-            var elementsOfSelectedTab = tabs.get(Integer.parseInt(CalendarRoot.getAccessibleText()));
+            List<Node> elementsOfSelectedTab = tabs.get(Integer.parseInt(CalendarRoot.getAccessibleText()));
             elementsOfSelectedTab.remove(CalendarRoot);
             CalendarRoot.setAccessibleText("-1");
             logger.info("CalendarSD: close calendar");
@@ -227,27 +232,27 @@ public class CalendarSD extends Application implements Initializable
     public static void addCalendarToXML(Document doc, boolean createEmptyXML)
     {
         logger.info("CalendarSD: start calendar saving");
-        var rootElement = doc.getFirstChild();
+        org.w3c.dom.Node rootElement = doc.getFirstChild();
 
-        var calendarElement = doc.createElement("calendar");
+        Element calendarElement = doc.createElement("calendar");
 
-        var layoutElement = doc.createElement("layout");
+        Element layoutElement = doc.createElement("layout");
         calendarElement.appendChild(layoutElement);
 
-        var layoutX = doc.createElement("layoutX");
+        Element layoutX = doc.createElement("layoutX");
         layoutElement.appendChild(layoutX);
         Text layoutXValue;
 
-        var layoutY = doc.createElement("layoutY");
+        Element layoutY = doc.createElement("layoutY");
         layoutElement.appendChild(layoutY);
         Text layoutYValue;
 
-        //При первой загрузке и если пользователь сам не добавил кнопкой - календарь всё равно должен быть, поэтому visibility будет false
-        var visibilityElement = doc.createElement("visibility");
+        //??? ?????? ???????? ? ???? ???????????? ??? ?? ??????? ??????? - ????????? ?? ????? ?????? ????, ??????? visibility ????? false
+        Element visibilityElement = doc.createElement("visibility");
         calendarElement.appendChild(visibilityElement);
         Text visibilityValue;
 
-        //Если это первый запуск или создание нового пресета мы сразу устанавливаем значение атрибуту на -1
+        //???? ??? ?????? ?????? ??? ???????? ?????? ??????? ?? ????? ????????????? ???????? ???????? ?? -1
         if (createEmptyXML)
         {
             calendarElement.setAttribute("tab", "-1");
@@ -267,49 +272,49 @@ public class CalendarSD extends Application implements Initializable
         layoutY.appendChild(layoutYValue);
         visibilityElement.appendChild(visibilityValue);
 
-        var daysWithEventsElement = doc.createElement("daysWithEvents");
+        Element daysWithEventsElement = doc.createElement("daysWithEvents");
         calendarElement.appendChild(daysWithEventsElement);
 
         if (!createEmptyXML && daysWithEvents != null && daysWithEvents.size() != 0)
         {
             int numberOfDay = 1;
-            for (var day : daysWithEvents)
+            for (Day day : daysWithEvents)
             {
                 if (!(day.isHaveSchedule() && !day.isHaveGoal() && !day.isHaveNotification()))
                 {
-                    var dayElement = doc.createElement("day" + numberOfDay);
+                    Element dayElement = doc.createElement("day" + numberOfDay);
                     daysWithEventsElement.appendChild(dayElement);
 
-                    var dateElement = doc.createElement("date");
+                    Element dateElement = doc.createElement("date");
                     dayElement.appendChild(dateElement);
-                    var dateElementValue = doc.createTextNode(day.getDate().toString());
+                    Text dateElementValue = doc.createTextNode(day.getDate().toString());
                     dateElement.appendChild(dateElementValue);
 
-                    var eventsElement = doc.createElement("events");
+                    Element eventsElement = doc.createElement("events");
                     dayElement.appendChild(eventsElement);
                     int numberOfEvent = 1;
-                    for (var event : day.getEvents())
+                    for (EventOfDay event : day.getEvents())
                     {
                         if (event.getType().equals(Day.EventType.Schedule))
                         {
                             continue;
                         }
-                        var eventElement = doc.createElement("event" + numberOfEvent);
+                        Element eventElement = doc.createElement("event" + numberOfEvent);
                         eventsElement.appendChild(eventElement);
 
-                        var timeOfEventElement = doc.createElement("time");
+                        Element timeOfEventElement = doc.createElement("time");
                         eventElement.appendChild(timeOfEventElement);
-                        var timeOfEventElementValue = doc.createTextNode(event.getTime().toString());
+                        Text timeOfEventElementValue = doc.createTextNode(event.getTime().toString());
                         timeOfEventElement.appendChild(timeOfEventElementValue);
 
-                        var typeOfEventElement = doc.createElement("type");
+                        Element typeOfEventElement = doc.createElement("type");
                         eventElement.appendChild(typeOfEventElement);
-                        var typeOfEventElementValue = doc.createTextNode(event.getType().toString());
+                        Text typeOfEventElementValue = doc.createTextNode(event.getType().toString());
                         typeOfEventElement.appendChild(typeOfEventElementValue);
 
-                        var infoOfEventElement = doc.createElement("info");
+                        Element infoOfEventElement = doc.createElement("info");
                         eventElement.appendChild(infoOfEventElement);
-                        var infoOfEventElementValue = doc.createTextNode(event.getInfo());
+                        Text infoOfEventElementValue = doc.createTextNode(event.getInfo());
                         infoOfEventElement.appendChild(infoOfEventElementValue);
 
                         numberOfEvent++;
@@ -324,26 +329,26 @@ public class CalendarSD extends Application implements Initializable
     public static void loadCalendarFromXML(Document doc, XPath xPath) throws Exception
     {
         logger.info("CalendarSD: start calendar loading");
-        int countOfDaysWithEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/*)", doc, Integer.class);
+        int countOfDaysWithEvents = Integer.parseInt(xPath.evaluate("count(/save/calendar/daysWithEvents/*)", doc));
         for (int numberOfDay = 1; numberOfDay < countOfDaysWithEvents + 1; numberOfDay++)
         {
 
-            var date = LocalDate.parse(xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/date/text()", doc));
-            var day = checkUsingOfThisDateOnEventList(date);
+            LocalDate date = LocalDate.parse(xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/date/text()", doc));
+            Day day = checkUsingOfThisDateOnEventList(date);
             if (day == null)
             {
                 day = new Day(date);
             }
 
-            //Делаем цикл и вытаскиваем ивенты, после чего добавляем их в переменную day методом addEvent
-            int countOfEvents = xPath.evaluateExpression("count(/save/calendar/daysWithEvents/day" + numberOfDay + "/events/*)", doc, Integer.class);
+            //?????? ???? ? ??????????? ??????, ????? ???? ????????? ?? ? ?????????? day ??????? addEvent
+            int countOfEvents = Integer.parseInt(xPath.evaluate("count(/save/calendar/daysWithEvents/day" + numberOfDay + "/events/*)", doc));
             for (int numberOfEvent = 1; numberOfEvent < countOfEvents + 1; numberOfEvent++)
             {
-                var time = LocalTime.parse(xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/events/event" + numberOfEvent + "/time/text()", doc));
-                var type = Enum.valueOf(Day.EventType.class, xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/events/event" + numberOfEvent + "/type/text()", doc));
-                var info = xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/events/event" + numberOfEvent + "/info/text()", doc);
+                LocalTime time = LocalTime.parse(xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/events/event" + numberOfEvent + "/time/text()", doc));
+                Day.EventType type = Enum.valueOf(Day.EventType.class, xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/events/event" + numberOfEvent + "/type/text()", doc));
+                String info = xPath.evaluate("/save/calendar/daysWithEvents/day" + numberOfDay + "/events/event" + numberOfEvent + "/info/text()", doc);
 
-                var event = new EventOfDay(time, type, info);
+                EventOfDay event = new EventOfDay(time, type, info);
                 if (type.equals(Day.EventType.Task))
                 {
                     GoalSD.addTaskOnTaskMap(event);
@@ -351,7 +356,7 @@ public class CalendarSD extends Application implements Initializable
                 day.addEvent(event);
             }
 
-            var haveEvents = Day.checkOfDeprecatedEvents(day, true);
+            boolean haveEvents = Day.checkOfDeprecatedEvents(day, true);
             if (haveEvents && !daysWithEvents.contains(day))
             {
                 daysWithEvents.add(day);
@@ -360,19 +365,19 @@ public class CalendarSD extends Application implements Initializable
         UpcomingEvent.disableEventQueue(false);
         UpcomingEvent.loadEventsToQueue(daysWithEvents);
 
-        var loadingCalendar = new CalendarSD(true);
+        CalendarSD loadingCalendar = new CalendarSD(true);
         loadingCalendar.start(Main.Stage);
-        var rootOfLoadingCalendar = getRoot();
+        AnchorPane rootOfLoadingCalendar = getRoot();
 
         int numberOfTab = Integer.parseInt(xPath.evaluate("/save/calendar/@tab", doc));
 
-        //Установить в созданный элемент дополнительный текст, в котором будет лежать значение того таба, на котором элемент был создан
+        //?????????? ? ????????? ??????? ?????????????? ?????, ? ??????? ????? ?????? ???????? ???? ????, ?? ??????? ??????? ??? ??????
         rootOfLoadingCalendar.setAccessibleText(String.valueOf(numberOfTab));
 
-        //характеристика -1 может быть указана только в том случае, если календарь был закрыт или загружен в первый раз(календарь должен быть всегда)
+        //?????????????? -1 ????? ???? ??????? ?????? ? ??? ??????, ???? ????????? ??? ?????? ??? ???????? ? ?????? ???(????????? ?????? ???? ??????)
         if (numberOfTab != -1)
         {
-            var tab = tabs.get(numberOfTab);
+            List<Node> tab = tabs.get(numberOfTab);
             tab.add(rootOfLoadingCalendar);
         }
 
@@ -542,12 +547,12 @@ public class CalendarSD extends Application implements Initializable
     }
 
     /**
-     * @param date дата для проверки существования такой даты в списке дней с событиями
-     * @return null, если такая дата ещё не использовалась, day - если есть день с такой датой в списке daysWithEvents
+     * @param date ???? ??? ???????? ????????????? ????? ???? ? ?????? ???? ? ?????????
+     * @return null, ???? ????? ???? ??? ?? ??????????????, day - ???? ???? ???? ? ????? ????? ? ?????? daysWithEvents
      */
     public static Day checkUsingOfThisDateOnEventList(LocalDate date)
     {
-        for (var dayWithEvent : daysWithEvents)
+        for (Day dayWithEvent : daysWithEvents)
         {
             if (dayWithEvent.getDate().equals(date))
             {
@@ -559,11 +564,11 @@ public class CalendarSD extends Application implements Initializable
 
     public static void updateCalendarTodayLabel()
     {
-        for (var node : CalendarRoot.getChildren())
+        for (Node node : CalendarRoot.getChildren())
         {
             if (node instanceof Label && node.getAccessibleHelp() != null && node.getAccessibleHelp().equals("calendarTodayLabel"))
             {
-                var now = LocalDate.now();
+                LocalDate now = LocalDate.now();
                 int month = now.getMonth().getValue();
                 String monthName = null;
                 if (!defaultLocale.equals(Locale.ENGLISH))
@@ -571,40 +576,40 @@ public class CalendarSD extends Application implements Initializable
                     switch (month)
                     {
                         case 1:
-                            monthName = "Января";
+                            monthName = "??????";
                             break;
                         case 2:
-                            monthName = "Февраля";
+                            monthName = "???????";
                             break;
                         case 3:
-                            monthName = "Марта";
+                            monthName = "?????";
                             break;
                         case 4:
-                            monthName = "Апреля";
+                            monthName = "??????";
                             break;
                         case 5:
-                            monthName = "Мая";
+                            monthName = "???";
                             break;
                         case 6:
-                            monthName = "Июня";
+                            monthName = "????";
                             break;
                         case 7:
-                            monthName = "Июля";
+                            monthName = "????";
                             break;
                         case 8:
-                            monthName = "Августа";
+                            monthName = "???????";
                             break;
                         case 9:
-                            monthName = "Сентября";
+                            monthName = "????????";
                             break;
                         case 10:
-                            monthName = "Октября";
+                            monthName = "???????";
                             break;
                         case 11:
-                            monthName = "Ноября";
+                            monthName = "??????";
                             break;
                         case 12:
-                            monthName = "Декабря";
+                            monthName = "???????";
                             break;
                     }
                     ((Label) node).setText(now.getDayOfMonth() + " " + monthName + " " + now.getYear());
@@ -626,12 +631,12 @@ public class CalendarSD extends Application implements Initializable
         {
             updateDayIcons(i, false, false, false);
         }
-        for (var day : daysWithEvents)
+        for (Day day : daysWithEvents)
         {
-            var dateOfDayWithEvent = day.getDate();
+            LocalDate dateOfDayWithEvent = day.getDate();
             for (int i = 1; i <= Month.of(month).length(Year.isLeap(year)); i++)
             {
-                var date = LocalDate.of(year, month, i);
+                LocalDate date = LocalDate.of(year, month, i);
                 if (dateOfDayWithEvent.equals(date))
                 {
                     updateDayIcons(i, day.isHaveNotification(), day.isHaveGoal(), day.isHaveSchedule());
@@ -673,7 +678,7 @@ public class CalendarSD extends Application implements Initializable
     {
         if (date.getYear() == selectedYear && date.getMonth().getValue() == selectedMonth)
         {
-            var day = date.getDayOfMonth();
+            int day = date.getDayOfMonth();
             day--;
             if (notification)
             {
@@ -703,47 +708,47 @@ public class CalendarSD extends Application implements Initializable
 
     private static int getNumberOfRussianMonth(String month)
     {
-        if (month.equals("Январь"))
+        if (month.equals("??????"))
         {
             return 1;
         }
-        if (month.equals("Февраль"))
+        if (month.equals("???????"))
         {
             return 2;
         }
-        if (month.equals("Март"))
+        if (month.equals("????"))
         {
             return 3;
         }
-        if (month.equals("Апрель"))
+        if (month.equals("??????"))
         {
             return 4;
         }
-        if (month.equals("Май"))
+        if (month.equals("???"))
         {
             return 5;
         }
-        if (month.equals("Июнь"))
+        if (month.equals("????"))
         {
             return 6;
         }
-        if (month.equals("Июль"))
+        if (month.equals("????"))
         {
             return 7;
         }
-        if (month.equals("Август"))
+        if (month.equals("??????"))
         {
             return 8;
         }
-        if (month.equals("Сентябрь"))
+        if (month.equals("????????"))
         {
             return 9;
         }
-        if (month.equals("Октябрь"))
+        if (month.equals("???????"))
         {
             return 10;
         }
-        if (month.equals("Ноябрь"))
+        if (month.equals("??????"))
         {
             return 11;
         }
@@ -752,13 +757,13 @@ public class CalendarSD extends Application implements Initializable
 
     public static void checkEventsOfThisButton(int year, int month, int numberOfDay, MouseEvent event)
     {
-        var dayOfThisButton = LocalDate.of(year, month, numberOfDay);
+        LocalDate dayOfThisButton = LocalDate.of(year, month, numberOfDay);
         if (daysWithEvents.size() != 0)
         {
             boolean haveEvents = false;
-            for (var day : daysWithEvents)
+            for (Day day : daysWithEvents)
             {
-                var dateOfDayWithEvent = LocalDate.of(day.getDate().getYear(), day.getDate().getMonth(), day.getDate().getDayOfMonth());
+                LocalDate dateOfDayWithEvent = LocalDate.of(day.getDate().getYear(), day.getDate().getMonth(), day.getDate().getDayOfMonth());
                 if (dayOfThisButton.equals(dateOfDayWithEvent))
                 {
                     try

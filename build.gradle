@@ -1,12 +1,13 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.9'
+    //id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
 
 group 'com.camper'
 version '1.0-SNAPSHOT'
+
 
 repositories {
     mavenCentral()
@@ -31,7 +32,7 @@ test {
     useJUnitPlatform()
 }
 
-javafx {
+/*javafx {
     version = "11.0.2"
     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.media', 'javafx.web' ]
-}
+}*/

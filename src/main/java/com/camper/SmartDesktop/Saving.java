@@ -7,10 +7,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.stage.WindowEvent;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -32,22 +37,22 @@ public class Saving
      *              the file or not. If the value is null, no dialog box needs to be called and saving will happen forcibly,
      *              without user confirmation
      *              <p>
-     *              Представляет собой событие закрытия окна и нужен чтобы выдать диалоговое окно для того, чтобы спросить
-     *              у пользователя желает ли он сохранить файл или нет. Если значение равно null, то никакое диалоговое окно вызывать не
-     *              нужно и сохранения произойдёт принудительно, без подтверждения от пользователя
+     *              пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+     *              пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ. пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ null, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ
+     *              пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
      */
     public static void saveAll(WindowEvent event) throws ParserConfigurationException, TransformerException, IOException, InterruptedException
     {
         logger.info("Saving: start saving all");
-        var factory = DocumentBuilderFactory.newInstance();
-        var builder = factory.newDocumentBuilder();
-        var doc = builder.newDocument();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.newDocument();
 
-        var rootDocument = doc.createElement("save");
+        Element rootDocument = doc.createElement("save");
         doc.appendChild(rootDocument);
 
-        var t = TransformerFactory.newInstance().newTransformer();
-        t.setOutputProperty(OutputKeys.INDENT, "yes"); //Отступ
+        Transformer t = TransformerFactory.newInstance().newTransformer();
+        t.setOutputProperty(OutputKeys.INDENT, "yes");
         t.setOutputProperty(OutputKeys.METHOD, "xml");
         t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
@@ -64,9 +69,9 @@ public class Saving
             }
             else
             {
-                alert = new Alert(Alert.AlertType.NONE, languageBundle.getString("savingSaveChangesAlert"), new ButtonType("Сохранить", ButtonBar.ButtonData.YES), new ButtonType("Не сохранять", ButtonBar.ButtonData.NO), new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE));
+                alert = new Alert(Alert.AlertType.NONE, languageBundle.getString("savingSaveChangesAlert"), new ButtonType("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", ButtonBar.ButtonData.YES), new ButtonType("пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", ButtonBar.ButtonData.NO), new ButtonType("пїЅпїЅпїЅпїЅпїЅпїЅ", ButtonBar.ButtonData.CANCEL_CLOSE));
             }
-            var alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
+            ButtonType alertResult = alert.showAndWait().orElse(ButtonType.CANCEL);
             if (alertResult.getButtonData() == ButtonBar.ButtonData.YES)
             {
                 filename = currencySaveName;
@@ -97,8 +102,8 @@ public class Saving
         CalendarSD.addCalendarToXML(doc, false);
         logger.info("Saving: end saving elements");
 
-        var rootElement = doc.getFirstChild();
-        var lastTabElement = doc.createElement("lastTab");
+        Node rootElement = doc.getFirstChild();
+        Element lastTabElement = doc.createElement("lastTab");
         lastTabElement.setAttribute("tab", String.valueOf(idOfSelectedTab));
         rootElement.appendChild(lastTabElement);
 
@@ -112,19 +117,19 @@ public class Saving
         if (event != null)
         {
             disableEventQueue(true);
-        } //Если событие на закрытие дошло до сюда и оно не пустое, значит пользователь
-        //подтвердил сохранение и хочет выйти.
+        } //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.
         logger.info("Saving: end saving all");
     }
 
     public static void createEmptyXML(String filename) throws ParserConfigurationException, TransformerException, IOException
     {
         logger.info("Saving: start creating new empty xml");
-        var factory = DocumentBuilderFactory.newInstance();
-        var builder = factory.newDocumentBuilder();
-        var doc = builder.newDocument();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.newDocument();
 
-        var rootDocument = doc.createElement("save");
+        Element rootDocument = doc.createElement("save");
         doc.appendChild(rootDocument);
 
         logger.info("Saving: start creating new empty xml elements on save file");
@@ -137,20 +142,20 @@ public class Saving
         CalendarSD.addCalendarToXML(doc, true);
         logger.info("Saving: end creating new empty xml elements on save file");
 
-        var rootElement = doc.getFirstChild();
-        var lastTabElement = doc.createElement("lastTab");
+        Node rootElement = doc.getFirstChild();
+        Element lastTabElement = doc.createElement("lastTab");
         lastTabElement.setAttribute("tab", "1");
         rootElement.appendChild(lastTabElement);
 
-        var t = TransformerFactory.newInstance().newTransformer();
-        t.setOutputProperty(OutputKeys.INDENT, "yes"); //Отступ
+        Transformer t = TransformerFactory.newInstance().newTransformer();
+        t.setOutputProperty(OutputKeys.INDENT, "yes"); //пїЅпїЅпїЅпїЅпїЅпїЅ
         t.setOutputProperty(OutputKeys.METHOD, "xml");
         t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         t.transform(new DOMSource(doc), new StreamResult(Files.newOutputStream(Paths.get(DIRPATH + "\\Resources\\Saves\\" + filename))));
         logger.info("Saving: end creating new empty xml");
     }
 
-    //Создание нового пресета
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     public static String addNewSaveFile() throws IOException, TransformerException, ParserConfigurationException
     {
         String filename;
